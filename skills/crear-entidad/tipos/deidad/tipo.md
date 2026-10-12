@@ -56,7 +56,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `creencias` que la veneran: cada una la tiene en sus `deidades`;
   - `parientes` y `aliados`: otras deidades; recíprocas;
-  - `rivales`: las deidades a las que esta se opone, según sus fieles; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
+  - `rivales`: las deidades a las que esta se opone, según sus fieles; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `elegidos`: profetas, santos o avatares que hablan en su nombre;
   - `lugares_sagrados` donde se la venera o donde se manifestó;
   - `manifestaciones`: eventos en que se dice que intervino;

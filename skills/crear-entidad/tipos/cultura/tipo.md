@@ -62,7 +62,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `calendario`: el suyo, si cuenta el tiempo a su manera (recíproca con `culturas` del calendario); vacío si usa el de referencia;
   - `cultura_madre` y `ramas`: de qué cultura viene y qué culturas nacieron de ella; recíprocas;
   - `aliados`: otras culturas; recíproca, porque una alianza es de las dos;
-  - `rivales`: los pueblos que este tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
+  - `rivales`: los pueblos que este tiene por rivales; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `instituciones`: sus gobiernos, órdenes o gremios (facciones, que la tienen en sus `culturas`);
   - `figuras`: sus miembros más notables (no hace falta listar a todos los personajes de la cultura);
   - `mitos` que cuenta: cada uno la tiene en sus `culturas`.

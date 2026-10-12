@@ -62,7 +62,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `lider` y `figuras` (miembros notables): cada uno la tiene en sus `facciones`;
   - `faccion_madre` y `ramas`: de qué organización depende y qué capítulos o brazos tiene; recíprocas;
   - `aliados`: otras facciones; recíproca, porque una alianza es de las dos;
-  - `rivales`: las que esta tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
+  - `rivales`: las que esta tiene por rivales; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `creencias` que siguen o administran;
   - `culturas` a las que pertenecen: cada cultura la tiene en sus `instituciones`;
   - `objetos` que guardan (reliquias, insignias, tesoros);

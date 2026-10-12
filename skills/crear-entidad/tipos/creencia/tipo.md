@@ -70,7 +70,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `mitos` que cuenta como sagrados o que condena: cada uno la tiene en sus `creencias`;
   - `idiomas`: su lengua sagrada;
   - `creencia_madre` y `ramas`: de qué fe nació y qué ramas o herejías salieron de ella; recíprocas;
-  - `rivales`: las fes con que choca, vistas desde esta; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
+  - `rivales`: las fes con que choca, vistas desde esta; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `eventos` que la marcaron (su fundación, un cisma, una persecución);
   - `era` en que nació.
 - `relevancia`: 5 la fe que define el foco o el mundo; 4 una fe regional; 3 la fe de una comarca o un culto conocido; 2 un culto menor; 1 una superstición de unos pocos.

@@ -66,7 +66,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `sede` (su castillo, su casa solariega, su taller: un lugar o un asentamiento) y `dominios` (las tierras que tiene: regiones o asentamientos);
   - `linaje_madre` y `ramas`: de qué casa se desgajó y qué ramas menores tiene; recíprocas;
   - `aliados`: otras casas; recíproca, porque una alianza es de las dos;
-  - `rivales`: las casas que esta tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`). Las facciones aliadas o enemigas van en la tabla y en `facciones`;
+  - `rivales`: las casas que esta tiene por rivales; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`). Las facciones aliadas o enemigas van en la tabla y en `facciones`;
   - `facciones` que controla o a las que sirve (el gobierno de una dinastía, la compañía de una familia de mercaderes);
   - `culturas` a las que pertenece, `creencias` que profesa y `objetos` que guarda (reliquias, armas, documentos de la familia);
   - `eventos` en que tomó parte;
