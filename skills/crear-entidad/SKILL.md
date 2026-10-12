@@ -50,7 +50,8 @@ Cada carpeta de `tipos/` es un módulo con tres archivos:
   - `tipo` y `familia` (por ejemplo, `region` es de la familia `lugar`);
   - `completa` (opcional, en módulos de una familia): qué propiedades de otras fichas puede completar (una región completa la `region` de un personaje, no su `residencia`);
   - `emoji`;
-  - `huecos_propios`: cuántos enlaces pendientes nuevos puede abrir cada nota (los que solo nombra ella);
+  - `huecos_propios`: cuántos enlaces pendientes nuevos puede abrir cada nota (los que solo nombra ella) con relevancia 4 o 5; con menos relevancia, el rango se reduce (ver «Profundidad»);
+  - `profundidad`: la relevancia mínima desde la que va cada sección que no es del núcleo (`"Citas": 3`); las que no figuran van siempre;
   - `carpeta` (fija, o según una propiedad como el rol o la categoría);
   - `crear_desde_cero` (opcional): `false` si el motor no debe inventar entidades de ese tipo, solo crear las que ya nombra el canon (las especies, por ejemplo);
   - `escalas` y `valores` (opcionales): propiedades numéricas con su rango (`peligrosidad` del 1 al 5) y propiedades con valores permitidos (`naturaleza`, `situacion_vital`), que valida `check_note.py`;
@@ -128,12 +129,16 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   Así se respeta la autonomía de la Ficha sin detener el flujo.
 
 ## Paso 3: crear la nota
-- Rellena **toda** la plantilla siguiendo `tipo.md`. Lo único sin resolver son los enlaces pendientes.
+- **Profundidad según la relevancia.** Decide primero la `relevancia` y ejecuta `python <directorio de esta skill>/scripts/check_note.py --depth <tipo>:<relevancia>`: te dice qué secciones lleva la nota y cuántos enlaces pendientes nuevos puede abrir.
+  - El **frontmatter va siempre completo**, con todas las propiedades de la plantilla, sea cual sea la relevancia.
+  - El **núcleo** (las secciones sin relevancia mínima) va siempre. Las secciones de profundidad, solo desde su relevancia. Las que no le tocan se borran de la nota, con su título.
+  - **No inventes para llenar.** En lo que la nota lleva, escribe lo que aporta al mundo: una aldea de relevancia 1 necesita su ubicación, su función y sus vínculos, no una historia épica. Un dato de una tabla o una lista que de verdad no aplica se dice en pocas palabras («ninguna conocida»), no se adorna. Si una sección de profundidad tiene algo real que contar aunque la relevancia no la pida, puede ir.
+- Rellena las secciones que lleva siguiendo `tipo.md`. Lo único sin resolver son los enlaces pendientes.
 - **Toda entidad que nombras lleva enlace, cada vez que la nombras** y no solo la primera, también con su nombre corto (`[[Aldric_Voss|Aldric]]`). Solo quedan sin enlace las menciones de la propia entidad, los títulos y la sección Imagen (ver `referencias/huecos.md`):
   - a su nota, si existe;
   - si no, como enlace pendiente con su nombre real, su texto legible y su tipo. El tipo lo da su propiedad de relación (ponla siempre que haya una); si no la hay, asígnalo en el Paso 4.
   - Lo que es una entidad se enlaza siempre, aunque esté dentro de otra (un cabo, una costumbre de un pueblo) o sea un colectivo («los nueve jueces»). Solo los términos (rangos, títulos, oficios, expresiones…) van al Glosario sin enlace; registrar una entidad en el Glosario, con su tipo de entidad, no la libra del enlace. Los secretos no se enlazan nunca.
-- **Cuántos nuevos:** los del rango del módulo (`huecos_propios`), o los `enlaces_nuevos` que indique el motor. Lo menos importante va sin nombre propio («un herrero del puerto»), así no necesita enlace.
+- **Cuántos nuevos:** los que dice `check_note.py --depth` (el rango del módulo, reducido según la relevancia). Si el motor indica `enlaces_nuevos`, no pases del menor de los dos máximos. Lo menos importante va sin nombre propio («un herrero del puerto»), así no necesita enlace.
 - **Reutiliza antes de crear:** si la entidad ya existe, enlaza su nota. Si otra nota ya la nombra como enlace pendiente (búscalo con `search_vault.py "<nombre>" --in pendientes`), usa ese mismo enlace (la frontera de un reino, la capital de una región, el gobierno de un pueblo). Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas.
 - **Nombres:** no los inventes a ojo, porque los modelos repiten patrones. Esto vale también para los de las entidades que dejas pendientes.
   - Genera candidatos con `python <directorio de esta skill>/scripts/generate_names.py --profile <perfil> --count 10` (añade `--surnames` si lleva apellido).
@@ -163,8 +168,8 @@ python <directorio de esta skill>/scripts/check_note.py <Nota_1> <Nota_2> …
 El validador comprueba:
 - el frontmatter (YAML válido, propiedades, estado, fecha sin comillas, propiedades de relación con solo enlaces);
 - que la nota esté en la carpeta que le corresponde;
-- el título con el emoji del tipo, todas las secciones y que no haya campos vacíos ni texto de plantilla;
-- los enlaces pendientes nuevos dentro del rango del módulo, y todos con tipo;
+- el título con el emoji del tipo, las secciones que pide su relevancia y que no haya campos vacíos ni texto de plantilla;
+- los enlaces pendientes nuevos dentro del rango del módulo para su relevancia, y todos con tipo;
 - las menciones sin enlace del cuerpo (aviso): nombres propios desconocidos, entidades del Glosario y entidades que la nota ya enlaza en otra parte;
 - que la nota no enlace a secretos y que su imagen exista;
 - en un calendario, sus tablas de meses, estaciones y festividades, y en cualquier nota, que `fecha_exacta` exista en el calendario de referencia y sea del año que precisa;
@@ -221,7 +226,7 @@ Si la skill se ejecuta dentro de `expandir-mundo`, sáltate la instantánea y es
 - No borres ni sobrescribas notas. En las existentes solo añades vínculos inversos y anclajes, o reemplazas un enlace pendiente con nombre de rol por el definitivo.
 - Toda decisión al azar que pida un módulo se tira con `scripts/roll_dice.py` (por ejemplo, `roll_dice.py 1d4`). Nunca inventes el resultado de una tirada.
 - Para añadir un tipo nuevo:
-  - crea `tipos/<tipo>/` con `tipo.md`, `plantilla.md` y `modulo.json` (`tipo`, `familia`, `completa` si es de una familia, `emoji`, `huecos_propios`, `carpeta`, `fechas`, `crear_desde_cero`, `escalas`, `valores` y `solo_si` si los tiene, `reciprocas` y `relaciones`);
+  - crea `tipos/<tipo>/` con `tipo.md`, `plantilla.md` y `modulo.json` (`tipo`, `familia`, `completa` si es de una familia, `emoji`, `huecos_propios`, `profundidad`, `carpeta`, `fechas`, `crear_desde_cero`, `escalas`, `valores` y `solo_si` si los tiene, `reciprocas` y `relaciones`);
   - añade su imagen en `generar-imagen/referencias/prompt.md`;
   - si se relaciona con una familia (`lugar`, por ejemplo) con una propiedad nueva, añádela al `completa` de los módulos de esa familia que puedan completarla;
   - ejecuta `python <directorio de esta skill>/scripts/check_modules.py`: revisa que la plantilla tenga todo lo que nombra el módulo y que cada relación y cada recíproca encajen con los demás módulos.

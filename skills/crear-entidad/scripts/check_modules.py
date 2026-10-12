@@ -8,6 +8,7 @@ Comprueba en cada módulo:
     tiempo), que sus valores por defecto estén permitidos y que su título empiece por el emoji
     del tipo;
   - que las condiciones de `solo_si` usen valores permitidos;
+  - que cada sección de `profundidad` exista en la plantilla, con una relevancia mínima del 2 al 5;
   - que las recíprocas sean relaciones del módulo y que la regla de tiempo use valores permitidos
     y una sección que exista.
 Y entre módulos:
@@ -25,7 +26,8 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import SKILL_DIR, candidate_modules, first, parse_frontmatter, split_note  # noqa: E402
+from vault_lib import (SKILL_DIR, candidate_modules, first, parse_frontmatter, split_note,  # noqa: E402
+                       template_sections)
 
 
 def template_of(tipo):
@@ -76,6 +78,13 @@ def main():
         gaps = module.get("huecos_propios", {})
         if gaps and not 0 <= gaps.get("min", 0) <= gaps.get("max", 0):
             errors.append(f"{where}: `huecos_propios` debe tener 0 ≤ min ≤ max")
+        # `profundidad`: secciones de la plantilla y la relevancia desde la que van (con 1 irían siempre)
+        titles = {title for _, title in template_sections(body)}
+        for title, minimum in module.get("profundidad", {}).items():
+            if title not in titles:
+                errors.append(f"{where}: `profundidad` nombra la sección «{title}», que no está en la plantilla")
+            if not isinstance(minimum, int) or not 2 <= minimum <= 5:
+                errors.append(f"{where}: `profundidad` de «{title}» debe ser un número del 2 al 5 (encontrado: {minimum})")
         heading = next((line for line in body if line.startswith("# ")), "")
         if module.get("emoji") and not heading.startswith(f"# {module['emoji']} "):
             errors.append(f"{where}: el título de la plantilla debe empezar por `# {module['emoji']} `")

@@ -42,7 +42,7 @@ ultima_revision: # fecha real AAAA-MM-DD
 - Los enlaces dentro de propiedades van entre comillas (`"[[Nota]]"`); en las listas, un valor por línea precedido de `- `. Obsidian 1.9+ solo reconoce `aliases`, `tags` y `cssclasses` (no `alias`, `tag` ni `cssclass`).
 
 ### Relevancia
-Cuánto importa la entidad al mundo. Decide qué se desarrolla primero y cuánto se enlaza.
+Cuánto importa la entidad al mundo. Decide qué se desarrolla primero, cuánto se enlaza y **cuánto desarrollo lleva su nota**: el frontmatter y el núcleo van siempre; las secciones de profundidad (citas, ganchos, un día típico…), solo desde cierta relevancia. Una entidad que gana peso se profundiza después.
 
 | Valor | Significado |
 |---|---|

@@ -7,11 +7,12 @@ Comprueba:
     en orden (inicio antes que fin) y coherentes con la edad, las escalas y los
     valores permitidos que declara el módulo, las propiedades que solo valen con ciertos valores
     de otra (`solo_si`) y propiedades de relación con solo enlaces;
-  - cuerpo: título con el emoji del tipo, todas las secciones de la plantilla,
+  - cuerpo: título con el emoji del tipo, las secciones de la plantilla que pide su relevancia
+    (el núcleo siempre; las de la `profundidad` del módulo, desde su relevancia mínima),
     ningún campo vacío ni texto de plantilla sin reemplazar;
   - que la nota esté en la carpeta que le corresponde según su módulo;
   - enlaces pendientes (a entidades que aún no tienen nota): los que solo nombra esta nota, dentro
-    del rango del módulo, y todos con tipo (su propiedad de relación o el registro de pendientes);
+    del rango del módulo escalado por su relevancia, y todos con tipo (su propiedad de relación o el registro de pendientes);
   - entidades sin enlace en el cuerpo (avisos), porque toda mención va enlazada y no solo la primera:
     las que el Glosario registra como entidades (por su Tipo), aunque vayan en minúscula; las que la
     nota ya enlaza en otra parte, también con el nombre corto; y los nombres propios que no son meses
@@ -27,7 +28,11 @@ Comprueba:
 Las notas internas (MOC, Ficha, Preguntas Abiertas, Glosario, guías y registros) no son entidades:
 lo dice y no las valida. Sale con código 1 si encuentra errores.
 
-Ejemplo:  check_note.py Aldric_Voss   check_note.py 20_Personajes/X.md 80_Secretos/Y.md"""
+Con --depth <tipo>:<relevancia>, antes de escribir una nota, dice qué secciones lleva y cuántos
+enlaces pendientes nuevos puede abrir, sin validar nada.
+
+Ejemplo:  check_note.py Aldric_Voss   check_note.py 20_Personajes/X.md 80_Secretos/Y.md
+          check_note.py --depth personaje:2"""
 import argparse
 import re
 import sys
@@ -39,7 +44,8 @@ from vault_lib import (HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DI
                        VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
-                       load_modules, malformed_lines, normalize, note_link_labels, parse_calendar,
+                       load_modules, malformed_lines, normalize, note_link_labels, omitted_sections,
+                       own_gaps_range, parse_calendar,
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
                        reference_calendar, resolve_note, section_table, split_note, table_cell,
                        unlinked_entities, unlinked_mentions, unlinked_names, unquote)
@@ -179,12 +185,15 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     elif not DATE_RE.match(revision):
         errors.append(f"`ultima_revision` debe ser una fecha AAAA-MM-DD (encontrado: {revision or 'vacío'})")
 
-    # Relevancia: de 1 a 5
+    # Relevancia: de 1 a 5. Decide la profundidad de la nota; si no es válida, se exige todo
+    relevance = 5
     if "relevancia" in expected:
-        relevance = int_value(first(props.get("relevancia")))
-        if relevance is None or not 1 <= relevance <= 5:
+        raw_relevance = int_value(first(props.get("relevancia")))
+        if raw_relevance is None or not 1 <= raw_relevance <= 5:
             shown = first(props.get("relevancia")) or "vacío"
             errors.append(f"`relevancia` debe ser un número del 1 al 5 (encontrado: {shown})")
+        else:
+            relevance = raw_relevance
 
     # Escalas y valores permitidos que declara el módulo (peligrosidad del 1 al 5, naturaleza…)
     for key, (low, high) in module.get("escalas", {}).items():
@@ -293,9 +302,13 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     headings = [without_variation(line) for line in body if line.startswith("# ")]
     if not headings or not headings[0].startswith(f"# {without_variation(module['emoji'])} "):
         errors.append(f"el título debe empezar por el emoji del tipo: `# {module['emoji']} Nombre`")
+    # Secciones: el núcleo siempre; las de la `profundidad` del módulo, desde su relevancia mínima.
+    # Una sección opcional puede ir antes si tiene contenido real, pero nunca de relleno
     body_set = {line.strip() for line in body}
+    optional = set(omitted_sections(module, template_body, relevance))
     for line in template_body:
-        if re.match(r"^#{2,3} ", line) and line.strip() not in body_set:
+        match = re.match(r"^#{2,3} (.+?)\s*$", line)
+        if match and match.group(1) not in optional and line.strip() not in body_set:
             errors.append(f"falta la sección «{line.strip()}»")
     for i, line in enumerate(body):
         stripped = line.strip()
@@ -321,12 +334,13 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     own = [g for g in mine if g["notes"] == [relative]]
     # Por encima del máximo es un error; por debajo del mínimo, un aviso: al completar un enlace
     # pendiente, la nota que lo nombraba se queda con menos, y está bien.
-    low, high = module["huecos_propios"]["min"], module["huecos_propios"]["max"]
+    low, high = own_gaps_range(module, relevance)
     if len(own) > high:
-        errors.append(f"enlaces pendientes nuevos: {len(own)} (el tipo admite entre {low} y {high}; deja sin "
-                      f"nombre propio las entidades menos importantes)")
+        errors.append(f"enlaces pendientes nuevos: {len(own)} (con relevancia {relevance} el tipo admite entre {low} "
+                      f"y {high}; deja sin nombre propio las entidades menos importantes)")
     elif len(own) < low:
-        warnings.append(f"enlaces pendientes nuevos: {len(own)} (al crear la nota, el tipo pide entre {low} y {high})")
+        warnings.append(f"enlaces pendientes nuevos: {len(own)} (al crear la nota, con relevancia {relevance} el tipo "
+                        f"pide entre {low} y {high})")
     for gap in mine:
         if not gap["expected_type"]:
             errors.append(f"el enlace pendiente [[{gap['link']}]] no tiene tipo: ponlo en su propiedad de relación "
@@ -390,6 +404,32 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     return errors, warnings, note_type
 
 
+def print_depth(spec):
+    """Imprime la profundidad de una nota de un tipo y una relevancia; devuelve el código de salida."""
+    tipo, _, raw = spec.partition(":")
+    modules = load_modules()
+    module, relevance = modules.get(tipo), int_value(raw)
+    if not module:
+        print(f"Error: el tipo `{tipo}` no tiene módulo (hay: {', '.join(sorted(modules))}).")
+        return 1
+    if relevance is None or not 1 <= relevance <= 5:
+        print(f"Error: la relevancia debe ser un número del 1 al 5 (encontrado: {raw or 'vacío'}).")
+        return 1
+    _, template_body = split_note((SKILL_DIR / "tipos" / tipo / "plantilla.md").read_text(encoding="utf-8"))
+    omitted = omitted_sections(module, template_body, relevance)
+    depth = module.get("profundidad", {})
+    low, high = own_gaps_range(module, relevance)
+    print(f"{tipo} con relevancia {relevance}:")
+    print(f"  Enlaces pendientes nuevos: entre {low} y {high}.")
+    if omitted:
+        print("  Omite (no las escribas): " + ", ".join(
+            f"«{t}»" + (f" (desde {depth[t]})" if t in depth else "") for t in omitted) + ".")
+    else:
+        print("  Lleva todas las secciones de la plantilla.")
+    print("  En las que lleva, escribe solo lo que aporta: un dato que no sabes no se inventa para llenar.")
+    return 0
+
+
 def main():
     # UTF-8 antes de cualquier salida (incluida la ayuda de argparse)
     for stream in (sys.stdout, sys.stderr):
@@ -397,9 +437,16 @@ def main():
             stream.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("notes", nargs="+", help="Ruta o nombre de cada nota a validar")
+    parser.add_argument("notes", nargs="*", help="Ruta o nombre de cada nota a validar")
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
+    parser.add_argument("--depth", metavar="TIPO:RELEVANCIA",
+                        help="Dice qué secciones lleva una nota de ese tipo y relevancia, y cuántos enlaces "
+                             "pendientes nuevos puede abrir (personaje:2)")
     args = parser.parse_args()
+    if args.depth:
+        sys.exit(print_depth(args.depth))
+    if not args.notes:
+        parser.error("indica las notas a validar, o --depth <tipo>:<relevancia>")
 
     vault = Path(args.vault)
     if not vault.is_dir():

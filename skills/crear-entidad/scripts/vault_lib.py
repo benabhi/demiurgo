@@ -3,6 +3,7 @@
 Lee la bóveda como la entiende Obsidian: enlaces, frontmatter, módulos de tipos, la Ficha
 del Mundo y un índice compacto con una entrada por entidad. No tiene línea de comandos."""
 import json
+import math
 import re
 import unicodedata
 from pathlib import Path
@@ -44,6 +45,43 @@ def load_modules():
         data = json.loads(path.read_text(encoding="utf-8"))
         modules[data["tipo"]] = data
     return modules
+
+
+# Parte del rango de enlaces pendientes nuevos (`huecos_propios`) que abre una nota según su relevancia:
+# un personaje corriente abre pocos; uno central, todos los del rango
+GAPS_BY_RELEVANCE = {1: 0.25, 2: 0.5, 3: 0.75, 4: 1, 5: 1}
+
+
+def own_gaps_range(module, relevance):
+    """(mínimo, máximo) de enlaces pendientes nuevos de una nota del módulo con esa relevancia."""
+    low, high = module["huecos_propios"]["min"], module["huecos_propios"]["max"]
+    factor = GAPS_BY_RELEVANCE.get(relevance, 1)
+    low = math.floor(low * factor)
+    return low, max(low, math.ceil(high * factor))
+
+
+def template_sections(template_body):
+    """[(nivel, título)] de las secciones (## y ###) de una plantilla, en orden."""
+    sections = []
+    for line in template_body:
+        match = re.match(r"^(#{2,3}) (.+?)\s*$", line)
+        if match:
+            sections.append((len(match.group(1)), match.group(2)))
+    return sections
+
+
+def omitted_sections(module, template_body, relevance):
+    """Títulos de las secciones que una nota con esa relevancia no necesita: las que la `profundidad`
+    del módulo reserva para una relevancia mayor, con sus subsecciones. El resto es el núcleo."""
+    depth = module.get("profundidad", {})
+    omitted, parent_omitted = [], False
+    for level, title in template_sections(template_body):
+        own = depth.get(title, 1) > relevance
+        if level == 2:
+            parent_omitted = own
+        if own or (level == 3 and parent_omitted):
+            omitted.append(title)
+    return omitted
 
 
 def date_keys(module):

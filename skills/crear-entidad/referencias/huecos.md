@@ -43,7 +43,7 @@ Los scripts lo comprueban:
 - **Texto legible:** en el cuerpo, todo enlace a un archivo con guiones bajos lleva su texto (`[[Aldric_Voss|Aldric Voss]]`); en las tablas, `[[Nota\|texto]]`. En las propiedades va sin texto.
 
 ## Cuántos
-- **El rango del módulo** (`huecos_propios` en `modulo.json`) dice cuántos enlaces pendientes **nuevos** puede abrir cada nota: los que solo nombra ella. Los que ya nombraban otras notas no cuentan, porque reutilizarlos es lo mejor que puede pasar.
+- **El rango del módulo** (`huecos_propios` en `modulo.json`) dice cuántos enlaces pendientes **nuevos** puede abrir cada nota: los que solo nombra ella. Es el rango de una nota de relevancia 4 o 5; con relevancia 3 se queda en tres cuartos, con 2 en la mitad y con 1 en un cuarto (`check_note.py --depth <tipo>:<relevancia>` da la cuenta). Los que ya nombraban otras notas no cuentan, porque reutilizarlos es lo mejor que puede pasar.
 - **Por encima del máximo,** `check_note.py` da un error: deja sin nombre propio las entidades menos importantes. Por debajo del mínimo, un aviso.
 - **El presupuesto:** en `expandir-mundo`, el selector da un rango más estrecho para cada tipo (`enlaces_nuevos`), según cuántos enlaces pendientes hay por entidad. Con muchos, cada nota abre pocos nuevos; con pocos, más.
   - Al crear a mano vale cualquier número dentro del rango.
