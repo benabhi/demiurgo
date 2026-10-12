@@ -21,6 +21,21 @@ Uso:
 - con pocos, crea algo nuevo más a menudo y cada nota puede abrir bastantes enlaces nuevos;
 - con muchos, casi siempre completa lo pendiente y cada nota abre los mínimos.
 
+## Progreso visible
+Quien usa la skill tiene que ver en todo momento por qué paso va y qué estás haciendo, sin abrir tus pensamientos. Es igual en todas las skills de este sistema.
+1. **Lista de etapas.** Al empezar, crea una lista de tareas con la herramienta de tareas de Claude Code (TodoWrite o, en versiones nuevas, TaskCreate y TaskUpdate), con una tarea por etapa de las de abajo. Claude Code la muestra con casillas y anima la etapa en curso. Pon cada etapa en curso al empezarla y complétala al terminarla; nunca hay más de una en curso. Si no tienes esa herramienta, escribe la lista en el chat con `○` (pendiente), `▸` (en curso) y `✓` (hecha).
+2. **Una línea al empezar cada etapa,** en el chat: `**▸ 3/8 · <Etapa>** — <qué haces, en concreto>`. Al cerrar una etapa que produce algo, otra línea: `✓ <resultado>` (la nota creada, la imagen guardada, los errores corregidos). Una o dos líneas, nunca párrafos.
+3. **Herramientas con descripción:** cada llamada lleva una descripción breve, en el idioma de la conversación, de lo que hace para el usuario («Buscar duplicados de “<nombre>”»), no el comando.
+4. **Si otra skill te invoca,** no crees una lista nueva: añade tus etapas a la suya, justo después de la etapa que te invocó, con `↳ ` delante del nombre (`↳ Imagen: armar el prompt`). Esa etapa sigue en curso hasta que termines.
+5. **Esperas:** si te toca esperar algo largo (una generación, al usuario), dilo en una línea antes: `⏳ <qué esperas>`.
+
+Etapas de esta skill:
+1. Preparar la tanda (Paso 0)
+2. Ciclo 1 de N … Ciclo N de N: una tarea por ciclo
+3. Informe de la tanda
+
+Dentro de cada ciclo, los pasos 1 a 7 van como líneas `▸` en el chat (`**▸ Ciclo 2/3 · Ingredientes** — tirada de 2d6 en …`), y `crear-entidad` añade sus etapas con `↳` bajo el ciclo en curso. Al cerrar el ciclo, una línea `✓` con lo creado y el commit.
+
 ## Archivos
 - `scripts/setup_generation.py`: prepara `00_Sistema/06_Generacion` la primera vez, sin sobrescribir nunca.
 - `scripts/select_target.py`: elige qué desarrollar (enlaces pendientes puntuados, paquetes o una entidad nueva) y cuántos enlaces nuevos puede abrir cada nota, o pide detenerse.

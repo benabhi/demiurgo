@@ -7,6 +7,25 @@ description: Inicializa una bóveda de Obsidian para worldbuilding de cualquier 
 
 Crea la base de una bóveda de worldbuilding a partir de una entrevista. **Idempotente:** el script solo crea lo que falta y nunca sobrescribe.
 
+## Progreso visible
+Quien usa la skill tiene que ver en todo momento por qué paso va y qué estás haciendo, sin abrir tus pensamientos. Es igual en todas las skills de este sistema.
+1. **Lista de etapas.** Al empezar, crea una lista de tareas con la herramienta de tareas de Claude Code (TodoWrite o, en versiones nuevas, TaskCreate y TaskUpdate), con una tarea por etapa de las de abajo. Claude Code la muestra con casillas y anima la etapa en curso. Pon cada etapa en curso al empezarla y complétala al terminarla; nunca hay más de una en curso. Si no tienes esa herramienta, escribe la lista en el chat con `○` (pendiente), `▸` (en curso) y `✓` (hecha).
+2. **Una línea al empezar cada etapa,** en el chat: `**▸ 3/8 · <Etapa>** — <qué haces, en concreto>`. Al cerrar una etapa que produce algo, otra línea: `✓ <resultado>` (la nota creada, la imagen guardada, los errores corregidos). Una o dos líneas, nunca párrafos.
+3. **Herramientas con descripción:** cada llamada lleva una descripción breve, en el idioma de la conversación, de lo que hace para el usuario («Buscar duplicados de “<nombre>”»), no el comando.
+4. **Si otra skill te invoca,** no crees una lista nueva: añade tus etapas a la suya, justo después de la etapa que te invocó, con `↳ ` delante del nombre (`↳ Imagen: armar el prompt`). Esa etapa sigue en curso hasta que termines.
+5. **Esperas:** si te toca esperar algo largo (una generación, al usuario), dilo en una línea antes: `⏳ <qué esperas>`.
+
+Etapas de esta skill (7):
+1. Situación de partida (Paso 0)
+2. Modo de entrevista (Paso 1)
+3. Entrevista (Paso 2)
+4. Confirmación (Paso 3)
+5. Respuestas (Paso 4)
+6. Generar la bóveda (Paso 5)
+7. Informe (Paso 6)
+
+En la entrevista, di en una línea qué bloque de preguntas empieza y cuántos quedan.
+
 ## Archivos de la skill
 - `assets/cuestionario.json`: banco de preguntas por rondas, con las opciones y la regla que cada respuesta aporta a `CLAUDE.md`.
 - `assets/estructura.json`: carpetas, títulos y textos de cada `README.md`.
