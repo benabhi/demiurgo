@@ -11,7 +11,7 @@ Uso:
 - `/expandir-mundo` hace **un ciclo**.
 - `/expandir-mundo 5` hace **cinco seguidos**, y se detiene antes si se alcanza el límite de revisión.
 - `/expandir-mundo prueba 3` usa el **modo prueba**: trabaja en una rama git aparte para revisar y luego fusionar o descartar.
-- Si se añade "sin imagen", no se generan imágenes en esa tanda: va más rápida y no usa el navegador.
+- Si se añade "sin imagen", no se generan imágenes ni mapas en esa tanda: va más rápida y no usa el navegador (el selector va con `--no-maps`).
 - Si se indica una técnica ("en acuarela", "como cómic"), todas las imágenes de la tanda la usan en lugar de la de la Guía Visual.
 - Con `/loop` sigue sola hasta el límite de borradores sin revisar.
 
@@ -48,7 +48,9 @@ Opciones:
 - `--new-chance`: la probabilidad de crear algo nuevo cuando hay pocos enlaces pendientes por entidad (0.4 por defecto; con muchos, baja al 40 % de ese valor);
 - `--skip <enlace>` (repetible);
 - `--skip-canon`;
-- `--deepen-chance`: la probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25 por defecto).
+- `--deepen-chance`: la probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25 por defecto);
+- `--map-chance`: la probabilidad de dibujar un mapa que toca en vez de completar o crear (0.25 por defecto);
+- `--no-maps`: no propone mapas (en una tanda "sin imagen").
 
 Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
 
@@ -71,6 +73,7 @@ El resultado dice qué hacer:
   - si en realidad ningún módulo encaja, vuelve a ejecutar el selector con `--skip <referencia>`.
 - **`completar_hueco`:** indica el enlace pendiente (`hueco`), el tipo esperado, los módulos que pueden crearlo y las notas que lo nombran (`nombrado_por`, de la más relevante a la menos). Antes de seguir, lee lo que dicen de él esas notas (`find_gaps.py --link <hueco>`). Si en realidad ningún módulo encaja (el selector propone una `region` para lo que las notas describen como una aldea, por ejemplo), no lo fuerces: anótalo en el registro y vuelve a ejecutar el selector con `--skip <hueco>`.
 - **`profundizar`:** una nota en borrador (`nota`) que pide más desarrollo, con su relevancia actual y la nueva (`relevancia_actual`, `relevancia_nueva`) y las secciones que le faltan (`secciones`). Sale cuando la nombran tantas notas que su relevancia se quedó corta (3 notas piden relevancia 3; 6, relevancia 4; 10, relevancia 5) o cuando su relevancia ya pide secciones que no tiene. Así el mundo crece también en profundidad, no solo en extensión.
+- **`cartografiar`:** un lugar con leyenda (`nota`) al que le toca dibujar su mapa: la primera edición (una región que ya tiene las zonas mínimas) o una nueva (`edicion`), con los niveles que hay que dibujar (`niveles`). Así los mapas siguen al mundo mientras crece, sin redibujarse en cada ciclo.
 - **`paquete`:** un grupo de entidades que se crean juntas (ver `Paquetes.md`), en la región foco.
 - **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies).
 
@@ -110,6 +113,7 @@ Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingr
 - **Presupuesto:** cada nota abre los enlaces pendientes nuevos que diga `enlaces_nuevos` para su tipo, todos con tipo. Lo demás que nombre va sin nombre propio, o reutiliza lo que ya existe o ya está pendiente (el registro `Enlaces_Pendientes`).
 - **Paquete:** crea primero la entidad principal y después las demás. Cada una se enlaza con las anteriores (a su nota, no como pendiente) y usa su contexto. Respeta las cantidades y los papeles. La principal tiene una relevancia igual o mayor que la de las demás.
 - **Nueva entidad:** dentro de la región foco.
+- **Cartografiar:** no se crea nada ni hay ingredientes ni contexto (sáltate los pasos 2 y 3): pide a `generar-imagen` el mapa de la `nota` (modo mapa, ver su `referencias/mapas.md`), con la técnica de mapas del mundo. Después, valida la nota, registra el ciclo y haz el commit como siempre.
 - **Profundizar:** modo `profundizar=<Nota> relevancia=<relevancia_nueva>` de `crear-entidad` («Profundizar una nota»): añade las `secciones` que faltan sin reescribir lo que ya está. La nota no cambia de nombre ni de `origen`.
 - **Anclaje:** lo creado de la nada (un paquete, una entidad nueva) queda enlazado desde alguna nota existente (su asentamiento, su región…), como pide `crear-entidad`.
 - **Imagen:** automática, salvo que la tanda sea "sin imagen", y con la técnica de la tanda si se indicó una.
@@ -130,7 +134,7 @@ Corrige los errores antes de seguir.
 ## Paso 6: registrar
 Añade la entrada del ciclo al registro de generación con `log_cycle.py`. El script la pone arriba, con su número y la fecha de hoy (el título `## Ciclo <N> — <AAAA-MM-DD>`), sin que tengas que leer el registro. Pásale el cuerpo de la entrada por la entrada estándar (o con `--file`):
 ```markdown
-- **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo>
+- **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo> · o · profundizar [[Nota]] (relevancia <n> → <m>) · o · cartografiar [[Nota]] (edición <n>, niveles <…>)
 - **Por qué:** <razones del selector> (semilla <n>)
 - **Equilibrio:** densidad <n> enlaces pendientes por entidad · presupuesto <amplio, medio o justo> · enlaces pendientes nuevos abiertos: <n>
 - **Ingredientes:** <clave=valor, …> (semilla <n>); re-tiradas y su motivo

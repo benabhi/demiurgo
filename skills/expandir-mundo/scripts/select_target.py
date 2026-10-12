@@ -24,6 +24,11 @@ piden relevancia 3; 6, relevancia 4; 10, relevancia 5) o si su relevancia ya pid
 tiene (porque el usuario la subió). Con --deepen-chance, el ciclo profundiza en vez de completar o
 crear; las notas en canon no se tocan.
 
+Cartografiar (acción cartografiar): un lugar con leyenda al que le toca dibujar su mapa, la primera
+edición (una región que ya tiene las zonas mínimas) o una nueva (3 zonas sin cartografiar o más, o un
+cuarto de las cartografiadas). Con --map-chance, el ciclo cartografía en vez de completar o crear;
+--no-maps lo omite (en una tanda sin imágenes).
+
 Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
 Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
 bastantes enlaces pendientes nuevos (presupuesto amplio); con mucha, casi siempre se completa lo
@@ -47,8 +52,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
 from build_context import region_chain  # noqa: E402
 from vault_lib import (SKILL_DIR, WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
-                       load_index, load_modules, normalize, omitted_sections, read_world, split_note,
-                       template_sections)
+                       load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
+                       omitted_sections, parse_map_key, read_world, split_note, template_sections)
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 VAULT_PACKAGES = "00_Sistema/06_Generacion/Paquetes.md"
@@ -68,6 +73,31 @@ PACKAGE_SHARE = 0.6
 BUDGETS = ("justo", "medio", "amplio")
 # Profundizar: cuántas notas que la nombran piden cada relevancia (de mayor a menor)
 RELEVANCE_BY_LINKERS = ((10, 5), (6, 4), (3, 3))
+
+
+def map_candidates(vault, index, modules):
+    """Lugares con leyenda a los que les toca dibujar el mapa: la primera edición o una nueva."""
+    options = []
+    for entry in index:
+        module = modules.get(entry["tipo"])
+        relevance = entry.get("relevancia")
+        if not module or not module.get("mapa") or entry["estado"] == "archivado" \
+                or not map_applies(module, entry["props"], relevance):
+            continue
+        _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
+        zones, problems = parse_map_key(body)
+        if zones is None or problems or map_key_problems(zones)[0]:
+            continue
+        status = map_status(module, entry["props"], zones, relevance)
+        if not status["toca"]:
+            continue
+        first_edition = status["toca"] == "primera"
+        options.append({"accion": "cartografiar", "nota": entry["name"], "tipo": entry["tipo"],
+                        "clase": status["clase"], "edicion": "primera" if first_edition else "nueva",
+                        "niveles": status["niveles"],
+                        "puntos": relevance + status["sin_cartografiar"] + (3 if first_edition else 0),
+                        "razones": [status["razon"], f"relevancia {relevance}"]})
+    return options
 
 
 def deepen_candidates(vault, index, modules):
@@ -202,6 +232,9 @@ def main():
                         help="No dar prioridad al canon de base pendiente")
     parser.add_argument("--deepen-chance", type=float, default=0.25,
                         help="Probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25)")
+    parser.add_argument("--map-chance", type=float, default=0.25,
+                        help="Probabilidad de dibujar un mapa que toca en vez de completar o crear (0.25)")
+    parser.add_argument("--no-maps", action="store_true", help="No proponer mapas (en una tanda sin imágenes)")
     parser.add_argument("--seed", type=int, help="Semilla para repetir la elección")
     parser.add_argument("--top", type=int, default=5, help="Cuántos candidatos mostrar")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
@@ -329,6 +362,10 @@ def main():
     if deepen:
         balance.append(f"notas que piden más profundidad: {len(deepen)} · probabilidad de profundizar "
                        f"{args.deepen_chance:.0%}")
+    maps = [] if args.no_maps else map_candidates(vault, index, modules)
+    shuffle_ties(maps, rng)
+    if maps:
+        balance.append(f"mapas por dibujar: {len(maps)} · probabilidad de cartografiar {args.map_chance:.0%}")
     if references and not args.skip_canon:
         pool = references[:TOP_DRAW]
         chosen = rng.choices(pool, weights=[r["puntos"] for r in pool])[0]
@@ -339,6 +376,17 @@ def main():
                            + [f"  {r['puntos']:>3} pts  [[{r['referencia']}]] → {r['tipo_esperado']}"
                               for r in references[:args.top]] + balance},
                types=chosen["modulos"])
+    if maps and rng.random() < args.map_chance:
+        pool = maps[:TOP_DRAW]
+        chosen = rng.choices(pool, weights=[m["puntos"] for m in pool])[0]
+        finish({**chosen, **common,
+                "resumen": f"ELEGIDO: cartografiar [[{chosen['nota']}]] ({chosen['tipo']}, mapa {chosen['clase']}): "
+                           f"{chosen['edicion']} edición · {chosen['puntos']} puntos",
+                "detalle": [f"razones: {'; '.join(chosen['razones'])}",
+                            f"niveles que dibujar: {', '.join(map(str, chosen['niveles']))}",
+                            "mapas por dibujar:"]
+                           + [f"  {m['puntos']:>3} pts  [[{m['nota']}]] ({m['edicion']} edición)"
+                              for m in maps[:args.top]] + balance})
     if deepen and rng.random() < args.deepen_chance:
         pool = deepen[:TOP_DRAW]
         chosen = rng.choices(pool, weights=[d["puntos"] for d in pool])[0]
