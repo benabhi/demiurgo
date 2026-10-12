@@ -7,6 +7,13 @@
     "min": 2,
     "max": 6
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Relaciones": 3,
+    "Mitos": 3
+  },
   "carpeta": {
     "fija": "20_Personajes/Deidades_y_Entidades"
   },

@@ -6,6 +6,14 @@
     "min": 3,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Lo que se sabe y lo que se cree": 3,
+    "Quién lo estudia o lo explota": 3
+  },
   "carpeta": {
     "fija": "70_Sistemas_y_Cosmologia/Fenomenos_Extraordinarios"
   },

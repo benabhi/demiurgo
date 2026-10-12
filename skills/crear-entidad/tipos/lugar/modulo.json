@@ -20,6 +20,15 @@
     "min": 2,
     "max": 6
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Recorrido": 3,
+    "Tesoros y recursos": 2,
+    "Accesos": 2
+  },
   "carpeta": {
     "propiedad": "categoria",
     "valores": {

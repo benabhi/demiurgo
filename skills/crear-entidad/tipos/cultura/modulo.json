@@ -7,6 +7,17 @@
     "min": 3,
     "max": 10
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Ritos y festividades": 3,
+    "Arte y expresión": 3,
+    "Guerra y conflicto": 3,
+    "Migraciones y momentos decisivos": 3,
+    "Diversidad interna": 4,
+    "Estereotipos": 3
+  },
   "carpeta": {
     "fija": "30_Sociedad_y_Cultura/Pueblos_y_Culturas"
   },

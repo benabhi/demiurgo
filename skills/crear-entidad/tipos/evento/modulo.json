@@ -7,6 +7,14 @@
     "min": 2,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos clave": 3,
+    "Cómo se vivió": 3,
+    "Cómo se recuerda": 3
+  },
   "carpeta": {
     "propiedad": "categoria",
     "valores": {

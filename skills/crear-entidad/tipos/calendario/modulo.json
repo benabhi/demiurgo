@@ -7,6 +7,14 @@
     "min": 1,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "El día y la noche": 3,
+    "Uso social": 3
+  },
   "carpeta": {
     "fija": "40_Historia/Eras_y_Periodos"
   },

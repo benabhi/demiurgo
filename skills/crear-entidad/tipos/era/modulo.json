@@ -7,6 +7,13 @@
     "min": 2,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Cómo se vivía": 3,
+    "Cómo se la recuerda": 3
+  },
   "carpeta": {
     "fija": "40_Historia/Eras_y_Periodos"
   },

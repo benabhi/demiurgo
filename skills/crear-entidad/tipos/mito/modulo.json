@@ -6,6 +6,16 @@
     "min": 2,
     "max": 7
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Versiones": 3,
+    "Cómo se cuenta": 3,
+    "Su huella en el mundo": 2,
+    "Lo que se sabe y lo que se cree": 3,
+    "Cómo ha cambiado": 3
+  },
   "carpeta": {
     "fija": "40_Historia/Mitos_y_Leyendas"
   },

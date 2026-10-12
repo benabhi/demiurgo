@@ -22,6 +22,17 @@
     "min": 3,
     "max": 10
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Barrios y zonas": 3,
+    "Defensas": 2,
+    "Lugares notables": 2,
+    "Personajes notables": 2,
+    "Vida cotidiana": 3
+  },
   "carpeta": {
     "fija": "10_Mundo/Ciudades_y_Asentamientos"
   },

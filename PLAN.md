@@ -37,6 +37,8 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
 - **Orden:** primero el **canon base** (lo que todo lo demás necesita para ser coherente), después lo más enlazado.
 
 ## Esqueleto común de todas las fichas
+**La relevancia decide la profundidad.** El frontmatter va siempre completo. El núcleo (datos clave, lo que define al tipo, el origen y el presente, la relación con el mundo, la imagen) va siempre; las secciones de profundidad, desde la relevancia que declara `profundidad` en `modulo.json` (de forma general: ganchos, citas, secretos y rumores, y momentos decisivos desde 3). Nunca se inventa para llenar. El rango de enlaces pendientes nuevos también se reduce con la relevancia.
+
 Cada módulo añade sus secciones propias sobre esta base común:
 - **Inicio:** título con el emoji del tipo, resumen en cita e imagen embebida.
 - **Datos clave:** tabla con lo esencial de un vistazo.

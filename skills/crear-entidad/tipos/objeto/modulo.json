@@ -6,6 +6,13 @@
     "min": 1,
     "max": 5
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Poseedores": 2,
+    "Variantes": 3
+  },
   "carpeta": {
     "propiedad": "categoria",
     "valores": {

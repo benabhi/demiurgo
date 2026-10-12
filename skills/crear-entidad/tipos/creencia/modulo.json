@@ -6,6 +6,18 @@
     "min": 3,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Clero": 3,
+    "Lugares sagrados": 3,
+    "Símbolos y textos": 3,
+    "Festividades": 3,
+    "Ramas y herejías": 4,
+    "Relación con el poder": 3
+  },
   "carpeta": {
     "fija": "30_Sociedad_y_Cultura/Creencias_y_Religiones"
   },

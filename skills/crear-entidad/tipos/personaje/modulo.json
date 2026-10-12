@@ -6,6 +6,18 @@
     "min": 3,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 2,
+    "Voz y presencia": 3,
+    "Un día típico": 3,
+    "Familia": 2,
+    "Posesiones y recursos": 2,
+    "Habilidades y conocimientos": 2,
+    "Salud y afecciones": 3
+  },
   "carpeta": {
     "propiedad": "rol",
     "valores": {

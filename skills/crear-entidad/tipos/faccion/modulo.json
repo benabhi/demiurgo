@@ -6,6 +6,16 @@
     "min": 3,
     "max": 8
   },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Doctrina y costumbres": 3,
+    "Cómo se entra": 3,
+    "Miembros notables": 2,
+    "Símbolos": 3
+  },
   "carpeta": {
     "propiedad": "categoria",
     "valores": {
