@@ -99,6 +99,18 @@ def index_vault(vault):
     return names, paths
 
 
+def resolve_note(argument, vault):
+    """Ruta de la nota a partir de una ruta o de su nombre; None si no existe o hay varias con ese nombre."""
+    candidate = Path(argument)
+    for path in (candidate, vault / candidate, vault / f"{argument}.md"):
+        if path.is_file():
+            return path
+    stem = Path(argument).stem.lower()
+    matches = [p for p in vault.rglob("*.md")
+               if p.stem.lower() == stem and not HIDDEN_DIRS & set(p.relative_to(vault).parts)]
+    return matches[0] if len(matches) == 1 else None
+
+
 def link_exists(target, names, paths):
     target = target.strip().lower()
     if "/" in target:
@@ -761,8 +773,8 @@ def is_entity_kind(kind, types):
     return bool(forms & (set(types) | ENTITY_KIND_WORDS))
 
 
-def glossary_rows(vault):
-    """[(nombres, Tipo)] de las filas de la tabla del Glosario."""
+def glossary_table(vault):
+    """Filas de la tabla del Glosario: {termino (la celda tal cual), nombres, tipo, nota, definicion}."""
     path = vault / GLOSSARY
     rows = []
     if not path.is_file():
@@ -772,8 +784,15 @@ def glossary_rows(vault):
         if not line.strip().startswith("|") or len(cells) < 2 or normalize(cells[0]) in ("termino", "") \
                 or SEPARATOR_CELL_RE.match(cells[0]):
             continue
-        rows.append((split_terms(cells[0]), cells[1].strip()))
+        cells += [""] * (4 - len(cells))
+        rows.append({"termino": cells[0], "nombres": split_terms(cells[0]), "tipo": cells[1],
+                     "nota": cells[2], "definicion": cells[3]})
     return rows
+
+
+def glossary_rows(vault):
+    """[(nombres, Tipo)] de las filas de la tabla del Glosario."""
+    return [(row["nombres"], row["tipo"]) for row in glossary_table(vault)]
 
 
 def glossary_terms(vault, entity_types=()):

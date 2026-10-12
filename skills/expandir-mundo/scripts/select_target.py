@@ -46,6 +46,9 @@ from vault_lib import (WORLD_SHEET, blocked_links, describe_expected, find_gaps,
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 VAULT_PACKAGES = "00_Sistema/06_Generacion/Paquetes.md"
 TOP_DRAW = 8
+# Topes de la salida: en un mundo grande, las listas completas gastarían tokens sin aportar nada
+MAX_SKIPPED = 10
+MAX_NAMERS = 5
 # Canon de base: los enlaces pendientes que nombran al menos tantas notas de entidades
 CANON_NOTES = 3
 # Densidad (enlaces pendientes que se pueden crear por entidad): por debajo de la baja, presupuesto
@@ -230,7 +233,7 @@ def main():
                              key=lambda e: -(e.get("relevancia") or 2))
             notes = len(gap["notes"])
             option = {"tipo_esperado": gap["expected_type"], "modulos": gap["expected_modules"],
-                      "nombrado_por": [e["name"] for e in linkers]}
+                      "nombrado_por": [e["name"] for e in linkers[:MAX_NAMERS]]}
             in_sheet = bool(sheet_words) and words(link) in sheet_words
             if in_sheet or notes >= CANON_NOTES:
                 reasons = [f"lo nombran {notes} nota(s)"] + (["lo nombra la Ficha"] if in_sheet else [])
@@ -260,7 +263,7 @@ def main():
         balance.append(f"descartados: {len(skipped)} (sin tipo, sin módulo, pendientes de confirmar, "
                        f"alias o con --skip)")
     common = {"densidad": round(density, 2), "presupuesto": budget, "borradores_pendientes": pending,
-              "descartados": skipped}
+              "descartados": skipped[:MAX_SKIPPED], "descartados_total": len(skipped)}
 
     # Arranque: la Ficha nombra un foco que aún no existe; se crea antes que nada
     if world["foco"] and not focus and place_types and not args.skip_focus:

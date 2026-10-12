@@ -11,6 +11,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Un motor de generación** que elige qué crear según el estado del mundo, tira ingredientes con azar real, crea las entidades, las valida y hace un commit por ciclo.
 - **Imágenes** de cada entidad (retratos, paisajes, emblemas, escenas…) con la técnica artística que elijas: acuarela, óleo, grabado, cómic…
 - **Coherencia por script:** cada nota se valida al crearla, un auditor revisa el mundo entero (fechas, relaciones recíprocas, nombres repetidos…) y cada generación termina con un informe.
+- **Pensado para mundos grandes:** la IA no lee la bóveda entera. Busca con scripts (entidades, enlaces pendientes, Glosario, preguntas), añade al Glosario y a otras notas sin leerlas, y valida y audita solo lo que tocó. Así un mundo de miles de notas no se come los tokens.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
 ## Las skills

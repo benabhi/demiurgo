@@ -53,11 +53,11 @@ Los scripts lo comprueban:
 
 ## Reutilizar antes de crear
 Antes de nombrar una entidad nueva, comprueba dos cosas:
-1. **Si ya existe:** búscala en `build_context.py --index` y en el Glosario. Si existe, enlaza su nota.
-2. **Si ya está pendiente:** mira el registro `00_Sistema/Enlaces_Pendientes.md` (o `find_gaps.py`). Si otra nota ya nombra lo mismo (la capital de la región, el gremio del puerto), usa ese enlace con el mismo nombre. Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas. Además, cuantas más notas nombran un enlace pendiente, antes lo crea el motor.
+1. **Si ya existe:** búscala con `search_vault.py "<nombre>"`, que mira las entidades y el Glosario, también por nombres parecidos. Si existe, enlaza su nota.
+2. **Si ya está pendiente:** la misma búsqueda muestra los enlaces pendientes que coinciden (`--in pendientes`, para ver solo esos). Si otra nota ya nombra lo mismo (la capital de la región, el gremio del puerto), usa ese enlace con el mismo nombre. Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas. Además, cuantas más notas nombran un enlace pendiente, antes lo crea el motor.
 
 ## El registro
-`00_Sistema/Enlaces_Pendientes.md` lista todos los enlaces pendientes, agrupados por tipo:
+`00_Sistema/Enlaces_Pendientes.md` lista todos los enlaces pendientes, agrupados por tipo. Es para el usuario: Claude no lo lee entero, sino que busca en él con `search_vault.py`.
 - con las notas que los nombran y su primera mención;
 - con un resumen de cuántos hay por entidad.
 
@@ -75,7 +75,7 @@ python <skill>/scripts/pending_links.py --list                    # solo el resu
 1. Lee lo que dicen de él todas las notas que lo nombran (`find_gaps.py --link <Enlace>` o `build_context.py --target <Enlace>`). La entidad debe encajar con todo.
 2. Créala con `crear-entidad` en modo `hueco=<Enlace>`:
    - **Con nombre real:** el archivo nuevo se llama **exactamente como el enlace**, así todos los enlaces existentes la encuentran sin tocar nada. El H1 y `aliases` llevan la ortografía real (la del texto del enlace).
-   - **Con nombre de rol** (`<Rol>_de_<Entidad>`): ponle nombre y reemplaza el enlace en todas las notas que lo usan, en el frontmatter y en el cuerpo, conservando el texto visible (`[[Nombre_Real|su madre]]`).
+   - **Con nombre de rol** (`<Rol>_de_<Entidad>`): ponle nombre y reemplaza el enlace en todas las notas que lo usan con `rename_link.py <Rol_de_Entidad> <Nombre_Real>`, que cambia el frontmatter y el cuerpo y conserva el texto visible (`[[Nombre_Real|su madre]]`).
 3. Añade en la nueva entidad el vínculo inverso con las notas que la nombran, en su propiedad si la hay.
 4. Regenera el registro con `pending_links.py`.
 

@@ -35,7 +35,7 @@ Comprueba:
   - borradores pendientes de revisión.
 Sale con código 1 si hay errores (los avisos no cuentan).
 
-Ejemplo:  audit_world.py     audit_world.py --json"""
+Ejemplos:  audit_world.py     audit_world.py --json     audit_world.py --focus Aldric_Voss Forja_del_Puerto"""
 import argparse
 import difflib
 import json
@@ -499,23 +499,38 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
+    parser.add_argument("--focus", nargs="+", metavar="NOTA",
+                        help="Solo los errores y avisos de estas notas (las que creaste o tocaste) y los del "
+                             "mundo en general; del resto, el recuento")
     args = parser.parse_args()
 
     vault = Path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     report = run_audit(vault)
+    hidden = {"errores": 0, "avisos": 0}
+    if args.focus:
+        # Un mensaje sin enlaces es del mundo en general (el registro, las eras actuales): se muestra siempre
+        wanted = {f"[[{Path(n).stem.strip('[]').lower()}]]" for n in args.focus}
+        for kind in ("errores", "avisos"):
+            kept = [m for m in report[kind] if "[[" not in m or any(w in m.lower() for w in wanted)]
+            hidden[kind] = len(report[kind]) - len(kept)
+            report[kind] = kept
 
     if args.json:
-        print(json.dumps(report, ensure_ascii=False, indent=2))
+        print(json.dumps({**report, "ocultos": hidden} if args.focus else report, ensure_ascii=False, indent=2))
     else:
         print(f"Entidades: {report['entidades']} | Borradores: {report['borradores']} "
               f"(procedurales: {report['borradores_procedurales']})")
-        print(f"Errores: {len(report['errores'])} | Avisos: {len(report['avisos'])}")
+        print(f"Errores: {len(report['errores'])} | Avisos: {len(report['avisos'])}"
+              + (" (de estas notas y del mundo en general)" if args.focus else ""))
         for error in report["errores"]:
             print(f"  ERROR: {error}")
         for warning in report["avisos"]:
             print(f"  AVISO: {warning}")
+        if args.focus and (hidden["errores"] or hidden["avisos"]):
+            print(f"En el resto del mundo: {hidden['errores']} errores y {hidden['avisos']} avisos "
+                  f"(sin --focus se listan todos)")
     sys.exit(1 if report["errores"] else 0)
 
 

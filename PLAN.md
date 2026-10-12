@@ -13,7 +13,11 @@ Un **sistema de creación de mundos con IA** que cualquiera pueda clonar para em
 
 ## Ahora: redondeo antes de seguir con las entidades
 - [x] **Repositorio propio para las skills.** Solo las skills, con un README que deja claro que trabajan sobre una bóveda de Obsidian. El mundo de prueba vive en su propio proyecto y usa las skills enlazadas.
-- [ ] **Consultas baratas:** un script de búsqueda acotada (por nombre, alias, tipo, Glosario, enlaces pendientes y preguntas abiertas, con un tope de resultados) y la regla, en todas las skills y en el `CLAUDE.md` de cada mundo, de no leer la bóveda entera.
+- [ ] **Consultas baratas:** que la IA no lea la bóveda entera. Medido en un mundo sintético de 3.000 notas: el índice daba 347.000 caracteres, y la búsqueda da menos de 3.000.
+  - `search_vault.py`: entidades, enlaces pendientes, Glosario y preguntas que coinciden con un texto, también por nombres parecidos (posibles duplicados), o por tipo; con tope por grupo.
+  - `add_entries.py` (Glosario y Preguntas Abiertas), `add_relation.py` (vínculos inversos) y `rename_link.py` (un nombre de rol por el definitivo): escriben sin que la IA lea las notas.
+  - `log_cycle.py` (registro de generación del motor); `audit_world.py --focus` (solo lo de las notas tocadas, y el recuento del resto); topes en la salida del selector.
+  - La regla en las skills y en el `CLAUDE.md` de cada mundo, y la cabecera del Glosario, que ya no invita a leerlo entero.
 - [ ] **`inicializar-mundo` a fondo:**
   - mejores preguntas, con una ronda para lo que el usuario ya tiene con nombre propio (especies, pueblos, lugares, facciones, dioses);
   - identificar las entidades de sus respuestas y confirmarle el tipo de cada una;

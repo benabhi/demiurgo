@@ -56,7 +56,7 @@ En una ley o un concepto, las mismas secciones se leen así:
 
 ### La raíz y las ramas
 Un mundo con poderes suele tener un **sistema raíz**: las reglas comunes de todo lo extraordinario (de dónde sale el poder, qué no puede hacer nada, qué cuesta siempre). Cada tradición concreta (una escuela, el don de una sangre, los milagros de una fe) es una **rama** (`sistema_padre` y `ramas`), con reglas propias que nunca rompen las de su raíz. Con la técnica pasa lo mismo: la raíz dice lo que es posible en el mundo, y cada saber concreto es una rama.
-- Antes de crear un sistema, busca si ya hay raíz (`build_context.py --index`, entre los de tipo `sistema`). Si la hay, el nuevo es una rama o respeta sus reglas.
+- Antes de crear un sistema, busca si ya hay raíz (`search_vault.py --type sistema`). Si la hay, el nuevo es una rama o respeta sus reglas.
 - Si no la hay: lo que habla del poder (o de la técnica) del mundo en general es la raíz; una tradición concreta enlaza su raíz en `sistema_padre` como enlace pendiente, con nombre propio, para que se cree después.
 
 ## Nombre

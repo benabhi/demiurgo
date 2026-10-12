@@ -81,7 +81,7 @@ def main():
     parser.add_argument("--target", help="Nombre de la entidad o del enlace pendiente")
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     parser.add_argument("--max-words", type=int, default=2000, help="Tope aproximado de palabras del paquete")
-    parser.add_argument("--index", action="store_true", help="Imprime el índice compacto de todas las entidades")
+    parser.add_argument("--index", action="store_true", help="Imprime el índice compacto de todas las entidades (en un mundo grande es largo: para buscar, mejor search_vault.py)")
     args = parser.parse_args()
 
     vault = Path(args.vault)

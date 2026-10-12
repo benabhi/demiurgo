@@ -40,9 +40,9 @@ from vault_lib import (HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DI
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
                        load_modules, malformed_lines, normalize, note_link_labels, parse_calendar,
-                       unlinked_entities, unlinked_mentions,
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
-                       reference_calendar, section_table, split_note, table_cell, unlinked_names, unquote)
+                       reference_calendar, resolve_note, section_table, split_note, table_cell,
+                       unlinked_entities, unlinked_mentions, unlinked_names, unquote)
 
 MAX_LOOSE = 10
 
@@ -140,18 +140,6 @@ def quote_separator(body, i):
             j += step
         return 0 <= j < len(body) and body[j].strip().startswith(">")
     return quoted(-1) and quoted(1)
-
-
-def resolve_note(argument, vault):
-    """Ruta de la nota a partir de una ruta o de su nombre."""
-    candidate = Path(argument)
-    for path in (candidate, vault / candidate, vault / f"{argument}.md"):
-        if path.is_file():
-            return path
-    stem = Path(argument).stem.lower()
-    matches = [p for p in vault.rglob("*.md")
-               if p.stem.lower() == stem and not HIDDEN_DIRS & set(p.relative_to(vault).parts)]
-    return matches[0] if len(matches) == 1 else None
 
 
 def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calendar=None, gaps=None,

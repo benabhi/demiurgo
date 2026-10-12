@@ -11,6 +11,17 @@ Toda entidad que la nota nombra va enlazada: a su nota, si existe, o como **enla
 
 Uso: `/crear-entidad <tipo> [concepto o atributos]`.
 
+## Leer la bóveda sin gastar tokens
+La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carpetas enteras.** Tampoco leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes ni el índice de entidades, porque crecen con el mundo. Para todo eso hay scripts en `<directorio de esta skill>/scripts/`:
+- **Buscar** si algo ya existe, está pendiente, está en el Glosario o tiene preguntas: `search_vault.py "<texto>"`. No distingue tildes ni mayúsculas, y muestra también los nombres parecidos (posibles duplicados). Por tipo: `search_vault.py --type <tipo> [texto]`.
+- **Contexto** de lo que vas a crear: `build_context.py --target <nombre>`, que tiene un tope de palabras.
+- **Añadir** al Glosario y a Preguntas Abiertas sin leerlos: `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>`, `--question <texto>` y `--confirm <texto>`.
+- **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
+- **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
+- **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
+
+Lee entera solo la nota que vas a escribir; de las demás, solo lo que el contexto no resuma bien. De una nota larga, lee solo la sección que necesites: búscala con `grep -n "^## <Sección>" <nota>` y lee ese tramo de líneas.
+
 ## Tipos disponibles
 Cada carpeta de `tipos/` es un módulo con tres archivos:
 - `tipo.md`: las reglas del tipo;
@@ -72,7 +83,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - La entidad debe encajar con todo lo que dicen las notas que la nombran.
   - Si el tipo esperado es una **familia** (por ejemplo `lugar`), elige el módulo concreto que encaje con el contexto: una cordillera es una `region`; una taberna no lo es.
   - Si ningún módulo existente encaja (el módulo `asentamiento` aún no existe, por ejemplo), dilo y no fuerces otro tipo.
-  - Antes, comprueba con `build_context.py --index` que no sea otro nombre de una entidad que ya existe: si lo es, corrige los enlaces en lugar de crear un duplicado.
+  - Antes, comprueba con `search_vault.py "<nombre legible>"` que no sea otro nombre de una entidad que ya existe (mira también los nombres parecidos): si lo es, corrige los enlaces en lugar de crear un duplicado.
   - **Con nombre real** (`[[Gran_Sequia]]`, `[[Aldric_Voss]]`): el archivo nuevo se llama **exactamente como el enlace**, para que todos los enlaces existentes la encuentren sin reemplazar nada; el H1 y `aliases` llevan la ortografía real (la del texto del enlace, si lo tiene).
   - **Con nombre de rol** (`<Rol>_de_<Entidad>`, como `[[Madre_de_Aldric_Voss]]`): ponle nombre y, al terminar, reemplaza el enlace en todas las notas (Paso 4).
 
@@ -85,13 +96,13 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - las preguntas abiertas relacionadas.
 
   Úsalo en lugar de recorrer la bóveda, y lee entera solo la nota que necesites en detalle.
-- **Duplicados:** busca el nombre y el concepto en `build_context.py --index` y en el Glosario.
+- **Duplicados:** busca el nombre y el concepto con `search_vault.py`, que mira a la vez las entidades, los enlaces pendientes y el Glosario, también por nombres parecidos.
 - Comprueba los pilares de la Ficha y las reglas de contenido de `CLAUDE.md`: especies, tecnología, poderes, tono, crudeza y vetos. Si el pedido los contradice, avisa antes de seguir.
 - **Pilares por definir:** si lo que vas a crear necesita uno (el año 0 y el presente, en un calendario), no lo decidas tú: sigue `referencias/pilares.md`.
 - **Hechos importantes nuevos:** una civilización, un reino, una facción, una guerra, un acontecimiento histórico o una especie que no estén en el pedido ni en la bóveda.
   - Úsalos solo si el concepto los necesita, como enlaces pendientes.
   - No los registres en el Glosario como hechos establecidos. Si un término inventado depende de un hecho por confirmar (por ejemplo, el nombre de una clase social propuesta), regístralo con "(por confirmar)" en su definición.
-  - Anótalos en `Preguntas_Abiertas`, uno por línea, como `- [ ] Confirmar: <hecho> (propuesto al crear [[Nota]])`. El **sujeto** del hecho (la entidad que hay que confirmar, exista o sea un enlace pendiente) va enlazado **primero**: `- [ ] Confirmar: existe el gremio [[Gremio_del_Puerto]] (propuesto al crear [[X]])`, `- [ ] Confirmar: la [[Fiebre_Gris]] la provoca la [[Marea_Roja]] (…)`. Si el sujeto es un enlace pendiente, la confirmación lo bloquea: el motor no lo crea hasta que el usuario decida. Los demás enlaces de la línea son contexto y no se bloquean.
+  - Anótalos en Preguntas Abiertas con `add_entries.py --confirm "<hecho> (propuesto al crear [[Nota]])"`, uno por hecho; el script escribe `- [ ] Confirmar: …`. El **sujeto** del hecho (la entidad que hay que confirmar, exista o sea un enlace pendiente) va enlazado **primero**: `- [ ] Confirmar: existe el gremio [[Gremio_del_Puerto]] (propuesto al crear [[X]])`, `- [ ] Confirmar: la [[Fiebre_Gris]] la provoca la [[Marea_Roja]] (…)`. Si el sujeto es un enlace pendiente, la confirmación lo bloquea: el motor no lo crea hasta que el usuario decida. Los demás enlaces de la línea son contexto y no se bloquean.
   - Destácalos en el resumen final.
 
   Así se respeta la autonomía de la Ficha sin detener el flujo.
@@ -103,7 +114,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - si no, como enlace pendiente con su nombre real, su texto legible y su tipo. El tipo lo da su propiedad de relación (ponla siempre que haya una); si no la hay, asígnalo en el Paso 4.
   - Lo que es una entidad se enlaza siempre, aunque esté dentro de otra (un cabo, una costumbre de un pueblo) o sea un colectivo («los nueve jueces»). Solo los términos (rangos, títulos, oficios, expresiones…) van al Glosario sin enlace; registrar una entidad en el Glosario, con su tipo de entidad, no la libra del enlace. Los secretos no se enlazan nunca.
 - **Cuántos nuevos:** los del rango del módulo (`huecos_propios`), o los `enlaces_nuevos` que indique el motor. Lo menos importante va sin nombre propio («un herrero del puerto»), así no necesita enlace.
-- **Reutiliza antes de crear:** si la entidad ya existe, enlaza su nota. Si otra nota ya la nombra como enlace pendiente (mira el registro `00_Sistema/Enlaces_Pendientes.md` o `find_gaps.py`), usa ese mismo enlace (la frontera de un reino, la capital de una región, el gobierno de un pueblo). Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas.
+- **Reutiliza antes de crear:** si la entidad ya existe, enlaza su nota. Si otra nota ya la nombra como enlace pendiente (búscalo con `search_vault.py "<nombre>" --in pendientes`), usa ese mismo enlace (la frontera de un reino, la capital de una región, el gobierno de un pueblo). Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas.
 - **Nombres:** no los inventes a ojo, porque los modelos repiten patrones. Esto vale también para los de las entidades que dejas pendientes.
   - Genera candidatos con `python <directorio de esta skill>/scripts/generate_names.py --profile <perfil> --count 10` (añade `--surnames` si lleva apellido).
   - Usa el perfil de su cultura si existe: `--profile <Cultura>` encuentra `Nombres_<Cultura>`, que crea el módulo `cultura` (`--list` muestra los disponibles); si no, `Generico`.
@@ -117,12 +128,12 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
 
 ## Paso 4: efectos en el resto de la bóveda
 - **Secretos:** solo si el módulo lo decide (en personaje, con una tirada). Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
-- **Reciprocidad:** en cada nota existente que enlazaste, añade el vínculo inverso (en su propiedad y en su sección) sin tocar nada más.
-- **Anclaje:** una entidad creada de la nada (sin un enlace pendiente que la pidiera) no puede quedar huérfana. Si la reciprocidad no la enlaza desde ninguna nota, añade su enlace en al menos una nota existente con la que se relaciona (su asentamiento, su región, su facción), en la propiedad y la sección que encajen.
-- **Glosario:** registra el nombre y los términos que inventaste.
-- **Enlace pendiente completado:** si llevaba un nombre de rol, reemplázalo por el definitivo en todas las notas que lo usaban. Si llevaba el nombre real, no hay nada que reemplazar.
+- **Reciprocidad:** en cada nota existente que enlazaste, añade el vínculo inverso en su propiedad con `add_relation.py <Nota> <propiedad> <Entidad>`, sin leerla. Si la relación necesita contexto en su cuerpo (una fila de su tabla de relaciones), lee y edita solo esa sección. No toques nada más.
+- **Anclaje:** una entidad creada de la nada (sin un enlace pendiente que la pidiera) no puede quedar huérfana. Si la reciprocidad no la enlaza desde ninguna nota, añade su enlace en al menos una nota existente con la que se relaciona (su asentamiento, su región, su facción), en la propiedad que encaje (`add_relation.py`).
+- **Glosario:** registra el nombre y los términos que inventaste con `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>` (repetible; con la nota vacía, `""`, para un término sin nota).
+- **Enlace pendiente completado:** si llevaba un nombre de rol, reemplázalo por el definitivo en todas las notas con `rename_link.py <Rol_de_Entidad> <Nombre_Real>`. Si llevaba el nombre real, no hay nada que reemplazar.
 - **Tipos y registro de enlaces pendientes:** ejecuta `python <directorio de esta skill>/scripts/pending_links.py`, que regenera `00_Sistema/Enlaces_Pendientes.md`. A los enlaces pendientes nuevos que solo aparecen en el cuerpo (o en una propiedad que admite cualquier entidad) dales su tipo en la misma llamada: `--set <Enlace>=<tipo>`, repetible. Vuelve a ejecutarlo si cambias enlaces al validar.
-- **Preguntas_Abiertas:** anota lo que no pudiste decidir.
+- **Preguntas Abiertas:** anota lo que no pudiste decidir con `add_entries.py --question "<pregunta>"`.
 
 ## Paso 5: validar (obligatorio)
 Ejecuta el validador sobre **cada nota creada o modificada** (la entidad, sus secretos y las notas donde añadiste vínculos inversos). Las notas internas (Glosario, Preguntas Abiertas, MOC, registros) no son entidades: el validador las salta.
@@ -144,10 +155,11 @@ Corrige cada ERROR y vuelve a ejecutarlo hasta que todas salgan "Correcta". No t
 - **Menciones sin enlace** (nombres propios, entidades del Glosario o entidades que la nota ya enlaza en otra parte): enlaza cada mención (a su nota o como enlace pendiente) y registra en el Glosario los términos. El detector puede equivocarse con una palabra suelta: si no es un nombre, ignóralo.
 - **Enlaces sin texto legible.**
 
-Después ejecuta el auditor del mundo, que revisa lo que no se ve nota a nota:
+Después ejecuta el auditor del mundo, que revisa lo que no se ve nota a nota, centrado en las notas que creaste o tocaste:
 ```bash
-python <directorio de esta skill>/scripts/audit_world.py
+python <directorio de esta skill>/scripts/audit_world.py --focus <Nota_1> <Nota_2> …
 ```
+Con `--focus` muestra lo de esas notas y lo del mundo en general (el registro de pendientes, por ejemplo); del resto da solo el recuento, para no gastar tokens en lo que no es tuyo.
 - Revisa la reciprocidad de las relaciones, las fechas imposibles entre padres e hijos, los nombres casi iguales, los enlaces mal formados, las notas vacías (un clic en un enlace pendiente en Obsidian), los enlaces pendientes sin tipo y el registro de pendientes.
 - Corrige los ERRORES que afecten a notas que creaste o tocaste.
 - Los avisos (nombres parecidos, entidades huérfanas) se mencionan en el resumen si son tuyos.

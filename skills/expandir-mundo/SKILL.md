@@ -25,7 +25,10 @@ Uso:
 - `scripts/setup_generation.py`: prepara `00_Sistema/06_Generacion` la primera vez, sin sobrescribir nunca.
 - `scripts/select_target.py`: elige qué desarrollar (enlaces pendientes puntuados, paquetes o una entidad nueva) y cuántos enlaces nuevos puede abrir cada nota, o pide detenerse.
 - `scripts/roll_tables.py`: tira en las tablas de ingredientes y deriva ingredientes del canon.
-- Los scripts de `crear-entidad`: `build_context.py`, `find_gaps.py`, `generate_names.py`, `pending_links.py` (el registro de enlaces pendientes), `check_note.py`, `audit_world.py` y `report.py` (el informe final).
+- `scripts/log_cycle.py`: añade la entrada del ciclo al registro de generación sin leerlo entero.
+- Los scripts de `crear-entidad`: `build_context.py`, `search_vault.py`, `find_gaps.py`, `generate_names.py`, `add_entries.py`, `add_relation.py`, `rename_link.py`, `pending_links.py` (el registro de enlaces pendientes), `check_note.py`, `audit_world.py` y `report.py` (el informe final).
+
+**Sin leer la bóveda entera:** el motor trabaja con mundos que crecen mucho. Sigue "Leer la bóveda sin gastar tokens" de `crear-entidad`: busca con `search_vault.py`, añade al Glosario, a las preguntas y a las otras notas con los scripts, y valida y audita solo lo del ciclo.
 - `assets/`: tablas, paquetes, registro y README por defecto, que se copian a la bóveda la primera vez. Después el usuario los edita allí.
 
 ## Paso 0: preparar (una vez por tanda)
@@ -111,19 +114,18 @@ Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingr
   - nombres con `generate_names.py`;
   - hechos grandes como `Confirmar: …`;
   - secretos por tirada;
-  - reciprocidad y Glosario;
+  - reciprocidad y Glosario, con `add_relation.py` y `add_entries.py`;
   - el registro de enlaces pendientes, regenerado con `pending_links.py` (con `--set` para los que solo nombra el cuerpo).
 
 ## Paso 5: validar
 - `check_note.py` sobre cada nota creada o modificada.
-- `audit_world.py` sobre el mundo.
+- `audit_world.py --focus` con esas mismas notas: muestra lo suyo y lo del mundo en general, y del resto solo el recuento.
 
 Corrige los errores antes de seguir.
 
 ## Paso 6: registrar
-Añade una entrada al principio de `00_Sistema/06_Generacion/Registro_de_Generacion.md`, debajo del comentario:
+Añade la entrada del ciclo al registro de generación con `log_cycle.py`. El script la pone arriba, con su número y la fecha de hoy (el título `## Ciclo <N> — <AAAA-MM-DD>`), sin que tengas que leer el registro. Pásale el cuerpo de la entrada por la entrada estándar (o con `--file`):
 ```markdown
-## Ciclo <N> — <AAAA-MM-DD>
 - **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo>
 - **Por qué:** <razones del selector> (semilla <n>)
 - **Equilibrio:** densidad <n> enlaces pendientes por entidad · presupuesto <amplio, medio o justo> · enlaces pendientes nuevos abiertos: <n>
@@ -134,7 +136,7 @@ Añade una entrada al principio de `00_Sistema/06_Generacion/Registro_de_Generac
 - **Modificadas:** [[Nota]] (qué cambió)
 - **Avisos:** los del auditor, o "ninguno"
 ```
-`<N>` es el número de ciclos ya registrados más uno.
+El script imprime el número del ciclo, que va en el mensaje del commit.
 
 ## Paso 7: commit
 Un ciclo es un commit, así cada ciclo se puede revertir por separado (`git revert <hash>`).

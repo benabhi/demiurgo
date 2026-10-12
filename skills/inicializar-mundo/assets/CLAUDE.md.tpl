@@ -16,6 +16,14 @@ La identidad y los pilares del mundo están en la Ficha, que se carga a continua
 - Cada nota vive en una sola carpeta, según qué es; las relaciones se expresan con enlaces.
 - No crees, renombres ni muevas carpetas sin que se pida. Las skills que añadan estructura la registran en la Guía de Organización.
 
+## Consultar la bóveda sin leerla entera
+La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas enteros el Glosario, Preguntas Abiertas ni el registro de enlaces pendientes. Usa los scripts de la skill `crear-entidad`:
+- para buscar algo (entidades, enlaces pendientes, Glosario o preguntas), `search_vault.py "<texto>"`, o `--type <tipo>`;
+- para el contexto de una entidad, `build_context.py --target <Nota>`;
+- para añadir al Glosario o a Preguntas Abiertas, `add_entries.py`.
+
+Lee entera solo la nota que necesites y, de una nota larga, solo la sección que te hace falta.
+
 ## Nombres de archivo
 1. Título con `_` en lugar de espacios: `Torre_del_Alba.md`.
 2. Solo ASCII: sin tildes ni diéresis, `ñ`→`n`, sin apóstrofes, comillas ni signos.
@@ -32,7 +40,7 @@ La identidad y los pilares del mundo están en la Ficha, que se carga a continua
 - Enlaces con `[[...]]`: toda entidad que una nota nombra (persona, lugar, facción, hecho, fe, obra…) se enlaza cada vez que se nombra (también con su nombre corto), a su nota o, si aún no existe, como enlace pendiente con su tipo (el registro está en `00_Sistema/Enlaces_Pendientes.md`). Lo que es una entidad se enlaza aunque esté dentro de otra o sea un colectivo; solo los términos (rangos, títulos, oficios…) van al Glosario sin enlace. Los secretos no se enlazan.
 
 ## Flujo de trabajo
-1. Antes de crear, busca duplicados en la bóveda y en el Glosario.
+1. Antes de crear, busca duplicados en la bóveda y en el Glosario (con `search_vault.py`).
 2. Toda nota nace como `borrador`; solo el usuario la promueve a `canon`.
 3. Registra los términos nuevos en el Glosario y los cambios de canon en el Registro de Canon.
 4. Nunca borres ni sobrescribas notas: lo obsoleto se mueve a `03_Archivados`.
