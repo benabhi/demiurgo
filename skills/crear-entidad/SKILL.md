@@ -12,12 +12,13 @@ Toda entidad que la nota nombra va enlazada: a su nota, si existe, o como **enla
 Uso: `/crear-entidad <tipo> [concepto o atributos]`.
 
 ## Leer la bóveda sin gastar tokens
-La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carpetas enteras.** Tampoco leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes ni el índice de entidades, porque crecen con el mundo. Para todo eso hay scripts en `<directorio de esta skill>/scripts/`:
+La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carpetas enteras.** Tampoco leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes, la Bitácora ni el índice de entidades, porque crecen con el mundo. Para todo eso hay scripts en `<directorio de esta skill>/scripts/`:
 - **Buscar** si algo ya existe, está pendiente, está en el Glosario o tiene preguntas: `search_vault.py "<texto>"`. No distingue tildes ni mayúsculas, y muestra también los nombres parecidos (posibles duplicados). Por tipo: `search_vault.py --type <tipo> [texto]`.
 - **Contexto** de lo que vas a crear: `build_context.py --target <nombre>`, que tiene un tope de palabras.
 - **Añadir** al Glosario y a Preguntas Abiertas sin leerlos: `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>`, `--question <texto>` y `--confirm <texto>`.
 - **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
+- **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
 - **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, y `--add` le añade una zona (ver `referencias/mapas.md`).
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
 
@@ -205,10 +206,11 @@ Genera la imagen con la skill `generar-imagen`, pasándole la nota recién cread
 - Al terminar, vuelve a ejecutar `check_note.py` sobre la nota: `generar-imagen` la modificó.
 
 ## Paso 7: informe final
-El usuario tiene que ver con claridad qué se generó. Ejecuta:
+El usuario tiene que ver con claridad qué se generó, ahora y más adelante. Ejecuta:
 ```bash
-python <directorio de esta skill>/scripts/report.py --baseline <ruta de la instantánea>
+python <directorio de esta skill>/scripts/report.py --baseline <ruta de la instantánea> --log "<título>"
 ```
+`--log` añade además una entrada breve a la **Bitácora** (`00_Sistema/Bitacora.md`), la crónica del mundo para su autor: qué se creó y qué cambió, con su fecha. El título dice qué se hizo, con el nombre legible: `Crear entidad: Aldric Voss`, `Crear entidades: Aldric Voss y Mira Odan`, `Profundizar: Aldric Voss (relevancia 2 → 4)`. Si no cambió nada, no se añade ninguna entrada.
 Si no hay instantánea (no se tomó o se perdió), usa `--since HEAD`, que también cuenta lo que ya estaba sin confirmar, o `--notes <Nota> …`.
 
 El informe trae, con enlaces que se abren con un clic:
@@ -228,7 +230,7 @@ Muéstralo tal cual y añade debajo solo lo que el script no puede saber, sin re
 - **Plantilla:** si la de `01_Plantillas` difiere de la de la skill.
 - **Siguiente paso posible:** por ejemplo, crear uno de sus enlaces pendientes con `/crear-entidad <tipo> hueco=<Enlace>`.
 
-Si la skill se ejecuta dentro de `expandir-mundo`, sáltate la instantánea y este paso: el informe se da una sola vez, al terminar la tanda.
+Si la skill se ejecuta dentro de `expandir-mundo`, sáltate la instantánea y este paso: el informe y la entrada de la Bitácora se dan una sola vez, al terminar la tanda.
 
 ## Reglas
 - La skill es genérica: el contenido del mundo sale de la Ficha y de la bóveda, nunca de esta skill.

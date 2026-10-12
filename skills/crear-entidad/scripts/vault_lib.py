@@ -2,6 +2,7 @@
 
 Lee la bóveda como la entiende Obsidian: enlaces, frontmatter, módulos de tipos, la Ficha
 del Mundo y un índice compacto con una entrada por entidad. No tiene línea de comandos."""
+import datetime
 import json
 import math
 import re
@@ -32,8 +33,15 @@ OPEN_QUESTIONS = "00_Sistema/Preguntas_Abiertas.md"
 GLOSSARY = "00_Sistema/04_Convenciones/Glosario.md"
 # Registro de enlaces pendientes: lo genera pending_links.py y guarda el tipo de cada uno
 PENDING_NOTE = "00_Sistema/Enlaces_Pendientes.md"
-# El registro no cuenta como una nota que nombra entidades
-DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", "00_Sistema/03_Archivados", PENDING_NOTE)
+# Bitácora: lo que se creó y cambió en cada tarea, para el autor del mundo (la escriben report.py --log
+# y log_entry.py, sin que la IA la lea)
+CHRONICLE = "00_Sistema/Bitacora.md"
+CHRONICLE_MARKER = "<!-- Las entradas nuevas se añaden debajo de esta línea -->"
+CHRONICLE_HOME_LINE = "- [[Bitacora|Bitácora]] — cómo ha ido creciendo el mundo: qué se creó y cuándo."
+HOME_MOC = "00_Sistema/MOC_Inicio.md"
+# Ni el registro de pendientes ni la Bitácora cuentan como notas que nombran entidades: un enlace que
+# solo quedara en ellas no debe seguir pendiente
+DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", "00_Sistema/03_Archivados", PENDING_NOTE, CHRONICLE)
 
 
 # --- Módulos -----------------------------------------------------------------
@@ -596,6 +604,71 @@ def int_value(value):
     """Entero de un valor de propiedad ('312', '-40', '"7"'), o None."""
     value = unquote(str(value)) if value is not None else ""
     return int(value) if INT_RE.match(value) else None
+
+
+# --- Bitácora ----------------------------------------------------------------
+
+CHRONICLE_HEADER = f"""---
+tipo: meta
+---
+
+# Bitácora
+
+Cómo ha ido creciendo el mundo: qué se creó y qué cambió en cada tarea, de lo más reciente a lo más antiguo. La escriben las skills al terminar (`report.py --log`, `log_entry.py`); lo que se cambia a mano en Obsidian no queda aquí.
+- Las notas creadas van enlazadas; los enlaces pendientes, como texto.
+- El detalle técnico de cada ciclo del motor está en el Registro de Generación.
+
+{CHRONICLE_MARKER}
+"""
+
+
+def add_chronicle_entry(vault, title, lines, date=None):
+    """Añade una entrada arriba de la Bitácora, debajo de su marca: `## <fecha> · <título>` y sus líneas.
+    Si la Bitácora no existe, la crea y la enlaza desde MOC_Inicio. Devuelve los avisos."""
+    warnings = []
+    path = vault / CHRONICLE
+    text = path.read_text(encoding="utf-8") if path.is_file() else CHRONICLE_HEADER
+    created = not path.is_file()
+    entry = [f"## {date or datetime.date.today().isoformat()} · {title}", *lines, ""]
+    rows = text.splitlines()
+    at = next((i + 1 for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), None)
+    if at is None:
+        # Sin la marca (se borró a mano): tras el título y su presentación, antes de la primera entrada
+        at = next((i for i, line in enumerate(rows) if line.startswith("## ")), len(rows))
+        warnings.append(f"la Bitácora no tiene la marca de las entradas nuevas; añádela: {CHRONICLE_MARKER}")
+    while at < len(rows) and not rows[at].strip():
+        at += 1
+    rows[at:at] = entry
+    # Una línea en blanco entre la marca y la entrada más reciente
+    marker = next((i for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), None)
+    if marker is not None and marker + 1 < len(rows) and rows[marker + 1].strip():
+        rows.insert(marker + 1, "")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(rows).rstrip("\n") + "\n", encoding="utf-8", newline="\n")
+    if created:
+        home = vault / HOME_MOC
+        if home.is_file():
+            home_rows = home.read_text(encoding="utf-8").splitlines()
+            if not any("[[Bitacora" in line for line in home_rows):
+                anchor = next((i for i, line in enumerate(home_rows) if "[[Preguntas_Abiertas" in line), None)
+                if anchor is None:
+                    warnings.append(f"no encuentro dónde enlazar la Bitácora en MOC_Inicio; añádelo a mano: "
+                                    f"{CHRONICLE_HOME_LINE}")
+                else:
+                    home_rows.insert(anchor + 1, CHRONICLE_HOME_LINE)
+                    home.write_text("\n".join(home_rows) + "\n", encoding="utf-8", newline="\n")
+    return warnings
+
+
+def readable_links(text):
+    """`[[Nota_Larga]]` → `[[Nota_Larga|Nota Larga]]`, para que Obsidian no muestre los guiones bajos."""
+    def replace(match):
+        target, alias = match.group(1), match.group(2)
+        # Los embeds y los adjuntos se quedan como están: en un embed, el texto sería el tamaño
+        if alias or "_" not in target or match.group(0).startswith("!") or ATTACHMENT_RE.search(target):
+            return match.group(0)
+        return f"[[{target.rstrip(chr(92))}|{target.rstrip(chr(92)).replace('_', ' ')}]]"
+    return LINK_WITH_ALIAS_RE.sub(replace, text)
 
 
 # --- Mundo -------------------------------------------------------------------

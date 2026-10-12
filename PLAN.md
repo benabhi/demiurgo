@@ -94,6 +94,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - `check_note.py` cuenta los enlaces pendientes nuevos de cada nota, exige su tipo y avisa de los nombres propios, las entidades del Glosario y las menciones que quedaron sin enlace;
   - una confirmación pendiente (`Confirmar`) bloquea solo su sujeto, el primer enlace de la línea;
   - el motor equilibra completar y crear según los enlaces pendientes por entidad (simulado: se estabiliza en torno a 1,5), con un presupuesto de enlaces nuevos por nota.
+- [ ] **Bitácora del mundo** (`00_Sistema/Bitacora.md`): la crónica para el autor, de lo más reciente a lo más antiguo. La crea `inicializar-mundo` con la creación del mundo; `report.py --log` añade la entrada de cada creación, profundización o tanda (con sus ciclos y la remisión al Registro de Generación); `log_entry.py`, las sueltas (una imagen o un mapa aparte, un cambio pedido fuera de las skills). Las notas que existen van enlazadas y los enlaces pendientes, como texto; la Bitácora no cuenta para los enlaces pendientes y la IA nunca la lee.
 - [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
 - [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
 - [x] **Notas internas** (`tipo: meta`): Preguntas Abiertas y los registros no son entidades, y el validador las salta.

@@ -70,6 +70,7 @@ Opciones: `--root` (por defecto, el directorio actual), `--vault` (por defecto, 
 El usuario tiene que ver con claridad qué se creó. Con la salida del script y las respuestas, muestra, con enlaces relativos al directorio de trabajo que se abren con un clic (`[Ficha del Mundo](World_Building/00_Sistema/Ficha_del_Mundo.md)`):
 - **Mundo:** nombre y premisa en una línea, con enlace a la Ficha del Mundo.
 - **Estructura:** cuántos archivos y carpetas se crearon y cuántos ya existían (sin tocar), con enlaces a `MOC_Inicio`, la Guía de Organización y `CLAUDE.md`.
+- **Bitácora:** el script la crea (`00_Sistema/Bitacora.md`) con la entrada de la creación del mundo; desde ahí, cada skill anota en ella lo que crea. Enlázala.
 - **Pilares:** una tabla breve pilar → respuesta, marcando "(elegido por Claude)" lo que decidiste tú.
 - **Reglas de `CLAUDE.md`:** cuántas se añadieron y las que más pesan (contenido, tono, poderes, sistema de rol).
 - **Por definir:** los pilares que quedaron en `Preguntas_Abiertas`, con enlace.

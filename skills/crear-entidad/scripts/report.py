@@ -23,12 +23,23 @@ Fuentes de los cambios:
   --since <commit>    lo cambiado desde ese commit, incluido lo aún no confirmado (por defecto HEAD);
   --notes A B …       solo esas notas, como nuevas (sin git ni instantánea).
 
+Bitácora (00_Sistema/Bitacora.md), la crónica del mundo para su autor:
+  --log TÍTULO        además del informe, añade arriba de la Bitácora una entrada breve con lo esencial
+                      (lo creado y modificado, imágenes y mapas, enlaces pendientes, Glosario y lo que
+                      queda por decidir). Las notas que existen van enlazadas; los enlaces pendientes,
+                      como texto. Si no cambió nada, no añade nada;
+  --cycles 7-9        en una tanda del motor, los ciclos que hizo: la entrada lista la acción de cada
+                      uno (del Registro de Generación) y remite a su detalle técnico.
+
 Ejemplos:  report.py --snapshot              report.py --baseline <ruta que imprimió --snapshot>
-           report.py --since 3b1981f         report.py --notes Aldric_Voss"""
+           report.py --since 3b1981f         report.py --notes Aldric_Voss
+           report.py --baseline <ruta> --log "Crear entidad: Aldric Voss"
+           report.py --baseline <ruta> --log "Expandir el mundo: 3 ciclos" --cycles 7-9"""
 import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -39,8 +50,9 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py y audit_world.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_world import run_audit  # noqa: E402
-from vault_lib import (LINK_WITH_ALIAS_RE, PENDING_NOTE, blocked_links, find_gaps,  # noqa: E402
-                       is_confirmation, load_index, load_modules, parse_note)
+from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
+                       blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
+                       parse_note, readable_links)
 
 GLOSSARY = "00_Sistema/04_Convenciones/Glosario.md"
 OPEN_QUESTIONS = "00_Sistema/Preguntas_Abiertas.md"
@@ -48,6 +60,12 @@ TRACKED_TEXTS = (GLOSSARY, OPEN_QUESTIONS)
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp", ".gif")
 MAX_LISTED = 8
 MAX_ERRORS = 15
+# En la Bitácora, listas cortas: es un resumen para leer de un vistazo
+LOG_LISTED = 6
+LOG_PENDING = 4
+GENERATION_LOG = "00_Sistema/06_Generacion/Registro_de_Generacion.md"
+MAPS_FOLDER = "00_Sistema/02_Activos/Mapas/"
+CYCLE_RE = re.compile(r"^## Ciclo (\d+)\b")
 
 
 # --- Archivos de la bóveda ---------------------------------------------------
@@ -241,6 +259,38 @@ def glossary_rows(lines):
                 and not set(cells[0]) <= set("-: "):
             rows.append((cells[0], cells[1], cells[3]))
     return rows
+
+
+def cycle_lines(vault, spec):
+    """(acciones, remisión, avisos) de los ciclos `spec` («7-9» o «7») del Registro de Generación: la acción
+    de cada uno, numerada con su ciclo, y la línea que remite a su detalle técnico."""
+    match = re.fullmatch(r"\s*(\d+)\s*(?:-\s*(\d+))?\s*", spec)
+    if not match:
+        return [], [], [f"--cycles debe ser un ciclo o un rango (7 o 7-9), no «{spec}»"]
+    low, high = int(match.group(1)), int(match.group(2) or match.group(1))
+    path = vault / GENERATION_LOG
+    if not path.is_file():
+        return [], [], ["no encuentro el Registro de Generación: la entrada va sin la lista de ciclos"]
+    actions, current = {}, None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        heading = CYCLE_RE.match(line)
+        if heading:
+            current = int(heading.group(1))
+        elif current is not None and current not in actions and line.strip().startswith("- **Acción:**"):
+            actions[current] = line.split("**Acción:**", 1)[1].strip()
+    lines, missing = [], []
+    for number in range(low, high + 1):
+        action = actions.get(number)
+        if action is None:
+            missing.append(str(number))
+            continue
+        action = readable_links(action)
+        action = action[0].upper() + action[1:] if action else action
+        lines.append(f"{number}. {action}" + ("" if action.endswith((".", "»", ")")) else "."))
+    span = f"ciclo {low}" if low == high else f"ciclos {low} a {high}"
+    footer = [f"- **Detalle técnico:** {span} del [[Registro_de_Generacion|Registro de Generación]]."]
+    warnings = [f"el Registro de Generación no tiene los ciclos {', '.join(missing)}"] if missing else []
+    return lines, footer, warnings
 
 
 def build_report(vault, prefix, changes):
@@ -478,7 +528,67 @@ def build_report(vault, prefix, changes):
                    f"`pending_links.py --set <Enlace>=<tipo>`")
     if (vault / PENDING_NOTE).is_file():
         out.append(f"- **Registro de enlaces pendientes:** {path_link(PENDING_NOTE)}")
-    return out
+
+    # Bitácora: lo esencial, con enlaces de Obsidian a lo que existe y los enlaces pendientes como texto
+    def wiki(entry):
+        title = entry["titulo"] or entry["name"].replace("_", " ")
+        return f"[[{entry['name']}|{title}]]" if title != entry["name"] else f"[[{entry['name']}]]"
+
+    log = []
+    if entities:
+        described = []
+        for entry in entities:
+            extras = (["imagen"] if entry["relaciones"].get("imagen") else []) + \
+                     (["mapa"] if int_value(first(entry["props"].get("mapa_edicion"))) else [])
+            relevance = entry["relevancia"] if entry["relevancia"] is not None else "?"
+            described.append(f"{wiki(entry)} ({entry['tipo']}, relevancia {relevance}"
+                             + (f", con {' y '.join(extras)}" if extras else "") + ")")
+        log.append("- **Creadas:** " + listed(described, LOG_LISTED) + ".")
+    if secrets:
+        log.append(f"- **Secretos:** {plural(len(secrets), 'nuevo', 'nuevos')}, solo para ti (en `80_Secretos`).")
+    if modified:
+        log.append("- **Modificadas:** " + listed([wiki(e) for e in modified], LOG_LISTED) + ".")
+    # Las imágenes y los mapas de lo creado ya los dice su línea («con imagen y mapa»): aquí, los de las
+    # notas que ya existían (una imagen regenerada, una edición nueva de un mapa)
+    other_images = [p for p in images if not any(n in p.rsplit("/", 1)[-1].lower() for n in created_names)]
+    if other_images:
+        log.append(f"- **Imágenes:** {plural(len(other_images), 'nueva', 'nuevas')}"
+                   + (" de notas que ya existían" if created else "") + ".")
+    mapped = []
+    for path in other_images:
+        if path.startswith(MAPS_FOLDER):
+            stem = path.rsplit("/", 1)[-1].rsplit(".", 1)[0]
+            base = re.sub(r"(_Nivel_\d+)?(_v\d+)?$", "", stem[len("Mapa_"):] if stem.startswith("Mapa_") else stem)
+            entry = by_name.get(base.lower())
+            if entry and entry not in mapped:
+                mapped.append(entry)
+    if mapped:
+        log.append("- **Mapas:** " + listed([f"{wiki(e)} (edición {first(e['props'].get('mapa_edicion')) or '?'})"
+                                             for e in mapped], LOG_LISTED) + ".")
+    # Enlaces pendientes nuevos: los que solo nombran notas creadas ahora o que acaban de enlazarlos
+    new_pending = [g for g in gaps if g["notes"] and all(
+        note in created_paths or g["link"].lower() in added_links.get(note, {}) for note in g["notes"])]
+    done = [wiki(e) for e, _ in named] + [wiki(r) for _, r, _ in completed if r]
+    if new_pending or completed or named:
+        parts = []
+        if new_pending:
+            parts.append(f"{plural(len(new_pending), 'nuevo', 'nuevos')} ("
+                         + listed([g["link"].replace("_", " ") for g in new_pending], LOG_PENDING) + ")")
+        if completed or named:
+            parts.append(plural(len(completed) + len(named), "completado", "completados")
+                         + (f" ({listed(done, LOG_PENDING)})" if done else ""))
+        log.append("- **Enlaces pendientes:** " + "; ".join(parts) + ".")
+    if terms:
+        log.append(f"- **Glosario:** {plural(len(terms), 'término nuevo', 'términos nuevos')}.")
+    if decisions or others:
+        parts = ([plural(len(decisions), "confirmación", "confirmaciones")] if decisions else []) + \
+                ([plural(len(others), "pregunta nueva", "preguntas nuevas")] if others else [])
+        log.append("- **Para decidir:** " + " y ".join(parts) + " en [[Preguntas_Abiertas|Preguntas Abiertas]].")
+    deleted = [p for p in status["D"] if is_note(p)]
+    if deleted:
+        log.append("- **Archivadas o eliminadas:** "
+                   + listed([p.rsplit("/", 1)[-1][:-3].replace("_", " ") for p in deleted], LOG_LISTED) + ".")
+    return out, log
 
 
 def main():
@@ -495,7 +605,11 @@ def main():
     source.add_argument("--since", metavar="COMMIT", help="Informa de lo cambiado desde ese commit (por defecto HEAD)")
     source.add_argument("--notes", nargs="+", metavar="NOTA", help="Informa solo de estas notas, como nuevas")
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
+    parser.add_argument("--log", metavar="TÍTULO", help="Añade a la Bitácora una entrada breve con lo generado")
+    parser.add_argument("--cycles", metavar="DESDE-HASTA", help="Con --log, los ciclos del motor de la tanda (7-9)")
     args = parser.parse_args()
+    if args.cycles and not args.log:
+        parser.error("--cycles va con --log")
 
     vault = Path(args.vault)
     if not vault.is_dir():
@@ -527,7 +641,18 @@ def main():
         except (RuntimeError, FileNotFoundError) as error:
             sys.exit(f"Error: no puedo leer los cambios con git ({error}). Usa --snapshot y --baseline, o --notes.")
 
-    print("\n".join(build_report(vault, Path(args.vault).as_posix(), changes)))
+    out, log = build_report(vault, Path(args.vault).as_posix(), changes)
+    print("\n".join(out))
+    if args.log:
+        actions, footer, warnings = cycle_lines(vault, args.cycles) if args.cycles else ([], [], [])
+        if not log and not args.cycles:
+            print("\nBitácora: no hay cambios en la bóveda; no añado ninguna entrada.")
+            return
+        body = actions + (log or ["- Sin cambios en la bóveda."]) + footer
+        warnings += add_chronicle_entry(vault, args.log.strip(), body)
+        print(f"\nBitácora: añadida la entrada «{args.log.strip()}» en {CHRONICLE}.")
+        for warning in warnings:
+            print(f"AVISO: {warning}")
 
 
 if __name__ == "__main__":

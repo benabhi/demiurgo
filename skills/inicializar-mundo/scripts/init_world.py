@@ -16,6 +16,22 @@ DECIDE_VALUES = {"decide", "decide tu", "decide tú"}
 
 created, skipped, warnings = [], [], []
 
+# Bitácora: la crónica del mundo para su autor. Es la misma nota que escriben después los scripts de
+# crear-entidad (report.py --log, log_entry.py): mismo encabezado y misma marca para las entradas nuevas
+CHRONICLE_MARKER = "<!-- Las entradas nuevas se añaden debajo de esta línea -->"
+CHRONICLE_HEADER = f"""---
+tipo: meta
+---
+
+# Bitácora
+
+Cómo ha ido creciendo el mundo: qué se creó y qué cambió en cada tarea, de lo más reciente a lo más antiguo. La escriben las skills al terminar (`report.py --log`, `log_entry.py`); lo que se cambia a mano en Obsidian no queda aquí.
+- Las notas creadas van enlazadas; los enlaces pendientes, como texto.
+- El detalle técnico de cada ciclo del motor está en el Registro de Generación.
+
+{CHRONICLE_MARKER}
+"""
+
 
 def write_file(path, content):
     """Escribe solo si el archivo no existe."""
@@ -214,7 +230,9 @@ def home_moc(world, sections, results):
         lines += [f"> {results['premisa']['texto']}", ""]
     lines += ["## El mundo",
               "- [[Ficha_del_Mundo]] — identidad y pilares (fuente de verdad).",
-              "- [[Preguntas_Abiertas]] — decisiones pendientes.", "", "## Secciones"]
+              "- [[Preguntas_Abiertas]] — decisiones pendientes.",
+              "- [[Bitacora|Bitácora]] — cómo ha ido creciendo el mundo: qué se creó y cuándo.", "",
+              "## Secciones"]
     lines += [f"- [[{moc_name(s['nombre'])}]] — {s['desc']}"
               for s in sections if not s["nombre"].startswith("00_")]
     lines += ["", "## Borradores pendientes de revisión"]
@@ -252,6 +270,21 @@ def world_sheet(world, questionnaire, results, today):
                 lines.append(f"- **{q['titulo']}:** {result['texto'] if result else UNDEFINED}")
         lines.append("")
     return "\n".join(lines)
+
+
+def add_chronicle_entry(path, title, lines, today):
+    """Añade la entrada arriba de la Bitácora (la crea si no existe). No sobrescribe nada: solo inserta."""
+    text = path.read_text(encoding="utf-8") if path.exists() else CHRONICLE_HEADER
+    rows = text.splitlines()
+    at = next((i + 1 for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), len(rows))
+    while at < len(rows) and not rows[at].strip():
+        at += 1
+    rows[at:at] = [f"## {today} · {title}", *lines, ""]
+    marker = next((i for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), None)
+    if marker is not None and marker + 1 < len(rows) and rows[marker + 1].strip():
+        rows.insert(marker + 1, "")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(rows).rstrip("\n") + "\n", encoding="utf-8", newline="\n")
 
 
 def open_questions(undefined):
@@ -329,6 +362,26 @@ def main():
                fill_placeholders((ASSETS / "CLAUDE.md.tpl").read_text(encoding="utf-8"), placeholders, "CLAUDE.md.tpl"))
 
     files = [p for p in created if p.is_file()]
+    # Bitácora: la creación del mundo es su primera entrada; si la bóveda ya existía, se anota lo que se completó
+    chronicle = system_dir / "Bitacora.md"
+    defined = [q["titulo"] for q in questions if results.get(q["id"])]
+    if not chronicle.exists():
+        lines = []
+        for key, label in (("genero", "Género"), ("foco", "Foco"), ("tono", "Tono")):
+            if results.get(key):
+                lines.append(f"- **{label}:** {results[key]['texto']}")
+        lines += [f"- **Ficha del Mundo:** [[Ficha_del_Mundo|Ficha del Mundo]], con {len(defined)} pilares definidos"
+                  + (f" y {len(undefined)} por definir (en [[Preguntas_Abiertas|Preguntas Abiertas]])." if undefined
+                     else "."),
+                  f"- **Bóveda:** {len(files) + 1} archivos y {len(created) - len(files)} carpetas: las secciones, las guías "
+                  f"de convenciones, los índices y `CLAUDE.md`, con {len(rules)} reglas de contenido."]
+        add_chronicle_entry(chronicle, f"Se creó el mundo «{world}»", lines, today)
+        created.append(chronicle)
+        files.append(chronicle)
+    elif files:
+        add_chronicle_entry(chronicle, "Se completó la estructura del mundo",
+                            [f"- **Bóveda:** {len(files)} archivos y {len(created) - len(files)} carpetas que faltaban."],
+                            today)
     print(f"Mundo: {world}")
     print(f"Creados: {len(files)} archivos y {len(created) - len(files)} carpetas | "
           f"Ya existían (sin tocar): {len(skipped)}")

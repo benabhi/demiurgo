@@ -156,9 +156,11 @@ Un ciclo es un commit, así cada ciclo se puede revertir por separado (`git reve
 El usuario tiene que ver con claridad qué se generó.
 1. Ejecuta:
    ```bash
-   python <crear-entidad>/scripts/report.py --baseline <ruta de la instantánea>
+   python <crear-entidad>/scripts/report.py --baseline <ruta de la instantánea> --log "Expandir el mundo: <N> ciclos" --cycles <primero>-<último>
    ```
-   Si no hay instantánea, usa `--since <commit en que empezó la tanda>`.
+   Si no hay instantánea, usa `--since <commit en que empezó la tanda>`. Los números de ciclo son los que imprimió `log_cycle.py`. Si la tanda se detuvo antes, el título lo dice: `Expandir el mundo: 2 de 5 ciclos (límite de revisión)`.
+
+   `--log` añade a la **Bitácora** (`00_Sistema/Bitacora.md`) una entrada breve de la tanda, para el autor del mundo: la acción de cada ciclo, lo creado y lo modificado, y la remisión al Registro de Generación. Haz su commit: `git -C <bóveda> add -A 00_Sistema && git -C <bóveda> commit -m "Bitácora: tanda de <N> ciclos"` (en modo prueba, en la rama de la prueba).
 
    El informe junta todos los ciclos, con enlaces que se abren con un clic:
    - entidades nuevas (resumen, relaciones, quién las enlaza y enlaces pendientes que introducen) y secretos aparte;

@@ -105,7 +105,11 @@ Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle p
 - **Un mapa** se enlaza como dice «Guardar y enlazar» en `mapas.md`: la propiedad `mapa`, el mapa embebido y la línea de la edición en la sección Mapa, el prompt del mapa en la sección Imagen y, al final, `map_key.py <Nota> --charted`.
 
 ## Paso 5: informe
-Si la invocó `crear-entidad` o `expandir-mundo`, devuélveles el nombre del archivo, la técnica usada y las incidencias: la imagen sale en su informe final. Si se invocó sola, termina con:
+Si la invocó `crear-entidad` o `expandir-mundo`, devuélveles el nombre del archivo, la técnica usada y las incidencias: la imagen sale en su informe final y en su entrada de la Bitácora. Si se invocó sola, añade una entrada a la **Bitácora** (`00_Sistema/Bitacora.md`):
+```bash
+python <crear-entidad>/scripts/log_entry.py --title "Imagen: <Nombre>" --line "**Nueva imagen** de [[<Nota>|<Nombre>]] en <técnica> (<versión>)."
+```
+Para un mapa, `--title "Mapa: <Nombre>" --line "**Edición <n> del mapa** de [[<Nota>|<Nombre>]]: <zonas> zonas, comprobado <x>/<y> marcadores."`. Y termina con:
 - **Imagen:** enlace al archivo guardado, relativo al directorio de trabajo (`[Retrato_Aldric_Voss.png](World_Building/00_Sistema/02_Activos/Ilustraciones/Personajes/Retrato_Aldric_Voss.png)`), su tamaño y el nombre original de la descarga (los imprime `fetch_download.py`), y una línea sobre lo que muestra.
 - **Técnica:** cuál y por qué: pedida para esta imagen, la del tipo, la general o sorteada (con la tirada).
 - **Nota actualizada:** enlace a la nota y lo que cambió en ella: la propiedad `imagen`, el embed y el prompt en la sección Imagen.

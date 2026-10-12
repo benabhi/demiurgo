@@ -17,7 +17,7 @@ La identidad y los pilares del mundo están en la Ficha, que se carga a continua
 - No crees, renombres ni muevas carpetas sin que se pida. Las skills que añadan estructura la registran en la Guía de Organización.
 
 ## Consultar la bóveda sin leerla entera
-La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas enteros el Glosario, Preguntas Abiertas ni el registro de enlaces pendientes. Usa los scripts de la skill `crear-entidad`:
+La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes ni la Bitácora. Usa los scripts de la skill `crear-entidad`:
 - para buscar algo (entidades, enlaces pendientes, Glosario o preguntas), `search_vault.py "<texto>"`, o `--type <tipo>`;
 - para el contexto de una entidad, `build_context.py --target <Nota>`;
 - para añadir al Glosario o a Preguntas Abiertas, `add_entries.py`.
@@ -48,7 +48,7 @@ Lee entera solo la nota que necesites y, de una nota larga, solo la sección que
 4. Nunca borres ni sobrescribas notas: lo obsoleto se mueve a `03_Archivados`.
 5. Si una petición contradice la Ficha o una nota `canon`, avisa antes de escribir.
 6. Lo no decidido va a `Preguntas_Abiertas`; no decidas tú los pilares por definir.
-7. Al terminar de generar, da siempre un informe claro: lo creado y lo modificado (con enlaces que se abran), lo que inventaste, lo que queda por confirmar y los enlaces pendientes.
+7. Al terminar de generar, da siempre un informe claro: lo creado y lo modificado (con enlaces que se abran), lo que inventaste, lo que queda por confirmar y los enlaces pendientes. Y deja constancia en la Bitácora (`00_Sistema/Bitacora.md`): las skills la escriben solas con `report.py --log`; un cambio suelto que pida el usuario fuera de las skills se anota con `log_entry.py` de `crear-entidad`.
 
 ## Código y scripts
 - Los scripts (de las skills o del proyecto) se escriben en inglés: nombres de archivo, funciones, variables y opciones de línea de comandos (`find_gaps.py --note`).

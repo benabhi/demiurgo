@@ -14,6 +14,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Mapas** de las mazmorras, ruinas, ciudades y regiones que lo merecen, con su leyenda numerada en la nota y en el mismo estilo que el resto de las imágenes. Crecen con el mundo: cada lugar nuevo se añade a la leyenda y el mapa se redibuja cuando ha cambiado bastante.
 - **Coherencia por script:** cada nota se valida al crearla, un auditor revisa el mundo entero (fechas, relaciones recíprocas, nombres repetidos…) y cada generación termina con un informe.
 - **Pensado para mundos grandes:** la IA no lee la bóveda entera. Busca con scripts (entidades, enlaces pendientes, Glosario, preguntas), añade al Glosario y a otras notas sin leerlas, y valida y audita solo lo que tocó. Así un mundo de miles de notas no se come los tokens.
+- **Una bitácora del mundo** (`00_Sistema/Bitacora.md`): cada creación, entidad, tanda del motor, imagen o mapa deja una entrada breve con su fecha, lo creado y lo modificado, para ver de un vistazo cómo fue creciendo el mundo.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
 ## Las skills
