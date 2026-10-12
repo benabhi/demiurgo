@@ -56,9 +56,10 @@ La ficha se rellena **completa**: ningún campo queda vacío. Lo único sin reso
   - Edades coherentes: los padres, mayores que los hijos, y cada edad acorde con la longevidad y la madurez de su especie si tiene ficha (el auditor lo revisa).
   - El linaje, si existe.
 - **Relaciones:**
-  - Al menos 4 vínculos variados: personas, lugares, objetos o animales.
+  - Vínculos variados (personas, lugares, objetos o animales): 1 o 2 con relevancia 1 o 2; al menos 4 desde la 3.
   - **Vínculo:** mentor, discípulo, rival, amigo, aliado, enemigo, amante, deudor, acreedor, protector, protegido, patrón, empleado, compañero…
-  - **Actitud:** confianza, respeto, miedo, desprecio, devoción, envidia, culpa, indiferencia…
+  - **Actitud:** confianza, respeto, miedo, desprecio, devoción, envidia, culpa, indiferencia… Es la de **este** personaje: la del otro lado no se deduce de ella (ver «Relaciones» en `SKILL.md`).
+  - **Por qué y qué cambia:** de dónde viene el vínculo y qué consecuencia concreta tiene para él (una deuda que lo ata, un miedo que lo aparta de un camino). Si no cambia nada, sobra.
 - **Posesiones y recursos:** objetos notables con su significado, equipo, riqueza y contactos.
 - **Habilidades y conocimientos:** los poderes respetan la regla de poderes de la Ficha y las reglas de su sistema (la magia, el don o el pacto que usa), que se enlaza en el texto y en `sistemas`; lo mismo una técnica fuera de lo común. Si no hay poderes, escribe "Ninguno".
 - **Salud y afecciones:** el estado físico; las afecciones con su enlace; las cicatrices, con la historia de cada una.

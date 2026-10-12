@@ -121,7 +121,7 @@ fuentes: []
 **Linaje:**
 
 ## Relaciones
-| Entidad | Vínculo | Actitud | Notas |
+| Entidad | Vínculo | Actitud | Por qué y qué cambia |
 |---|---|---|---|
 | | | | |
 

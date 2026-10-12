@@ -162,7 +162,14 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
 
 ## Paso 4: efectos en el resto de la bóveda
 - **Secretos:** solo si el módulo lo decide (en personaje, con una tirada). Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
-- **Reciprocidad:** en cada nota existente que enlazaste, añade el vínculo inverso en su propiedad con `add_relation.py <Nota> <propiedad> <Entidad>`, sin leerla. Si la relación necesita contexto en su cuerpo (una fila de su tabla de relaciones), lee y edita solo esa sección. No toques nada más.
+- **Reciprocidad documental:** en cada nota existente que enlazaste por una relación que el módulo declara recíproca (`reciprocas`: padres e hijos, una afección y sus afectados…), añade el vínculo inverso en su propiedad con `add_relation.py <Nota> <propiedad> <Entidad>`, sin leerla. Las demás relaciones no se espejan. No toques nada más.
+- **Relaciones: el otro lado no es un espejo.** Que la relación conste en las dos notas no la hace simétrica: si Aldric teme a un dragón, el dragón no teme a Aldric; quizá ni sabe que existe. Si la otra nota necesita la relación en su cuerpo (una fila de su tabla de relaciones), lee y edita solo esa sección y escríbela **desde el punto de vista del otro**: lo que esa entidad sabe, siente o hace respecto de la nueva, o nada si no le importa. Nunca copies ni inviertas la actitud. Antes de fijar una relación que importa (desde relevancia 3), pregúntate:
+  - ¿por qué existe?;
+  - ¿qué cambia en cada entidad por la otra, con consecuencias concretas?;
+  - ¿es recíproca de verdad, en lo narrativo, o solo consta en las dos notas?;
+  - ¿seguiría teniendo sentido si una de las dos desapareciera?
+
+  Si no cambia nada en ninguna de las dos, basta con el enlace: no hace falta una fila de relación.
 - **Anclaje:** una entidad creada de la nada (sin un enlace pendiente que la pidiera) no puede quedar huérfana. Si la reciprocidad no la enlaza desde ninguna nota, añade su enlace en al menos una nota existente con la que se relaciona (su asentamiento, su región, su facción), en la propiedad que encaje (`add_relation.py`).
 - **Glosario:** registra el nombre y los términos que inventaste con `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>` (repetible; con la nota vacía, `""`, para un término sin nota).
 - **Enlace pendiente completado:** si llevaba un nombre de rol, reemplázalo por el definitivo en todas las notas con `rename_link.py <Rol_de_Entidad> <Nombre_Real>`. Si llevaba el nombre real, no hay nada que reemplazar.
