@@ -13,7 +13,7 @@ Un **sistema de creación de mundos con IA** que cualquiera pueda clonar para em
 
 ## Ahora: redondeo antes de seguir con las entidades
 - [x] **Repositorio propio para las skills.** Solo las skills, con un README que deja claro que trabajan sobre una bóveda de Obsidian. El mundo de prueba vive en su propio proyecto y usa las skills enlazadas.
-- [ ] **Consultas baratas:** que la IA no lea la bóveda entera. Medido en un mundo sintético de 3.000 notas: el índice daba 347.000 caracteres, y la búsqueda da menos de 3.000.
+- [x] **Consultas baratas:** que la IA no lea la bóveda entera. Probado con una deidad: la sesión buscó duplicados y relaciones con `search_vault.py`, escribió el Glosario y las preguntas con `add_entries.py` y auditó con `--focus`, sin abrir el Glosario, las preguntas, el registro ni el índice. El registro de ciclos y el git de la bóveda del motor están probados por script, y se confirmarán en el primer uso del motor. Medido en un mundo sintético de 3.000 notas: el índice daba 347.000 caracteres, y la búsqueda da menos de 3.000.
   - `search_vault.py`: entidades, enlaces pendientes, Glosario y preguntas que coinciden con un texto, también por nombres parecidos (posibles duplicados), o por tipo; con tope por grupo.
   - `add_entries.py` (Glosario y Preguntas Abiertas), `add_relation.py` (vínculos inversos) y `rename_link.py` (un nombre de rol por el definitivo): escriben sin que la IA lea las notas.
   - `log_cycle.py` (registro de generación del motor); `audit_world.py --focus` (solo lo de las notas tocadas, y el recuento del resto); topes en la salida del selector.
