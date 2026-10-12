@@ -77,7 +77,8 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
 - [x] **Imagen propia de cada tipo** (formato, carpeta y prefijo) y **propiedad `imagen` común**.
 - [x] **Relevancia** del 1 al 5 en todas las entidades.
 - [x] **Fechas numéricas** en el eje del calendario: año 0 y año actual en la Ficha.
-- [x] **Relaciones recíprocas** declaradas en `modulo.json`, que el auditor exige solo si el otro tipo tiene la propiedad inversa.
+- [x] **Relaciones recíprocas** declaradas en `modulo.json`, que el auditor exige solo si el otro tipo tiene la propiedad inversa. Solo las bilaterales por naturaleza (parentesco, vecindad, pertenencia, un pacto); las actitudes, como la rivalidad, no se espejan solas.
+- [x] **Profundidad según la relevancia** (`profundidad` en `modulo.json`, `check_note.py --depth`), probada con una criatura de relevancia 2 y una mazmorra de relevancia 3.
 - [x] **`completa`:** un módulo de una familia solo completa las propiedades que le corresponden.
 - [x] **Reglas declarativas** en `modulo.json`: escalas, valores permitidos, la situación temporal (`tiempo`) y las propiedades que solo valen con ciertos valores de otra (`solo_si`).
 - [x] **Biblioteca común `vault_lib.py`** y sus scripts:
@@ -94,7 +95,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - `check_note.py` cuenta los enlaces pendientes nuevos de cada nota, exige su tipo y avisa de los nombres propios, las entidades del Glosario y las menciones que quedaron sin enlace;
   - una confirmación pendiente (`Confirmar`) bloquea solo su sujeto, el primer enlace de la línea;
   - el motor equilibra completar y crear según los enlaces pendientes por entidad (simulado: se estabiliza en torno a 1,5), con un presupuesto de enlaces nuevos por nota.
-- [ ] **Bitácora del mundo** (`00_Sistema/Bitacora.md`): la crónica para el autor, de lo más reciente a lo más antiguo. La crea `inicializar-mundo` con la creación del mundo; `report.py --log` añade la entrada de cada creación, profundización o tanda (con sus ciclos y la remisión al Registro de Generación); `log_entry.py`, las sueltas (una imagen o un mapa aparte, un cambio pedido fuera de las skills). Las notas que existen van enlazadas y los enlaces pendientes, como texto; la Bitácora no cuenta para los enlaces pendientes y la IA nunca la lee.
+- [x] **Bitácora del mundo** (`00_Sistema/Bitacora.md`), probada con una mazmorra: la crónica para el autor, de lo más reciente a lo más antiguo. La crea `inicializar-mundo` con la creación del mundo; `report.py --log` añade la entrada de cada creación, profundización o tanda (con sus ciclos y la remisión al Registro de Generación); `log_entry.py`, las sueltas (una imagen o un mapa aparte, un cambio pedido fuera de las skills). Las notas que existen van enlazadas y los enlaces pendientes, como texto; la Bitácora no cuenta para los enlaces pendientes y la IA nunca la lee.
 - [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
 - [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
 - [x] **Notas internas** (`tipo: meta`): Preguntas Abiertas y los registros no son entidades, y el validador las salta.
@@ -144,10 +145,10 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
 - **Comprobación de cada imagen:** la IA la mira (en un mapa, cuenta los marcadores y busca repetidos y faltantes, el texto de más y lo característico de cada zona); si falla, pide la corrección en el mismo chat, hasta dos veces, y anota lo que quede mal.
 
 Etapas:
-- [ ] 1. Datos: regla `mapa`, sección `## Mapa`, validación en `check_note` y `check_modules`, `map_key.py`.
-- [ ] 2. `generar-imagen`: modo mapa (técnica de mapas, plantillas, A4) y comprobación con corrección (también del concept art).
-- [ ] 3. `crear-entidad`: la leyenda al crear, el mapa tras el concept art y la entrada en la leyenda del lugar donde está.
-- [ ] 4. Motor: acción `cartografiar`.
+- [x] 1. Datos: regla `mapa`, sección `## Mapa`, validación en `check_note` y `check_modules`, `map_key.py`.
+- [x] 2. `generar-imagen`: modo mapa (técnica de mapas, plantillas, A4) y comprobación con corrección (también del concept art).
+- [x] 3. `crear-entidad`: la leyenda al crear, el mapa tras el concept art y la entrada en la leyenda del lugar donde está.
+- [ ] 4. Motor: acción `cartografiar`. Hecha; se tilda cuando se pruebe en una tanda del motor.
 - [ ] 5. Más adelante: las rutas (con el módulo #21), el mapa del mundo (con `finalizar-mundo`) y, quizá, un «mapa del director» en el secreto que cambia la planta de un lugar (la sala que nadie conoce).
 
 ## Entidades por orden de prioridad
