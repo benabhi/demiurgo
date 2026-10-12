@@ -75,11 +75,6 @@ Opcional: un tipo que figure aquí usa su técnica en lugar de la general.
 | Tipo | Técnica |
 |---|---|
 
-## Modelo de imagen
-Opcional: el modelo de Puter para todas las imágenes y su calidad, si la admite (`/generar-imagen modelos` muestra los que hay). Vacío: el de Puter por defecto.
-- **Modelo:**
-- **Calidad:**
-
 ## Fondos habituales
 <Lista en inglés de fondos coherentes con el mundo, para el campo FONDO.>
 

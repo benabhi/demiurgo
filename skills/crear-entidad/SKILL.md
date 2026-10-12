@@ -190,7 +190,7 @@ Muéstralo tal cual y añade debajo solo lo que el script no puede saber, sin re
 - **Lo inventado** según la autonomía de la Ficha: lo más importante, no una lista exhaustiva.
 - **Tiradas** y su resultado (por ejemplo, "1d4 = 2: sin secreto").
 - **Pilares decididos:** si se resolvió alguno (ver `referencias/pilares.md`), qué se decidió y los cambios en la Ficha, `CLAUDE.md`, Preguntas Abiertas y el Registro de Canon.
-- **Imagen:** la técnica y el modelo usados y, si falló, por qué y cómo generarla más tarde.
+- **Imagen:** la técnica usada y, si falló, por qué y cómo generarla más tarde.
 - **Plantilla:** si la de `01_Plantillas` difiere de la de la skill.
 - **Siguiente paso posible:** por ejemplo, crear uno de sus enlaces pendientes con `/crear-entidad <tipo> hueco=<Enlace>`.
 

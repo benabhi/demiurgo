@@ -28,7 +28,7 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
-- Las imágenes las genera `generar-imagen` con Puter, por script, y con la Guía Visual del mundo:
+- Las imágenes las genera `generar-imagen` con Gemini en el Chrome del usuario, y con la Guía Visual del mundo:
   - la **ambientación** (género, tono, paleta) es la misma en todas;
   - la **técnica** (óleo, acuarela, cómic, lápiz… 27 en `generar-imagen/referencias/tecnicas.md`) la elige el usuario: general, por tipo o para una sola imagen.
 
@@ -88,7 +88,8 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - `check_note.py` cuenta los enlaces pendientes nuevos de cada nota, exige su tipo y avisa de los nombres propios, las entidades del Glosario y las menciones que quedaron sin enlace;
   - una confirmación pendiente (`Confirmar`) bloquea solo su sujeto, el primer enlace de la línea;
   - el motor equilibra completar y crear según los enlaces pendientes por entidad (simulado: se estabiliza en torno a 1,5), con un presupuesto de enlaces nuevos por nota.
-- [x] **Imágenes por API con Puter:** `generar-imagen` genera con un script (`generate_image.mjs`, con Node.js 24+ y la librería de Puter), sin abrir el navegador; la sesión de Puter se guarda fuera del repositorio. Gemini en Chrome queda como alternativa a pedido.
+- [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
+- [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
 - [x] **Notas internas** (`tipo: meta`): Preguntas Abiertas y los registros no son entidades, y el validador las salta.
 
 ## Motor de generación

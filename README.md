@@ -30,9 +30,10 @@ Las cuatro van juntas: `expandir-mundo` usa los scripts de `crear-entidad`.
 - **Python 3.10 o posterior.** Los scripts solo usan la biblioteca estándar.
 - **Git**, recomendado: el motor hace un commit por ciclo y el modo prueba trabaja en una rama.
 - **Para las imágenes**, opcional:
-  - Node.js 24 o posterior;
-  - una cuenta de [Puter](https://puter.com), porque cada imagen gasta saldo de esa cuenta;
-  - su librería, que la skill instala la primera vez que hace falta, con tu permiso (`npm install` en `skills/generar-imagen/scripts`).
+  - la extensión Claude in Chrome, conectada a tu Chrome;
+  - una cuenta de Google con acceso a Gemini, con la sesión iniciada en ese Chrome.
+
+  Por ahora las imágenes se generan con Gemini en el navegador; más adelante se cambiará por una API u otra vía más eficiente.
 
 ## Instalación
 1. Clona el repositorio:

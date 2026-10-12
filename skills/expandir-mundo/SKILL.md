@@ -11,7 +11,7 @@ Uso:
 - `/expandir-mundo` hace **un ciclo**.
 - `/expandir-mundo 5` hace **cinco seguidos**, y se detiene antes si se alcanza el límite de revisión.
 - `/expandir-mundo prueba 3` usa el **modo prueba**: trabaja en una rama git aparte para revisar y luego fusionar o descartar.
-- Si se añade "sin imagen", no se generan imágenes en esa tanda: va más rápida y no gasta saldo de Puter.
+- Si se añade "sin imagen", no se generan imágenes en esa tanda: va más rápida y no usa el navegador.
 - Si se indica una técnica ("en acuarela", "como cómic"), todas las imágenes de la tanda la usan en lugar de la de la Guía Visual.
 - Con `/loop` sigue sola hasta el límite de borradores sin revisar.
 
