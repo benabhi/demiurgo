@@ -105,6 +105,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - límite de borradores sin revisar;
   - modo prueba en una rama aparte.
 - [x] **Lo insólito:** chispas raras (una de cada tres creaciones) con su grado de verdad, contrastes, conexiones inesperadas y rarezas en todas las tablas.
+- [x] **Profundizar:** una nota en borrador que nombran muchas notas (3 piden relevancia 3; 6, relevancia 4; 10, relevancia 5), o cuya relevancia ya pide secciones que no tiene, gana las secciones que le faltan sin reescribir lo escrito (`--deepen-chance`, 0.25). El mundo crece en extensión y en profundidad.
 - [x] **Canon de base primero:** los enlaces pendientes que nombra la Ficha o que nombran tres notas o más (como el conflicto central) se crean antes que los demás, con el mismo nombre del enlace.
 - [ ] **Más tablas y paquetes,** a medida que lleguen los módulos.
 - [ ] **Tablas propias de cada mundo** en su `06_Generacion/Tablas`, propuestas a partir de su Ficha.

@@ -18,6 +18,12 @@ existe (son enlaces que hay que corregir).
   - Crear algo nuevo: un paquete de Paquetes.md cuyos tipos tienen todos módulo (acción paquete)
     o una entidad suelta (acción nueva_entidad).
 
+Profundizar (acción profundizar): la relevancia decide cuánto desarrollo lleva una nota. Una nota en
+borrador se puede profundizar si la nombran tantas notas que su relevancia se quedó corta (3 notas
+piden relevancia 3; 6, relevancia 4; 10, relevancia 5) o si su relevancia ya pide secciones que no
+tiene (porque el usuario la subió). Con --deepen-chance, el ciclo profundiza en vez de completar o
+crear; las notas en canon no se tocan.
+
 Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
 Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
 bastantes enlaces pendientes nuevos (presupuesto amplio); con mucha, casi siempre se completa lo
@@ -40,8 +46,9 @@ from pathlib import Path
 # La lógica común vive en los scripts de crear-entidad
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
 from build_context import region_chain  # noqa: E402
-from vault_lib import (WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
-                       load_index, load_modules, normalize, read_world)
+from vault_lib import (SKILL_DIR, WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
+                       load_index, load_modules, normalize, omitted_sections, read_world, split_note,
+                       template_sections)
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 VAULT_PACKAGES = "00_Sistema/06_Generacion/Paquetes.md"
@@ -59,6 +66,44 @@ NEW_FLOOR = 0.4
 # De lo nuevo, la parte que va a paquetes (el resto, una entidad suelta)
 PACKAGE_SHARE = 0.6
 BUDGETS = ("justo", "medio", "amplio")
+# Profundizar: cuántas notas que la nombran piden cada relevancia (de mayor a menor)
+RELEVANCE_BY_LINKERS = ((10, 5), (6, 4), (3, 3))
+
+
+def deepen_candidates(vault, index, modules):
+    """Notas en borrador a las que les faltan secciones: por la relevancia que piden las notas que
+    las nombran o por la que ya tienen. Cada una con su relevancia nueva y las secciones que faltan."""
+    linkers = {}
+    for entry in index:
+        for target in entry["enlaces"]:
+            if target.lower() != entry["name"].lower():
+                linkers.setdefault(target.lower(), set()).add(entry["name"])
+    templates, options = {}, []
+    for entry in index:
+        module = modules.get(entry["tipo"])
+        current = entry.get("relevancia")
+        if entry["estado"] != "borrador" or not module or not current:
+            continue
+        named_by = len(linkers.get(entry["name"].lower(), ()))
+        target = max([current] + [r for n, r in RELEVANCE_BY_LINKERS if named_by >= n][:1])
+        if entry["tipo"] not in templates:
+            path = SKILL_DIR / "tipos" / entry["tipo"] / "plantilla.md"
+            templates[entry["tipo"]] = split_note(path.read_text(encoding="utf-8"))[1]
+        template = templates[entry["tipo"]]
+        _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
+        present = {line.strip() for line in body}
+        skipped = set(omitted_sections(module, template, target))
+        missing = [title for level, title in template_sections(template)
+                   if title not in skipped and f"{'#' * level} {title}" not in present]
+        if not missing:
+            continue
+        reasons = [f"la nombran {named_by} nota(s)"] + (
+            [f"eso pide relevancia {target} (tiene {current})"] if target > current else
+            [f"su relevancia {current} ya pide secciones que no tiene"])
+        options.append({"accion": "profundizar", "nota": entry["name"], "tipo": entry["tipo"],
+                        "relevancia_actual": current, "relevancia_nueva": target, "secciones": missing,
+                        "puntos": named_by + 2 * (target - current) + len(missing) // 3, "razones": reasons})
+    return options
 
 
 def find_focus(world, index, place_types):
@@ -155,6 +200,8 @@ def main():
                         help="Enlace pendiente que no se debe elegir (repetible), si ningún módulo encaja con él")
     parser.add_argument("--skip-canon", action="store_true",
                         help="No dar prioridad al canon de base pendiente")
+    parser.add_argument("--deepen-chance", type=float, default=0.25,
+                        help="Probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25)")
     parser.add_argument("--seed", type=int, help="Semilla para repetir la elección")
     parser.add_argument("--top", type=int, default=5, help="Cuántos candidatos mostrar")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
@@ -277,6 +324,11 @@ def main():
                  if all(modules.get(i["tipo"], {}).get("crear_desde_cero", i["tipo"] in modules)
                         for i in p["composicion"])]
     create_new = not candidates or rng.random() < new_chance
+    deepen = deepen_candidates(vault, index, modules)
+    shuffle_ties(deepen, rng)
+    if deepen:
+        balance.append(f"notas que piden más profundidad: {len(deepen)} · probabilidad de profundizar "
+                       f"{args.deepen_chance:.0%}")
     if references and not args.skip_canon:
         pool = references[:TOP_DRAW]
         chosen = rng.choices(pool, weights=[r["puntos"] for r in pool])[0]
@@ -287,6 +339,18 @@ def main():
                            + [f"  {r['puntos']:>3} pts  [[{r['referencia']}]] → {r['tipo_esperado']}"
                               for r in references[:args.top]] + balance},
                types=chosen["modulos"])
+    if deepen and rng.random() < args.deepen_chance:
+        pool = deepen[:TOP_DRAW]
+        chosen = rng.choices(pool, weights=[d["puntos"] for d in pool])[0]
+        finish({**chosen, **common,
+                "resumen": f"ELEGIDO: profundizar [[{chosen['nota']}]] ({chosen['tipo']}), relevancia "
+                           f"{chosen['relevancia_actual']} → {chosen['relevancia_nueva']} · {chosen['puntos']} puntos",
+                "detalle": [f"razones: {'; '.join(chosen['razones'])}",
+                            "secciones que añadir: " + ", ".join(f"«{t}»" for t in chosen["secciones"]),
+                            "notas que piden más profundidad:"]
+                           + [f"  {d['puntos']:>3} pts  [[{d['nota']}]] {d['relevancia_actual']} → "
+                              f"{d['relevancia_nueva']}" for d in deepen[:args.top]] + balance},
+               types=[chosen["tipo"]])
     if create_new and available and rng.random() < PACKAGE_SHARE:
         package = rng.choices(available, weights=[p["peso"] for p in available])[0]
         why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"

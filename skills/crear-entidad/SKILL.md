@@ -1,6 +1,6 @@
 ---
 name: crear-entidad
-description: Crea entidades del mundo (personajes, regiones, secretos y los tipos que se vayan añadiendo) como notas completas en la bóveda de Obsidian, coherentes con la Ficha del Mundo y las convenciones del proyecto, con su imagen. Úsala para "crea un personaje…", "crea la región…", "/crear-entidad <tipo> …", o para completar un enlace pendiente (un hueco: una entidad que otra nota ya nombra y que aún no tiene nota) creándola. Cada tipo de entidad es un módulo en tipos/.
+description: Crea entidades del mundo (personajes, regiones, secretos y los tipos que se vayan añadiendo) como notas completas en la bóveda de Obsidian, coherentes con la Ficha del Mundo y las convenciones del proyecto, con su imagen. Úsala para "crea un personaje…", "crea la región…", "/crear-entidad <tipo> …", para completar un enlace pendiente (un hueco: una entidad que otra nota ya nombra y que aún no tiene nota) creándola, o para profundizar una nota que ganó importancia ("profundiza a…"). Cada tipo de entidad es un módulo en tipos/.
 ---
 
 # Crear entidad
@@ -107,6 +107,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - Antes, comprueba con `search_vault.py "<nombre legible>"` que no sea otro nombre de una entidad que ya existe (mira también los nombres parecidos): si lo es, corrige los enlaces en lugar de crear un duplicado.
   - **Con nombre real** (`[[Gran_Sequia]]`, `[[Aldric_Voss]]`): el archivo nuevo se llama **exactamente como el enlace**, para que todos los enlaces existentes la encuentren sin reemplazar nada; el H1 y `aliases` llevan la ortografía real (la del texto del enlace, si lo tiene).
   - **Con nombre de rol** (`<Rol>_de_<Entidad>`, como `[[Madre_de_Aldric_Voss]]`): ponle nombre y, al terminar, reemplaza el enlace en todas las notas (Paso 4).
+- **Profundizar una nota** (`profundizar=<Nota>`, con `relevancia=<n>` si cambia; lo pide el motor o el usuario: «profundiza a Aldric», «sube a Aldric a relevancia 4»): la nota ya existe y gana desarrollo. Ver «Profundizar una nota».
 
 ## Paso 2: contexto y coherencia
 - **Paquete de contexto:** ejecuta `python <directorio de esta skill>/scripts/build_context.py --target <enlace pendiente o entidad principal relacionada>`. Reúne:
@@ -150,6 +151,14 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
 - **`era`** (en los tipos que la tienen): la era a la que pertenece la entidad, la que vivió una persona o en la que surgió un pueblo, una lengua o un lugar. Si ya existe, enlázala (`build_context.py` lista las eras en orden); si no, puede quedar vacía.
 - **Enlaces legibles:** en el cuerpo, todo enlace a una nota cuyo archivo lleva guiones bajos lleva su texto real, porque Obsidian mostraría el nombre del archivo: `[[Reino_de_Ejemplo|Reino de Ejemplo]]`, `la [[Capital_de_Reino_de_Ejemplo|capital]]`. En las tablas, `[[Nota\|texto]]`. En las propiedades, el enlace va sin texto.
 - Escribe la nota en la carpeta que corresponda según `modulo.json` (fija, o según el rol o la categoría). Nunca sobrescribas una nota existente.
+
+### Profundizar una nota
+Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer puede ser hoy un personaje importante. Solo se profundizan las notas en `borrador`; en una nota `canon`, cambiar la relevancia es decisión del usuario.
+1. Lee la nota entera y su contexto (`build_context.py --target <Nota>`), y lo que dicen de ella las notas que la nombran.
+2. Si cambia la relevancia, súbela en el frontmatter. Ejecuta `check_note.py --depth <tipo>:<relevancia>`: las secciones que ahora lleva y no tiene son las que hay que escribir.
+3. Añade esas secciones **en el orden de la plantilla**, con el mismo cuidado que una nota nueva y siguiendo `tipo.md`. **Lo que ya está escrito no se contradice ni se reescribe:** se construye sobre ello. Solo se amplía una sección existente si lo nuevo lo exige (un gancho que remite a un hecho de su historia).
+4. Puede abrir enlaces pendientes nuevos: la diferencia entre el rango de su relevancia nueva y el de la anterior.
+5. Sigue con los pasos 4, 5 y 7 (efectos, validar e informe); la imagen ya existe y no se regenera, salvo que se pida.
 
 ## Paso 4: efectos en el resto de la bóveda
 - **Secretos:** solo si el módulo lo decide (en personaje, con una tirada). Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
