@@ -37,7 +37,8 @@
     "culturas": "mitos",
     "creencias": "mitos",
     "deidades": "mitos",
-    "relacionados": "relacionados"
+    "relacionados": "relacionados",
+    "costumbres": "mitos"
   },
   "relaciones": {
     "culturas": "cultura",

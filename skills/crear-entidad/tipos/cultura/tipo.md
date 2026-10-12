@@ -35,7 +35,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Identidad y valores:** cómo se ven, qué valoran, qué desprecian y sus tabúes. Es el corazón de la ficha: todo lo demás se explica desde aquí.
 - **Estructura social:** familia y parentesco, quién manda y cómo, el papel de la edad, el género y el oficio, y qué pasa con los de fuera y los marginados.
 - **Vida cotidiana:** vivienda, comida, vestimenta y un día corriente, concretos y visuales.
-- **Ritos y festividades:** el nacimiento, el paso a la edad adulta, las uniones, la muerte y sus fiestas, con su fecha si existe el calendario de referencia (o el suyo propio).
+- **Ritos y festividades:** el nacimiento, el paso a la edad adulta, las uniones, la muerte y sus fiestas, con su fecha si existe el calendario de referencia (o el suyo propio). Los que tienen nombre propio y merecen nota van enlazados y en `costumbres`, a su nota o como enlace pendiente de tipo `costumbre`; también sus leyes, tabúes y normas de trato con nombre.
 - **Arte y expresión:** artesanías, música, relatos, símbolos y colores. Sus mitos y leyendas con nota propia, en `mitos`.
 - **Creencias:** de 1 a 3 entradas con su enlace, y cuánto pesan en la vida diaria.
 - **Oficios y economía:** qué hacen, qué producen, qué intercambian y qué les falta.
@@ -65,14 +65,15 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `rivales`: los pueblos que este tiene por rivales; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `instituciones`: sus gobiernos, órdenes o gremios (facciones, que la tienen en sus `culturas`);
   - `figuras`: sus miembros más notables (no hace falta listar a todos los personajes de la cultura);
-  - `mitos` que cuenta: cada uno la tiene en sus `culturas`.
+  - `mitos` que cuenta: cada uno la tiene en sus `culturas`;
+  - `costumbres` que sigue (sus fiestas, ritos, leyes y tabúes con nota propia): cada una la tiene en sus `pueblos`.
 - `relevancia`: 5 si es el pueblo central del foco; 3 o 4 si es importante; 2 si es marginal.
 - `ultima_revision` sin comillas.
 
 ## Coherencia
 - **Especie:** su anatomía, su longevidad y su ciclo vital marcan la cultura (una especie que vive siglos no tiene la prisa de una que vive cuarenta años). Lee la ficha de la especie antes de escribir.
 - **Personajes existentes:** si ya hay personajes de esta cultura, sus costumbres, nombres y oficios deben encajar. Léelos (`build_context.py`).
-- **Reciprocidad:** la especie la lista en `culturas`, cada territorio que exista la lista en `pueblos` y sus aliados que existan, en `aliados`. Sus rivales, no.
+- **Reciprocidad:** la especie la lista en `culturas`, cada territorio que exista la lista en `pueblos`, sus aliados que existan, en `aliados`, y sus costumbres, en `pueblos`. Sus rivales, no.
 
 ## Enlaces pendientes
 Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:

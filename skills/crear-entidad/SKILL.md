@@ -63,7 +63,8 @@ Módulos disponibles:
 - `sistema` ⚙️ — las reglas profundas del mundo: sistemas de poder (magias, dones y pactos), tecnologías, leyes del universo y conceptos. Qué permite, qué no puede hacer nunca, qué cuesta, cómo se aprende y se usa, quién lo controla y qué cambia en la sociedad. Encaja con los pilares de poderes y tecnología de la Ficha; las tradiciones concretas son ramas de una raíz con las reglas comunes. Recíproco con sus practicantes, sus facciones, sus objetos y sus creencias (`sistemas`).
 - `era` ⏳ — eras, edades y periodos de la historia, también los legendarios y los profetizados: cuándo empezaron y terminaron, qué los definió y cómo se recuerdan. Las demás entidades se sitúan en ellas con su propiedad `era`.
 - `evento` 📜 — guerras, batallas, catástrofes, fundaciones, tratados, sucesiones y otros hechos con fecha: causas, desarrollo, participantes, consecuencias y sus versiones enfrentadas. Van en `Guerras_y_Conflictos` o en `Acontecimientos`, según su categoría.
-- `mito` 📖 — mitos de origen, leyendas, profecías, cuentos populares y rumores: el relato con la voz de quien lo cuenta, sus versiones, qué enseña o justifica, cómo se cuenta y qué huella deja. Cuenta lo que se cree, nunca si es cierto; la verdad va en un secreto. Recíproco con las culturas, las creencias y las deidades que lo cuentan o aparecen en él (`mitos`).
+- `mito` 📖 — mitos de origen, leyendas, profecías, cuentos populares y rumores: el relato con la voz de quien lo cuenta, sus versiones, qué enseña o justifica, cómo se cuenta y qué huella deja. Cuenta lo que se cree, nunca si es cierto; la verdad va en un secreto. Recíproco con las culturas, las creencias, las deidades y las costumbres que lo cuentan, aparecen en él o lo recuerdan (`mitos`).
+- `costumbre` 🎉 — leyes, tradiciones, festividades, ritos de paso, tabúes y normas de trato: en qué consiste paso a paso, cuándo y dónde, quién participa, qué significa para quien la sigue (nunca si funciona), qué pasa si se rompe (`rigor`, del 1 al 5), sus variantes y quién la discute. Una festividad lleva su `calendario` y su `fecha`, la misma de la tabla del calendario. Recíproca con sus pueblos, sus creencias y sus mitos (`costumbres`), su calendario (`festividades`) y sus costumbres relacionadas.
 - `calendario` 📅 — cómo se cuenta el tiempo: el año 0, cómo se escriben los años, meses, semana, estaciones y festividades. El de referencia es el eje de la Ficha y da los nombres de las fechas de todas las notas; cada pueblo puede tener el suyo.
 - `secreto` 🔒 — verdades ocultas. También se crean como parte de otras entidades.
 
@@ -180,6 +181,7 @@ El validador comprueba:
 - que la nota no enlace a secretos y que su imagen exista;
 - en un lugar con mapa, su leyenda (números del 1 al N sin repetir ni saltar, orientaciones, conexiones en los dos sentidos, hasta 12 zonas por nivel) y las imágenes de sus ediciones;
 - en un calendario, sus tablas de meses, estaciones y festividades, y en cualquier nota, que `fecha_exacta` exista en el calendario de referencia y sea del año que precisa;
+- en una festividad, que su calendario la tenga en su tabla con la misma fecha (aviso);
 - en una era o un evento, que su situación cuadre con el año actual y que su cronología (o su desarrollo) vaya en orden y dentro de sus fechas.
 
 Corrige cada ERROR y vuelve a ejecutarlo hasta que todas salgan "Correcta". No termines con errores. En lo que escribiste, atiende también los avisos:

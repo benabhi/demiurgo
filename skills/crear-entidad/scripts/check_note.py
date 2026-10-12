@@ -24,6 +24,8 @@ Comprueba:
     conexiones con zonas que existen y en los dos sentidos, como mucho 12 zonas por nivel), y que las
     imágenes de `mapa` existan y vayan embebidas, con `mapa_edicion` y `mapa_zonas` coherentes;
   - en un calendario, las tablas que leen los scripts (meses, estaciones, festividades);
+  - en una costumbre, que solo las festividades lleven `calendario` y `fecha`, y que la fiesta esté en la
+    tabla «Festividades» de su calendario con la misma fecha y un mes que existe (avisos);
   - en los tipos con `tiempo` en su módulo (era, evento), su situación frente al año actual (lo
     que sigue en curso no tiene fin, lo pasado no termina en el futuro, lo profetizado no ha
     empezado) y su cronología dentro de sus fechas y en orden (avisos);
@@ -44,8 +46,8 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DIR,  # noqa: E402
-                       VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title,
+from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DIR,  # noqa: E402
+                       VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title, link_value,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
                        load_modules, malformed_lines, MAP_ITEM_EMPTY_RE, map_applies, map_key_problems, map_rule,
@@ -153,8 +155,41 @@ def quote_separator(body, i):
     return quoted(-1) and quoted(1)
 
 
+def festival_warnings(props, body, calendars):
+    """Avisos de una costumbre con calendario: solo las festividades llevan `calendario` y `fecha`, la fecha
+    usa los meses de ese calendario y la fiesta está en su tabla «Festividades» con la misma fecha."""
+    warnings = []
+    category = first(props.get("categoria"))
+    target = link_value(first(props.get("calendario")) or "")
+    date = first(props.get("fecha"))
+    if category != "festividad":
+        if target or date:
+            warnings.append("`calendario` y `fecha` son de las festividades: en esta categoría quedan vacíos y el "
+                            "texto dice cuándo se cumple")
+        return warnings
+    if not target:
+        return warnings
+    calendar = next((c for c in calendars if c["nombre"].lower() == target.lower()), None)
+    if calendar is None:
+        return warnings  # el calendario aún es un enlace pendiente
+    title = next((display_title(line) for line in body if line.startswith("# ")), "")
+    own = {normalize(title)} | {normalize(unquote(a)) for a in props.get("aliases", [])}
+    row = next((f for f in calendar["festividades"] if normalize(f["nombre"]) in own), None)
+    match = DAY_MONTH_RE.match(date) if date else None
+    if match and normalize(match.group(2)) not in {normalize(m["nombre"]) for m in calendar["meses"]}:
+        warnings.append(f"`fecha` («{date}»): «{match.group(2)}» no es un mes de [[{target}]]")
+    if row is None:
+        warnings.append(f"la festividad no está en la tabla «Festividades» de [[{target}]]: añade su fila"
+                        + (f" con su fecha («{date}»)" if date else "") + " y su enlace en `festividades`")
+    elif date and normalize(row["fecha"]) != normalize(date):
+        warnings.append(f"`fecha` («{date}») no coincide con la de la tabla de [[{target}]] («{row['fecha']}»)")
+    elif not date:
+        warnings.append(f"falta `fecha`: en la tabla de [[{target}]] es «{row['fecha']}»")
+    return warnings
+
+
 def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calendar=None, gaps=None,
-          known_terms=None, glossary_entities=None):
+          known_terms=None, glossary_entities=None, calendars=None):
     errors, warnings = [], []
     text = path.read_text(encoding="utf-8")
     frontmatter, body = split_note(text)
@@ -245,6 +280,10 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     # Calendario: las tablas que leen los scripts (meses, estaciones, festividades)
     if note_type == "calendario":
         errors += parse_calendar(text, path.stem)["errores"]
+
+    # Festividad: su calendario la tiene en su tabla «Festividades», con la misma fecha
+    if note_type == "costumbre":
+        warnings += festival_warnings(props, body, calendars or [])
 
     # Tiempo (era, evento): su situación frente al año actual y su cronología dentro de sus fechas
     if module.get("tiempo"):
@@ -545,7 +584,7 @@ def main():
             print(f"\n{shown} ({note_type or 'sin tipo'})\n  Nota interna (no es una entidad): no se valida.")
             continue
         errors, warnings, note_type = check(path, vault, modules, names, paths, md_by_stem, world_year, calendar,
-                                            gaps, known_terms, glossary_entities)
+                                            gaps, known_terms, glossary_entities, calendars)
         print(f"\n{shown} ({note_type or 'sin tipo'})")
         for error in errors:
             print(f"  ERROR: {error}")

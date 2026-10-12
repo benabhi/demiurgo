@@ -256,11 +256,13 @@ Etapas:
   - **Profecías:** `cumplimiento` y `plazo`, que solo valen en ellas (regla `solo_si`). El auditor avisa de una profecía pendiente con el plazo vencido.
   - **La prueba dejó dos ajustes:** el validador acepta un relato citado en varios párrafos, y el detector cuenta como mención de otra entidad un nombre que la nota usa para enlazarla, aunque coincida con su propio título.
   - **Imagen:** la escena clave del relato tal como la imaginan quienes lo cuentan, apaisado (`Escenas`, `Mito_`); técnicas sugeridas: `tapiz` o `manuscrito`.
-- [ ] **20. `costumbre` 🎉 — leyes de los pueblos, tradiciones, festividades y tabúes.**
-  - **Carpeta:** `Leyes_y_Costumbres`.
-  - **Ficha:** ámbito, origen, vigencia; en qué consiste; cuándo y dónde; quién participa; significado; castigos; variantes.
-  - **Completa** las festividades del calendario y las costumbres del mito.
-  - **Imagen:** la costumbre en plena práctica, apaisado (`Escenas`).
+- [ ] **20. `costumbre` 🎉 — leyes de los pueblos, tradiciones, festividades, ritos de paso, tabúes y normas de trato.** Hecho; falta la prueba del usuario.
+  - **Carpeta:** `30_Sociedad_y_Cultura/Leyes_y_Costumbres`.
+  - **Ficha:** en qué consiste (paso a paso, con gestos, objetos y comidas); cuándo y dónde; quién participa; qué significa para quien la sigue (nunca si funciona); normas y castigos (`rigor`, del 1 al 5); cómo se vive; variantes; quién la defiende y quién la discute; origen e historia.
+  - **Festividades y calendario:** una festividad lleva su `calendario` y su `fecha` («15 de <Mes>» o una regla movible), la misma de la tabla «Festividades» del calendario; `check_note.py` avisa si no coinciden. Completa las `festividades` del calendario y las `costumbres` del mito.
+  - **Recíproca** con los pueblos y las creencias (que ganan la propiedad `costumbres`), los mitos, el calendario y sus costumbres relacionadas.
+  - **Motor:** tabla `Costumbre.md` (categorías que se combinan) y los paquetes «Fiesta de un pueblo» y «Ley y quien la impone».
+  - **Imagen:** la costumbre en plena práctica, en su momento más reconocible, apaisado (`Escenas`, `Costumbre_`).
 - [ ] **21. `ruta` 🧭 — caminos, rutas, pasos y portales** (familia `lugar`).
   - **Carpeta:** `Rutas_y_Conexiones`.
   - **Ficha:** origen, destino, longitud; tramos y paradas; peligros y controles; quién la usa y quién la mantiene.

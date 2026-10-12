@@ -567,7 +567,7 @@ def build_report(vault, prefix, changes):
                                              for e in mapped], LOG_LISTED) + ".")
     def pending_name(gap):
         """Nombre legible de un enlace pendiente: el texto con que lo enlaza una nota si es el mismo nombre con
-        sus tildes («Península de Valtara»); si no, el del enlace, con espacios."""
+        sus tildes («Península del Ámbar»); si no, el del enlace, con espacios."""
         plain = gap["link"].replace("_", " ")
         for path in gap["notes"]:
             text = read_text(files[path]) if path in files else ""

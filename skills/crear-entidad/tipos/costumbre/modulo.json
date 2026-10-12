@@ -1,0 +1,53 @@
+{
+  "tipo": "costumbre",
+  "familia": "costumbre",
+  "emoji": "🎉",
+  "huecos_propios": {
+    "min": 1,
+    "max": 6
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Cómo se vive": 2,
+    "Variantes": 3,
+    "Quién la defiende y quién la discute": 3
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Leyes_y_Costumbres"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "escalas": {
+    "rigor": [1, 5]
+  },
+  "valores": {
+    "categoria": ["ley", "tradicion", "festividad", "rito", "tabu", "norma", "otro"],
+    "alcance": ["local", "regional", "continental", "mundial"],
+    "situacion": ["vigente", "en_declive", "prohibida", "olvidada", "recuperada"]
+  },
+  "reciprocas": {
+    "pueblos": "costumbres",
+    "creencias": "costumbres",
+    "mitos": "costumbres",
+    "calendario": "festividades",
+    "relacionadas": "relacionadas"
+  },
+  "relaciones": {
+    "pueblos": "cultura",
+    "creencias": "creencia",
+    "facciones": "faccion",
+    "figuras": "personaje",
+    "lugares": "lugar",
+    "calendario": "calendario",
+    "mitos": "mito",
+    "eventos": "evento",
+    "objetos": "objeto",
+    "relacionadas": "costumbre",
+    "era": "era"
+  }
+}

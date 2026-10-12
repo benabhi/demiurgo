@@ -28,6 +28,7 @@ objetos: []
 fenomenos: []
 sistemas: []
 mitos: []
+costumbres: []
 idiomas: []
 creencia_madre: ""
 ramas: []

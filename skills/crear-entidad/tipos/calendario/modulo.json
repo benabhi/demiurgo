@@ -30,7 +30,8 @@
     "culturas": "calendario",
     "calendario_base": "derivados",
     "derivados": "calendario_base",
-    "eras": "calendarios"
+    "eras": "calendarios",
+    "festividades": "calendario"
   },
   "relaciones": {
     "culturas": "cultura",

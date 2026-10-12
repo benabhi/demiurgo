@@ -37,6 +37,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | criatura | cuerpo entero en su hábitat, en su pose característica | `Wide 16:9 landscape format` | `Ilustraciones/Seres` | `Criatura_` |
 | sistema | el poder, la técnica o la ley en uso, con su efecto y su precio | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Sistema_` |
 | mito | la escena clave del relato, tal como la imaginan quienes lo cuentan | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Mito_` |
+| costumbre | la costumbre en plena práctica, en su momento más reconocible | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Costumbre_` |
 | creencia | su símbolo sagrado | `Square 1:1 format` | `Iconos` | `Simbolo_` |
 | era | escena alegórica de la era | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Era_` |
 | evento | escena dramática del momento clave | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Evento_` |
@@ -212,6 +213,22 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 | LUZ | La luz y el ánimo | `cold storm light breaking through low clouds, chaos and awe` |
 
 **Un instante, no un resumen:** la imagen congela el momento clave; la alegoría que resume una época es la de la era. Nada gráfico: la violencia se sugiere (la tensión, el movimiento, las consecuencias), no se muestra.
+
+## costumbre — en plena práctica
+```
+{ESTILO}. Wide scene of a custom of an invented world being practiced, {ENCUADRE}. Custom: {SUJETO}. Participants: {PARTICIPANTES}. Setting: {ESCENARIO}. Gestures and objects: {ELEMENTOS}. Lighting and mood: {LUZ}. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| ENCUADRE | Desde dónde se ve | `seen from the edge of the crowd, at eye level` |
+| SUJETO | Qué se hace, sin su nombre | `a harvest festival in which the last sheaves are burned on a hilltop` |
+| PARTICIPANTES | Quiénes la cumplen, sin nombres: tipos, atuendos y gestos | `villagers in patched wool cloaks passing torches hand to hand, children on their parents' shoulders` |
+| ESCENARIO | Dónde se cumple | `a bare hilltop above a valley of stubble fields at dusk` |
+| ELEMENTOS | El gesto, el objeto o la comida que la distinguen | `a towering pyre of straw shaped like a figure, clay bowls of dark bread set at its foot` |
+| LUZ | La luz y el ánimo | `firelight against a cold violet sky, solemn and joyful at once` |
+
+**Su momento más reconocible:** la fiesta en su punto álgido, el rito en su gesto central, la ley al cumplirse o al castigarse, el tabú en la señal que lo recuerda (la puerta que nadie cruza, el plato que nadie toca). Las figuras, sin protagonismo individual: la costumbre es el sujeto. Nada gráfico, aunque haya castigo o sacrificio: se sugiere.
 
 ## asentamiento — llegada por el camino
 ```

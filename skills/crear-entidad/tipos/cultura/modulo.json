@@ -49,7 +49,8 @@
     "aliados": "aliados",
     "idiomas": "culturas",
     "calendario": "culturas",
-    "mitos": "culturas"
+    "mitos": "culturas",
+    "costumbres": "pueblos"
   },
   "relaciones": {
     "especie": "especie",
@@ -58,6 +59,7 @@
     "calendario": "calendario",
     "creencias": "creencia",
     "mitos": "mito",
+    "costumbres": "costumbre",
     "cultura_madre": "cultura",
     "ramas": "cultura",
     "aliados": "cultura",

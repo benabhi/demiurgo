@@ -53,7 +53,8 @@
     "ramas": "creencia_madre",
     "deidades": "creencias",
     "sistemas": "creencias",
-    "mitos": "creencias"
+    "mitos": "creencias",
+    "costumbres": "creencias"
   },
   "relaciones": {
     "deidades": "deidad",
@@ -68,6 +69,7 @@
     "fenomenos": "fenomeno",
     "sistemas": "sistema",
     "mitos": "mito",
+    "costumbres": "costumbre",
     "idiomas": "idioma",
     "creencia_madre": "creencia",
     "ramas": "creencia",

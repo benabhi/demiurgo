@@ -88,7 +88,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `criaturas`, `lugares` y `objetos` que aparecen en él (el monstruo, la cueva, la espada);
   - `eventos`: los hechos reales que lo inspiraron o, en una profecía, el que la cumplió;
   - `fenomenos` y `sistemas` cuyo origen o funcionamiento explica a su manera;
-  - `costumbres` que lo recuerdan y `obras` que lo cuentan;
+  - `costumbres` que lo recuerdan o que justifica: cada una lo tiene en sus `mitos`; y `obras` que lo cuentan;
   - `relacionados`: otros mitos con los que se cruza (el principio y el final de una misma historia, dos versiones enemigas); recíproca;
   - `epoca`: la era en que ocurre lo que cuenta (a menudo, una era legendaria o profetizada);
   - `era`: la era en que empezó a contarse.
@@ -97,7 +97,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 
 ## Coherencia
 - **Lo que ya existe:** las notas que ya lo nombran (como enlace pendiente) y las entidades que aparecen en él (sus dioses, sus héroes, sus lugares) cuentan cosas de él. Léelas (`build_context.py`): el relato puede deformar lo que dicen, pero la nota lo señala.
-- **Reciprocidad:** sus culturas, sus creencias y sus deidades que ya existen lo listan en sus `mitos`; sus mitos relacionados, en sus `relacionados`.
+- **Reciprocidad:** sus culturas, sus creencias, sus deidades y sus costumbres que ya existen lo listan en sus `mitos`; sus mitos relacionados, en sus `relacionados`.
 - **Glosario:** registra su nombre (como mito), sus otros nombres y las palabras o fórmulas que nacen de él (un dicho, un nombre que nadie pone a sus hijos).
 
 ## Enlaces pendientes
@@ -119,6 +119,6 @@ Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 3 o 4, el mito guard
 - [ ] Si es una profecía, tiene `cumplimiento`; si no lo es, `cumplimiento` y `plazo` quedan vacíos.
 - [ ] No calca un mito del mundo real.
 - [ ] Si no es un detalle y no lo pidió el usuario, quedó como `Confirmar: …`.
-- [ ] Sus culturas, sus creencias, sus deidades y sus mitos relacionados que ya existen lo listan.
+- [ ] Sus culturas, sus creencias, sus deidades, sus costumbres y sus mitos relacionados que ya existen lo listan.
 - [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace (también en el relato) y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

@@ -6,7 +6,7 @@ Lo que la gente cree y cómo lo vive: religiones, cultos, fes populares y supers
 - la iglesia, la orden o la secta que la administra (`faccion`): la fe es lo que se cree; la organización, quienes la gobiernan;
 - un dios o una entidad superior (`deidad`): la creencia es lo que sus fieles dicen de él, no lo que es;
 - un mito o una leyenda concretos (`mito`): un relato que la fe cuenta, no la fe;
-- una costumbre o una fiesta con su historia propia (`costumbre`, más adelante);
+- una costumbre, un rito o una fiesta con su historia propia (`costumbre`): la fe la manda, y la costumbre la enlaza;
 - un pueblo (`cultura`): una cultura tiene creencias, pero no es una.
 
 ## Identidad del tipo
@@ -46,7 +46,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Clero:** de 2 a 5 rangos, del más alto al más bajo, con quién los ocupa y qué hacen; si no tiene clero (una fe popular, una filosofía), una fila que diga quién guarda la tradición.
 - **Lugares sagrados:** de 1 a 4, con su enlace y por qué lo son. El principal va en `centro`.
 - **Símbolos y textos:** el símbolo (lo que muestra la imagen), los colores, gestos y señales con que se reconoce a los fieles, sus textos sagrados (si los hay y cómo se transmiten, según la técnica de la Ficha: copiados a mano, grabados, recitados de memoria) y su lengua sagrada, si tiene una (en `idiomas`).
-- **Festividades:** de 1 a 4 filas. Si existe el calendario de referencia, «Cuándo» usa sus nombres de meses y, si la fiesta ya está entre las suyas, el mismo nombre.
+- **Festividades:** de 1 a 4 filas. Si existe el calendario de referencia, «Cuándo» usa sus nombres de meses y, si la fiesta ya está entre las suyas, el mismo nombre. Las fiestas y los ritos con nombre propio van enlazados y en `costumbres`, a su nota o como enlace pendiente de tipo `costumbre`.
 - **Moral:** sus virtudes, sus pecados, sus tabúes y cómo castiga y perdona.
 - **Ramas y herejías:** las corrientes que salieron de ella o contra ella, con su enlace (en `ramas`) y en qué se separan. Si no tiene, una línea que diga por qué (es joven, es pequeña, persigue a quien disiente).
 - **Relación con el poder:** cómo se lleva con quien gobierna (lo sostiene, lo tolera, lo combate, gobierna ella) y con las demás fes (en `rivales`, las que chocan con ella).
@@ -68,6 +68,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `fenomenos` que explica o venera: cada uno la tiene en sus `creencias`;
   - `sistemas` que practica (sus milagros, si funcionan), venera o condena: cada uno la tiene en sus `creencias`;
   - `mitos` que cuenta como sagrados o que condena: cada uno la tiene en sus `creencias`;
+  - `costumbres` que manda, bendice o condena (sus ritos, sus fiestas, sus tabúes): cada una la tiene en sus `creencias`;
   - `idiomas`: su lengua sagrada;
   - `creencia_madre` y `ramas`: de qué fe nació y qué ramas o herejías salieron de ella; recíprocas;
   - `rivales`: las fes con que choca, vistas desde esta; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
@@ -79,7 +80,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 ## Coherencia
 - **La Ficha:** sus dioses, sus prodigios, su técnica y su tono encajan con la Ficha. El conflicto central casi siempre tiene una explicación en la fe (un castigo, una prueba, un enemigo, una mentira de los poderosos), y esa explicación es lo que más la diferencia de las demás.
 - **Lo que ya existe:** sus fieles, sus lugares, su clero y las notas que ya la mencionan (como enlace pendiente) deben encajar con lo que dicen. Léelas (`build_context.py`). Si una cultura ya cuenta en qué cree, la fe no la contradice.
-- **Reciprocidad:** su fundador, sus figuras, sus lugares, sus zonas, sus culturas, sus facciones, sus objetos, sus fenómenos y sus ramas que ya existen la listan en su propiedad inversa. Sus rivales, no.
+- **Reciprocidad:** su fundador, sus figuras, sus lugares, sus zonas, sus culturas, sus facciones, sus objetos, sus fenómenos, sus costumbres y sus ramas que ya existen la listan en su propiedad inversa. Sus rivales, no.
 - **Glosario:** registra su nombre, sus otros nombres, sus rangos y sus términos propios; sus dioses y sus festividades, con su tipo de entidad.
 
 ## Enlaces pendientes

@@ -20,6 +20,7 @@ idiomas: []
 calendario: ""
 creencias: []
 mitos: []
+costumbres: []
 cultura_madre: ""
 ramas: []
 aliados: []

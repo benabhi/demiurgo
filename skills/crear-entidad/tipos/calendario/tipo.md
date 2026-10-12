@@ -66,7 +66,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `culturas` que lo usan (recíproca con su `calendario`) y `regiones` donde rige;
   - `evento_cero`: el hecho que marca su año 0;
-  - `eras` que cuenta o que lo marcaron, y `festividades` con nota propia;
+  - `eras` que cuenta o que lo marcaron, y `festividades` con nota propia (cada una lo tiene en su `calendario`, con la misma fecha que en la tabla);
   - `guardianes`: quienes lo guardan o lo corrigen (una orden, un templo, un gremio);
   - `calendario_base` y `derivados`: de qué calendario nació y cuáles nacieron de él; recíprocas.
 - `relevancia`: 5 el de referencia; 3 el de un pueblo o una fe; 2 uno marginal o en desuso.
@@ -83,7 +83,7 @@ Cuando existe el calendario de referencia:
 - **Sonido:** si los nombres van en la lengua de una cultura, salen de su perfil de nombres o de su idioma.
 - **Lo que ya existe:** las fechas y las fiestas que ya mencionan otras notas (`build_context.py`) deben caber en este calendario; si alguna no cabe, menciónalo en el informe y no la cambies.
 - **El conflicto central:** si el mundo tiene uno, el calendario suele llevar su huella (un mes de duelo, un año 0 marcado por él, una fiesta para conjurarlo).
-- **Reciprocidad:** cada cultura que ya existe y lo usa lo lista en `calendario`.
+- **Reciprocidad:** cada cultura que ya existe y lo usa lo lista en `calendario`, y cada festividad que ya tiene nota, también.
 - **Glosario:** registra el nombre del calendario, su sufijo, los nombres de los meses (como términos) y las festividades (como costumbres).
 
 ## Enlaces pendientes

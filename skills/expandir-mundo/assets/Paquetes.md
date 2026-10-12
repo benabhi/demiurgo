@@ -96,6 +96,18 @@ Peso: 2
 - lugar: 1 (donde ocurrió, o donde dicen que ocurrió)
 - personaje: 1 (quien la mantiene viva)
 
+## Fiesta de un pueblo
+Peso: 2
+- costumbre: 1 (una festividad o un rito del pueblo de la región foco)
+- mito: 1 (el relato que la justifica)
+- lugar: 1 (donde se celebra)
+
+## Ley y quien la impone
+Peso: 1
+- costumbre: 1 (una ley o un tabú, con su castigo)
+- faccion: 1 (quien la dicta y la hace cumplir)
+- personaje: 1 (quien la rompió, o quien la paga)
+
 ## Profecía
 Peso: 1
 - mito: 1 (una profecía que se espera en la región foco)
