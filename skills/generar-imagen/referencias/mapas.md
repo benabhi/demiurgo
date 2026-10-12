@@ -80,7 +80,7 @@ Correcciones, en el mismo chat y nombrando el problema exacto:
 - `Remove the title text at the top. Change nothing else.`
 
 ## Guardar y enlazar
-- **Carpeta:** `00_Sistema/02_Activos/Mapas`. La primera vez, créala con su `README.md` y regístrala en la tabla «Carpetas añadidas por skills» de la Guía de Organización: `| 00_Sistema/02_Activos/Mapas | Mapas de los lugares (Mapa_<Nota>.<ext>, Mapa_<Nota>_Nivel_<n>.<ext>) | generar-imagen |`.
+- **Carpeta:** `00_Sistema/02_Activos/Mapas`, que viene con la estructura inicial de la bóveda: no se registra. Solo si no existe (una bóveda anterior), créala con su `README.md` y regístrala en la tabla «Carpetas añadidas por skills» de la Guía de Organización: `| 00_Sistema/02_Activos/Mapas | Mapas de los lugares (Mapa_<Nota>.<ext>, Mapa_<Nota>_Nivel_<n>.<ext>) | generar-imagen |`.
 - **Nombre:** `Mapa_<Nota>`, y en una mazmorra de varios niveles, `Mapa_<Nota>_Nivel_<n>` desde el nivel 2. Una edición nueva no sobrescribe: `fetch_download.py` le pone `_v2`, `_v3`…, y las anteriores se conservan.
 - **En la nota:**
   - `mapa`: la lista de imágenes de la edición vigente, una por nivel y en orden (`- "[[Mapa_Cripta_Honda.jpg]]"`). En una edición nueva, cambia solo las de los niveles redibujados.
