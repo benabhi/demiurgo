@@ -1,0 +1,59 @@
+{
+  "tipo": "cultura",
+  "familia": "cultura",
+  "emoji": "🎭",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 3,
+    "max": 10
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Pueblos_y_Culturas"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "valores": {
+    "modo_de_vida": [
+      "sedentario",
+      "nomada",
+      "seminomada",
+      "disperso"
+    ],
+    "situacion": [
+      "prospera",
+      "estable",
+      "en_declive",
+      "amenazada",
+      "desaparecida",
+      "desconocida"
+    ]
+  },
+  "reciprocas": {
+    "especie": "culturas",
+    "territorios": "pueblos",
+    "cultura_madre": "ramas",
+    "ramas": "cultura_madre",
+    "aliados": "aliados",
+    "rivales": "rivales",
+    "idiomas": "culturas",
+    "calendario": "culturas",
+    "mitos": "culturas"
+  },
+  "relaciones": {
+    "especie": "especie",
+    "territorios": "lugar",
+    "idiomas": "idioma",
+    "calendario": "calendario",
+    "creencias": "creencia",
+    "mitos": "mito",
+    "cultura_madre": "cultura",
+    "ramas": "cultura",
+    "aliados": "cultura",
+    "rivales": "cultura",
+    "instituciones": "faccion",
+    "figuras": "personaje",
+    "era": "era"
+  }
+}

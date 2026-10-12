@@ -1,0 +1,57 @@
+{
+  "tipo": "linaje",
+  "familia": "linaje",
+  "emoji": "🌳",
+  "huecos_propios": {
+    "min": 3,
+    "max": 10
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Instituciones_y_Linajes"
+  },
+  "fechas": [
+    "fundacion",
+    "extincion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_auge", "activa", "en_declive", "caida"],
+    "pasado": "extinta"
+  },
+  "escalas": {
+    "poder": [1, 5]
+  },
+  "valores": {
+    "categoria": ["dinastia", "casa_noble", "clan", "familia", "estirpe", "otro"],
+    "situacion": ["en_auge", "activa", "en_declive", "caida", "extinta"],
+    "alcance": ["mundial", "regional", "local"]
+  },
+  "reciprocas": {
+    "fundador": "linaje",
+    "cabeza": "linaje",
+    "heredero": "linaje",
+    "miembros": "linaje",
+    "linaje_madre": "ramas",
+    "ramas": "linaje_madre",
+    "aliados": "aliados",
+    "rivales": "rivales"
+  },
+  "relaciones": {
+    "fundador": "personaje",
+    "cabeza": "personaje",
+    "heredero": "personaje",
+    "miembros": "personaje",
+    "sede": "lugar",
+    "dominios": "lugar",
+    "linaje_madre": "linaje",
+    "ramas": "linaje",
+    "aliados": "linaje",
+    "rivales": "linaje",
+    "facciones": "faccion",
+    "culturas": "cultura",
+    "creencias": "creencia",
+    "objetos": "objeto",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "tipo": "region",
+  "familia": "lugar",
+  "completa": [
+    "region",
+    "region_padre",
+    "vecinos",
+    "zonas_afectadas",
+    "regiones",
+    "territorios",
+    "ubicacion",
+    "lugares",
+    "zonas",
+    "dominios",
+    "habitat"
+  ],
+  "emoji": "🗺️",
+  "huecos_propios": {
+    "min": 3,
+    "max": 10
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "fisica": "10_Mundo/Grandes_Regiones",
+      "politica": "10_Mundo/Paises_y_Territorios",
+      "plano": "70_Sistemas_y_Cosmologia/Planos_y_Dimensiones"
+    }
+  },
+  "fechas": [],
+  "reciprocas": {
+    "vecinos": "vecinos",
+    "fenomenos": "zonas_afectadas",
+    "especies": "regiones",
+    "pueblos": "territorios",
+    "asentamientos": "region",
+    "capital": "region",
+    "criaturas": "habitat"
+  },
+  "relaciones": {
+    "region_padre": "region",
+    "vecinos": "region",
+    "capital": "lugar",
+    "asentamientos": "lugar",
+    "lugares_notables": "lugar",
+    "rutas": "ruta",
+    "pueblos": "cultura",
+    "especies": "especie",
+    "control": "faccion",
+    "creencias": "creencia",
+    "criaturas": "criatura",
+    "recursos": "material",
+    "fenomenos": "fenomeno",
+    "era": "era"
+  }
+}

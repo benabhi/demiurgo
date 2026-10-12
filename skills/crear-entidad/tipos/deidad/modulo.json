@@ -1,0 +1,39 @@
+{
+  "tipo": "deidad",
+  "familia": "deidad",
+  "emoji": "✨",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 2,
+    "max": 6
+  },
+  "carpeta": {
+    "fija": "20_Personajes/Deidades_y_Entidades"
+  },
+  "fechas": [],
+  "valores": {
+    "naturaleza": ["dios", "semidios", "espiritu", "demonio", "ancestro", "entidad", "otro"],
+    "situacion": ["activa", "distante", "dormida", "muerta", "olvidada", "desconocida"]
+  },
+  "reciprocas": {
+    "creencias": "deidades",
+    "parientes": "parientes",
+    "aliados": "aliados",
+    "rivales": "rivales",
+    "criaturas": "deidades",
+    "mitos": "deidades"
+  },
+  "relaciones": {
+    "creencias": "creencia",
+    "parientes": "deidad",
+    "aliados": "deidad",
+    "rivales": "deidad",
+    "elegidos": "personaje",
+    "lugares_sagrados": "lugar",
+    "manifestaciones": "evento",
+    "fenomenos": "fenomeno",
+    "objetos": "objeto",
+    "criaturas": "criatura",
+    "mitos": "mito"
+  }
+}

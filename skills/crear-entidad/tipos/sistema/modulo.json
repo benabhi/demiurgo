@@ -1,0 +1,65 @@
+{
+  "tipo": "sistema",
+  "familia": "sistema",
+  "emoji": "⚙️",
+  "huecos_propios": {
+    "min": 2,
+    "max": 7
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "magia": "70_Sistemas_y_Cosmologia/Sistemas_de_Poder",
+      "don": "70_Sistemas_y_Cosmologia/Sistemas_de_Poder",
+      "pacto": "70_Sistemas_y_Cosmologia/Sistemas_de_Poder",
+      "tecnologia": "70_Sistemas_y_Cosmologia/Tecnologia",
+      "ley": "70_Sistemas_y_Cosmologia/Leyes_del_Universo",
+      "concepto": "70_Sistemas_y_Cosmologia/Conceptos_Fundamentales",
+      "otro": "70_Sistemas_y_Cosmologia/Conceptos_Fundamentales"
+    }
+  },
+  "fechas": [
+    "aparicion",
+    "desaparicion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_auge", "vigente", "en_declive", "legendario"],
+    "pasado": "perdido"
+  },
+  "valores": {
+    "categoria": ["magia", "don", "pacto", "tecnologia", "ley", "concepto", "otro"],
+    "alcance": ["local", "regional", "continental", "mundial", "cosmico"],
+    "difusion": ["raro", "escaso", "comun", "universal"],
+    "situacion": ["en_auge", "vigente", "en_declive", "legendario", "perdido"]
+  },
+  "reciprocas": {
+    "practicantes": "sistemas",
+    "facciones": "sistemas",
+    "objetos": "sistemas",
+    "creencias": "sistemas",
+    "sistema_padre": "ramas",
+    "ramas": "sistema_padre",
+    "opuestos": "opuestos"
+  },
+  "relaciones": {
+    "practicantes": "personaje",
+    "figuras": "personaje",
+    "facciones": "faccion",
+    "objetos": "objeto",
+    "creencias": "creencia",
+    "sistema_padre": "sistema",
+    "ramas": "sistema",
+    "opuestos": "sistema",
+    "culturas": "cultura",
+    "especies": "especie",
+    "deidades": "deidad",
+    "fenomenos": "fenomeno",
+    "afecciones": "afeccion",
+    "materiales": "material",
+    "lugares": "lugar",
+    "obras": "obra",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

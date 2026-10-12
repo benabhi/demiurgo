@@ -1,0 +1,62 @@
+{
+  "tipo": "criatura",
+  "familia": "criatura",
+  "emoji": "🐺",
+  "huecos_propios": {
+    "min": 2,
+    "max": 8
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "fauna": "50_Naturaleza/Fauna",
+      "bestia": "50_Naturaleza/Criaturas_y_Monstruos",
+      "monstruo": "50_Naturaleza/Criaturas_y_Monstruos",
+      "aberracion": "50_Naturaleza/Criaturas_y_Monstruos",
+      "no_muerto": "50_Naturaleza/Criaturas_y_Monstruos",
+      "espiritu": "50_Naturaleza/Criaturas_y_Monstruos",
+      "constructo": "50_Naturaleza/Criaturas_y_Monstruos",
+      "otro": "50_Naturaleza/Criaturas_y_Monstruos"
+    }
+  },
+  "fechas": [
+    "aparicion",
+    "extincion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["comun", "escasa", "rara", "legendaria"],
+    "pasado": "extinta"
+  },
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "categoria": ["fauna", "bestia", "monstruo", "aberracion", "no_muerto", "espiritu", "constructo", "otro"],
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "tamano": ["diminuto", "pequeno", "mediano", "grande", "enorme", "colosal"],
+    "dieta": ["herbivora", "carnivora", "omnivora", "carronera", "parasita", "otra"],
+    "sociabilidad": ["solitaria", "en_pareja", "en_manada", "en_enjambre", "colonial"],
+    "actividad": ["diurna", "nocturna", "crepuscular", "constante"],
+    "situacion": ["comun", "escasa", "rara", "legendaria", "extinta"]
+  },
+  "reciprocas": {
+    "habitat": "criaturas",
+    "fenomenos": "criaturas",
+    "afecciones": "criaturas",
+    "deidades": "criaturas",
+    "parientes": "parientes"
+  },
+  "relaciones": {
+    "habitat": "lugar",
+    "fenomenos": "fenomeno",
+    "afecciones": "afeccion",
+    "parientes": "criatura",
+    "deidades": "deidad",
+    "creencias": "creencia",
+    "materiales": "material",
+    "cazadores": "cualquiera",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "tipo": "especie",
+  "familia": "especie",
+  "emoji": "🧬",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 3,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "50_Naturaleza/Especies_Inteligentes"
+  },
+  "fechas": [],
+  "escalas": {
+    "longevidad": [
+      1,
+      1000000
+    ],
+    "madurez": [
+      0,
+      100000
+    ]
+  },
+  "valores": {
+    "naturaleza": [
+      "natural",
+      "sobrenatural",
+      "artificial",
+      "desconocida"
+    ],
+    "situacion": [
+      "prospera",
+      "estable",
+      "en_declive",
+      "amenazada",
+      "extinta",
+      "desconocida"
+    ]
+  },
+  "reciprocas": {
+    "regiones": "especies",
+    "relacionadas": "relacionadas",
+    "culturas": "especie",
+    "idiomas": "especies",
+    "afecciones": "especies"
+  },
+  "relaciones": {
+    "regiones": "lugar",
+    "culturas": "cultura",
+    "idiomas": "idioma",
+    "creencias": "creencia",
+    "relacionadas": "especie",
+    "afecciones": "afeccion",
+    "era": "era"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "tipo": "asentamiento",
+  "familia": "lugar",
+  "completa": [
+    "lugar_nacimiento",
+    "residencia",
+    "ubicacion_actual",
+    "capital",
+    "asentamientos",
+    "territorios",
+    "vecinos",
+    "ubicacion",
+    "lugares",
+    "zonas_afectadas",
+    "sede",
+    "zonas",
+    "centro",
+    "dominios"
+  ],
+  "emoji": "🏘️",
+  "huecos_propios": {
+    "min": 3,
+    "max": 10
+  },
+  "carpeta": {
+    "fija": "10_Mundo/Ciudades_y_Asentamientos"
+  },
+  "fechas": [
+    "fundacion",
+    "abandono"
+  ],
+  "fecha_exacta": "fundacion",
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["prospera", "estable", "en_declive", "amenazada"],
+    "pasado": "abandonada"
+  },
+  "valores": {
+    "categoria": ["metropoli", "ciudad", "villa", "aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "otro"],
+    "situacion": ["prospera", "estable", "en_declive", "amenazada", "abandonada"]
+  },
+  "reciprocas": {
+    "region": "asentamientos",
+    "vecinos": "vecinos",
+    "pueblos": "territorios",
+    "fenomenos": "zonas_afectadas",
+    "lugares_notables": "ubicacion"
+  },
+  "relaciones": {
+    "region": "lugar",
+    "vecinos": "lugar",
+    "rutas": "ruta",
+    "lugares_notables": "lugar",
+    "gobierno": "faccion",
+    "gobernante": "personaje",
+    "facciones": "faccion",
+    "figuras": "personaje",
+    "pueblos": "cultura",
+    "creencias": "creencia",
+    "fenomenos": "fenomeno",
+    "era": "era"
+  }
+}

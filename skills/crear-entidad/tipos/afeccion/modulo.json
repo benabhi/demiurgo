@@ -1,0 +1,48 @@
+{
+  "tipo": "afeccion",
+  "familia": "afeccion",
+  "emoji": "🦠",
+  "huecos_propios": {
+    "min": 2,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "50_Naturaleza/Enfermedades_y_Afecciones"
+  },
+  "fechas": [
+    "aparicion",
+    "erradicacion"
+  ],
+  "tiempo": {
+    "propiedad": "prevalencia",
+    "presente": ["esporadica", "endemica", "epidemica", "latente"],
+    "pasado": "erradicada"
+  },
+  "escalas": {
+    "gravedad": [1, 5]
+  },
+  "valores": {
+    "categoria": ["enfermedad", "plaga", "mutacion", "corrupcion", "maldicion", "adiccion", "locura", "otro"],
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "contagio": ["no_contagiosa", "por_contacto", "por_el_aire", "por_fluidos", "por_heridas", "por_vector",
+                 "hereditaria", "otro"],
+    "prevalencia": ["esporadica", "endemica", "epidemica", "latente", "erradicada"]
+  },
+  "reciprocas": {
+    "especies": "afecciones",
+    "fenomenos": "afecciones",
+    "afectados": "afecciones",
+    "criaturas": "afecciones"
+  },
+  "relaciones": {
+    "fenomenos": "fenomeno",
+    "especies": "especie",
+    "criaturas": "criatura",
+    "afectados": "personaje",
+    "zonas": "lugar",
+    "sanadores": "cualquiera",
+    "creencias": "creencia",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "tipo": "faccion",
+  "familia": "faccion",
+  "emoji": "🛡️",
+  "huecos_propios": {
+    "min": 3,
+    "max": 8
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "gobierno": "30_Sociedad_y_Cultura/Gobiernos_y_Estados",
+      "consejo": "30_Sociedad_y_Cultura/Gobiernos_y_Estados",
+      "gremio": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "orden": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "secta": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "compania": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "ejercito": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "banda": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "sociedad_secreta": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "movimiento": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "alianza": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones",
+      "institucion": "30_Sociedad_y_Cultura/Instituciones_y_Linajes",
+      "otro": "30_Sociedad_y_Cultura/Facciones_y_Organizaciones"
+    }
+  },
+  "fechas": [
+    "fundacion",
+    "disolucion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_auge", "activa", "en_declive", "perseguida"],
+    "pasado": "disuelta"
+  },
+  "escalas": {
+    "recursos": [1, 5]
+  },
+  "valores": {
+    "situacion": ["en_auge", "activa", "en_declive", "perseguida", "disuelta"],
+    "alcance": ["mundial", "regional", "local"],
+    "visibilidad": ["publica", "discreta", "secreta"]
+  },
+  "reciprocas": {
+    "aliados": "aliados",
+    "rivales": "rivales",
+    "faccion_madre": "ramas",
+    "ramas": "faccion_madre",
+    "lider": "facciones",
+    "figuras": "facciones",
+    "culturas": "instituciones",
+    "eventos": "bandos",
+    "sistemas": "facciones"
+  },
+  "relaciones": {
+    "sede": "lugar",
+    "zonas": "lugar",
+    "lider": "personaje",
+    "figuras": "personaje",
+    "faccion_madre": "faccion",
+    "ramas": "faccion",
+    "aliados": "faccion",
+    "rivales": "faccion",
+    "creencias": "creencia",
+    "culturas": "cultura",
+    "objetos": "objeto",
+    "sistemas": "sistema",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

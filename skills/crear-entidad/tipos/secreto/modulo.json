@@ -1,0 +1,18 @@
+{
+  "tipo": "secreto",
+  "familia": "secreto",
+  "emoji": "🔒",
+  "huecos_propios": {
+    "min": 0,
+    "max": 3
+  },
+  "carpeta": {
+    "fija": "80_Secretos"
+  },
+  "fechas": [],
+  "reciprocas": {},
+  "relaciones": {
+    "afecta_a": "cualquiera",
+    "conocido_por": "personaje"
+  }
+}

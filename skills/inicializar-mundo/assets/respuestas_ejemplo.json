@@ -1,0 +1,33 @@
+{
+  "nombre": "Corona de Vharn",
+  "respuestas": {
+    "premisa": "Un cinturón de hábitats orbitales gira alrededor de una estrella moribunda. Las casas mercantes compiten por la última energía mientras algo despierta en el núcleo del sistema.",
+    "genero": "Ciencia ficción: space opera con tintes de thriller político",
+    "conflicto": "La estrella se apaga y la energía restante se reparte entre casas rivales",
+    "foco": "El hábitat de Ilmar y sus estaciones vecinas",
+    "escala": "multiple",
+    "tono": "gris",
+    "realidad": "inventado",
+    "proposito": [
+      "worldbuilding",
+      "rol"
+    ],
+    "poderes": "no",
+    "tecnologia": "futurista",
+    "entidades": "ambiguo",
+    "especies": "pocas",
+    "sistema_rol": {
+      "texto": "Stars Without Number (edición revisada)"
+    },
+    "crudeza": "moderada",
+    "voz": "mixta",
+    "autonomia": "moderada",
+    "temas": "escasez, legado, lealtad frente a supervivencia",
+    "idioma": "Español",
+    "nombres": "Mezcla de sonoridad eslava y árabe; las casas mercantes usan apellidos compuestos",
+    "calendario": "el Último Encendido de la estrella; los años se escriben '412 UE'",
+    "ano_actual": "412",
+    "vetos": "por definir",
+    "referencias": "Inspira: The Expanse, Dune. Evitar: imperios galácticos genéricos"
+  }
+}

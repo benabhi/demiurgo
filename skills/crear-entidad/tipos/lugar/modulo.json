@@ -1,0 +1,82 @@
+{
+  "tipo": "lugar",
+  "familia": "lugar",
+  "completa": [
+    "residencia",
+    "ubicacion_actual",
+    "lugar_nacimiento",
+    "lugares_notables",
+    "lugares",
+    "ubicacion",
+    "zonas_afectadas",
+    "sede",
+    "centro",
+    "lugares_sagrados",
+    "zonas",
+    "habitat"
+  ],
+  "emoji": "📍",
+  "huecos_propios": {
+    "min": 2,
+    "max": 6
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "edificio": "10_Mundo/Lugares_y_Estructuras",
+      "templo": "10_Mundo/Lugares_y_Estructuras",
+      "fortaleza": "10_Mundo/Lugares_y_Estructuras",
+      "puerto": "10_Mundo/Lugares_y_Estructuras",
+      "mercado": "10_Mundo/Lugares_y_Estructuras",
+      "posada": "10_Mundo/Lugares_y_Estructuras",
+      "taller": "10_Mundo/Lugares_y_Estructuras",
+      "residencia": "10_Mundo/Lugares_y_Estructuras",
+      "torre": "10_Mundo/Lugares_y_Estructuras",
+      "monumento": "10_Mundo/Lugares_y_Estructuras",
+      "ruina": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
+      "mazmorra": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
+      "pecio": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
+      "zona_peligrosa": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
+      "montana": "10_Mundo/Geografia_y_Clima",
+      "agua": "10_Mundo/Geografia_y_Clima",
+      "bosque": "10_Mundo/Geografia_y_Clima",
+      "cueva": "10_Mundo/Geografia_y_Clima",
+      "isla": "10_Mundo/Geografia_y_Clima",
+      "desierto": "10_Mundo/Geografia_y_Clima",
+      "paraje": "10_Mundo/Geografia_y_Clima"
+    }
+  },
+  "fechas": [
+    "construccion",
+    "abandono"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": "en_uso",
+    "pasado": ["abandonado", "en_ruinas", "sellado", "destruido"]
+  },
+  "valores": {
+    "situacion": ["en_uso", "abandonado", "en_ruinas", "sellado", "perdido", "destruido", "natural"]
+  },
+  "reciprocas": {
+    "ubicacion": "lugares_notables",
+    "lugares_notables": "ubicacion",
+    "fenomenos": "zonas_afectadas",
+    "eventos": "lugares",
+    "criaturas": "habitat"
+  },
+  "relaciones": {
+    "ubicacion": "lugar",
+    "lugares_notables": "lugar",
+    "rutas": "ruta",
+    "dueno": "personaje",
+    "facciones": "faccion",
+    "ocupantes": "personaje",
+    "creencias": "creencia",
+    "criaturas": "criatura",
+    "objetos": "objeto",
+    "fenomenos": "fenomeno",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

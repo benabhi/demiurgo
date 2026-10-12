@@ -1,0 +1,36 @@
+{
+  "tipo": "idioma",
+  "familia": "idioma",
+  "emoji": "🗣️",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 2,
+    "max": 6
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Idiomas_y_Escrituras"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "valores": {
+    "clase": ["lengua", "dialecto", "jerga", "lengua_franca", "escritura", "senas", "codigo"],
+    "situacion": ["viva", "en_declive", "amenazada", "muerta", "solo_ritual", "desconocida"]
+  },
+  "reciprocas": {
+    "culturas": "idiomas",
+    "especies": "idiomas",
+    "lengua_madre": "derivadas",
+    "derivadas": "lengua_madre"
+  },
+  "relaciones": {
+    "culturas": "cultura",
+    "especies": "especie",
+    "regiones": "lugar",
+    "lengua_madre": "idioma",
+    "derivadas": "idioma",
+    "obras": "obra",
+    "era": "era"
+  }
+}

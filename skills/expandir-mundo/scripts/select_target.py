@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""Elige qué desarrollar en el próximo ciclo de expandir-mundo, según el estado del mundo.
+
+Arranque: si la Ficha nombra un foco que aún no existe como lugar (una región, por ejemplo),
+lo primero es crearlo (acción crear_foco); lo demás se generará dentro. --skip-focus lo omite.
+
+Enlaces pendientes: las entidades que alguna nota ya nombra con un enlace y que todavía no tienen
+nota propia. Se pueden crear los que tienen tipo (por su propiedad de relación o por el registro
+Enlaces_Pendientes) y un módulo que los cree. Quedan fuera los que esperan una confirmación
+("- [ ] Confirmar: …") en Preguntas Abiertas, los que se pasan con --skip (porque ningún módulo
+encaja de verdad con ellos) y los que coinciden con el nombre o un alias de una entidad que ya
+existe (son enlaces que hay que corregir).
+  - Canon de base (acción crear_canon): los que nombra la Ficha o enlazan al menos tres notas,
+    como el conflicto central, la especie o el gran hecho. Van antes que todo lo demás;
+    --skip-canon lo omite.
+  - Completar (acción completar_hueco): los demás. Puntúan más los que nombran más notas, los
+    que nombran notas más relevantes y los que están dentro del foco de la Ficha.
+  - Crear algo nuevo: un paquete de Paquetes.md cuyos tipos tienen todos módulo (acción paquete)
+    o una entidad suelta (acción nueva_entidad).
+
+Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
+Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
+bastantes enlaces pendientes nuevos (presupuesto amplio); con mucha, casi siempre se completa lo
+pendiente y cada nota abre los mínimos (presupuesto justo). Así el mundo no se llena de enlaces
+vacíos ni se queda sin hilos de los que tirar. El presupuesto se traduce en un rango de enlaces
+pendientes nuevos por nota para cada tipo (enlaces_nuevos), dentro de su huecos_propios.
+
+El objetivo se sortea entre los mejores, con peso según la puntuación y los empates decididos al
+azar, para que el mundo no crezca siempre por el mismo sitio. Si hay demasiados borradores
+procedurales sin revisar, se detiene (código 2).
+
+Ejemplos:  select_target.py     select_target.py --json --seed 7     select_target.py --skip Aldea_de_X"""
+import argparse
+import json
+import random
+import re
+import sys
+from pathlib import Path
+
+# La lógica común vive en los scripts de crear-entidad
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
+from build_context import region_chain  # noqa: E402
+from vault_lib import (WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
+                       load_index, load_modules, normalize, read_world)
+
+ASSETS = Path(__file__).resolve().parent.parent / "assets"
+VAULT_PACKAGES = "00_Sistema/06_Generacion/Paquetes.md"
+TOP_DRAW = 8
+# Canon de base: los enlaces pendientes que nombran al menos tantas notas de entidades
+CANON_NOTES = 3
+# Densidad (enlaces pendientes que se pueden crear por entidad): por debajo de la baja, presupuesto
+# amplio y la probabilidad entera de crear algo nuevo; desde la alta, presupuesto justo y solo una
+# parte de esa probabilidad. Simulado, el mundo se estabiliza en torno a la alta
+DENSITY_LOW, DENSITY_HIGH = 0.75, 1.5
+NEW_FLOOR = 0.4
+# De lo nuevo, la parte que va a paquetes (el resto, una entidad suelta)
+PACKAGE_SHARE = 0.6
+BUDGETS = ("justo", "medio", "amplio")
+
+
+def find_focus(world, index, place_types):
+    """Lugar foco de la Ficha: el lugar cuyo título o alias aparece en el texto del foco."""
+    focus_text = normalize(world["foco"])
+    if not focus_text:
+        return None
+    best = None
+    for entry in index:
+        if entry["tipo"] not in place_types:
+            continue
+        for name in [entry["titulo"]] + entry["aliases"]:
+            key = normalize(name)
+            if key and key in focus_text and (best is None or len(key) > best[0]):
+                best = (len(key), entry)
+    return best[1] if best else None
+
+
+def in_focus(entry, focus, by_name):
+    if not focus or not entry:
+        return False
+    if entry["name"] == focus["name"]:
+        return True
+    return any(region["name"] == focus["name"] for region in region_chain(entry, by_name, set()))
+
+
+def shuffle_ties(options, rng):
+    """Ordena de más a menos puntos; a igual puntuación, al azar (repetible con la semilla).
+    Ordenar sin barajar dejaría los empates por orden alfabético, y siempre entrarían antes los
+    mismos."""
+    rng.shuffle(options)
+    options.sort(key=lambda option: -option["puntos"])
+
+
+def words(text):
+    """Texto comparable palabra a palabra: normalizado, sin signos y con espacios en los extremos."""
+    return f" {' '.join(re.sub(r'[^0-9a-z]+', ' ', normalize(text)).split())} "
+
+
+def budget_for(density):
+    if density < DENSITY_LOW:
+        return "amplio"
+    return "medio" if density < DENSITY_HIGH else "justo"
+
+
+def new_links_range(module, budget):
+    """(mínimo, máximo) de enlaces pendientes nuevos por nota con un presupuesto: el tercio bajo,
+    el medio o el alto del rango huecos_propios del módulo."""
+    low, high = module["huecos_propios"]["min"], module["huecos_propios"]["max"]
+    cuts = [low, low + round((high - low) / 3), low + round(2 * (high - low) / 3), high]
+    step = BUDGETS.index(budget)
+    return cuts[step], cuts[step + 1]
+
+
+def parse_packages(vault):
+    path = vault / VAULT_PACKAGES
+    path = path if path.is_file() else ASSETS / "Paquetes.md"
+    packages, current = [], None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        heading = re.match(r"^##\s+(.+)$", line)
+        if heading:
+            current = {"nombre": heading.group(1).strip(), "peso": 1, "composicion": []}
+            packages.append(current)
+            continue
+        if not current:
+            continue
+        weight = re.match(r"^Peso:\s*(\d+)", line.strip())
+        item = re.match(r"^-\s*([a-z_]+):\s*(\d+)\s*(?:\((.+)\))?", line.strip())
+        if weight:
+            current["peso"] = int(weight.group(1))
+        elif item:
+            current["composicion"].append({"tipo": item.group(1), "cantidad": int(item.group(2)),
+                                           "papel": item.group(3) or ""})
+    return [p for p in packages if p["composicion"]]
+
+
+def main():
+    # UTF-8 antes de cualquier salida (incluida la ayuda de argparse)
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
+    parser.add_argument("--review-limit", type=int, default=20,
+                        help="Borradores procedurales sin revisar a partir de los cuales se detiene (20)")
+    parser.add_argument("--new-chance", type=float, default=0.4,
+                        help="Probabilidad de crear algo nuevo (un paquete o una entidad suelta) en vez de completar "
+                             "un enlace pendiente cuando hay pocos por entidad (0.4); con muchos baja hasta el 40 %% "
+                             "de ese valor")
+    parser.add_argument("--skip-focus", action="store_true",
+                        help="No proponer crear el foco aunque falte (si ningún módulo encaja con él)")
+    parser.add_argument("--skip", action="append", default=[], metavar="ENLACE",
+                        help="Enlace pendiente que no se debe elegir (repetible), si ningún módulo encaja con él")
+    parser.add_argument("--skip-canon", action="store_true",
+                        help="No dar prioridad al canon de base pendiente")
+    parser.add_argument("--seed", type=int, help="Semilla para repetir la elección")
+    parser.add_argument("--top", type=int, default=5, help="Cuántos candidatos mostrar")
+    parser.add_argument("--json", action="store_true", help="Salida en JSON")
+    args = parser.parse_args()
+
+    vault = Path(args.vault)
+    if not vault.is_dir():
+        sys.exit(f"Error: no existe la bóveda '{vault}'.")
+    seed = args.seed if args.seed is not None else random.SystemRandom().randrange(10 ** 9)
+    rng = random.Random(seed)
+    index = load_index(vault)
+    by_name = {e["name"].lower(): e for e in index}
+    by_path = {e["path"]: e for e in index}
+    modules = load_modules()
+    world = read_world(vault)
+    place_types = sorted(t for t, module in modules.items() if module.get("familia") == "lugar")
+    focus = find_focus(world, index, place_types)
+
+    def finish(result, code=0, types=()):
+        if "presupuesto" in result:
+            ranges = {t: new_links_range(modules[t], result["presupuesto"]) for t in dict.fromkeys(types)
+                      if t in modules}
+            result["enlaces_nuevos"] = {t: f"{low}–{high}" for t, (low, high) in ranges.items()}
+            if ranges:
+                result["detalle"].append("enlaces pendientes nuevos por nota: "
+                                         + ", ".join(f"{t} {v}" for t, v in result["enlaces_nuevos"].items()))
+        result["semilla"] = seed
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print(result["resumen"])
+            for line in result.get("detalle", []):
+                print(f"  {line}")
+            print(f"  (semilla {seed})")
+        sys.exit(code)
+
+    # Límite de revisión: no construir sobre demasiados borradores sin revisar
+    pending = sum(1 for e in index if e["estado"] == "borrador" and e["origen"] == "procedural")
+    if pending > args.review_limit:
+        finish({"accion": "detener", "borradores_pendientes": pending,
+                "resumen": f"DETENER: hay {pending} borradores procedurales sin revisar "
+                           f"(límite {args.review_limit}). Revísalos antes de seguir generando."}, 2)
+
+    blocked = blocked_links(vault)
+    excluded = {name.strip().strip("[]").lower() for name in args.skip}
+    gaps, _ = find_gaps(vault)
+    sheet = vault / WORLD_SHEET
+    sheet_words = words(sheet.read_text(encoding="utf-8")) if sheet.is_file() else ""
+
+    # Un enlace pendiente que coincide con el nombre o un alias de una entidad que ya existe no se
+    # crea: es un enlace que hay que corregir
+    known = {}
+    for entry in index:
+        for label in [entry["titulo"], *entry["aliases"]]:
+            if label:
+                known.setdefault(normalize(label), entry["name"])
+
+    # Enlaces pendientes que se pueden crear. El canon de base (lo que nombra la Ficha o enlazan
+    # varias notas: el conflicto central, la especie, el gran hecho) va antes que los demás
+    references, candidates, skipped = [], [], []
+    for gap in gaps:
+        link, key = gap["link"], gap["link"].lower()
+        alias_of = known.get(normalize(link))
+        if alias_of:
+            skipped.append(f"[[{link}]]: es otro nombre de [[{alias_of}]]; corrige el enlace")
+        elif key in excluded:
+            skipped.append(f"[[{link}]]: descartado con --skip")
+        elif not gap["expected_type"]:
+            skipped.append(f"[[{link}]]: sin tipo (asígnaselo con pending_links.py --set {link}=<tipo>)")
+        elif not gap["expected_modules"]:
+            skipped.append(f"[[{link}]]: {describe_expected(gap)}")
+        elif key in blocked:
+            skipped.append(f"[[{link}]]: espera una confirmación en Preguntas Abiertas")
+        else:
+            linkers = sorted((by_path[n] for n in gap["notes"] if n in by_path),
+                             key=lambda e: -(e.get("relevancia") or 2))
+            notes = len(gap["notes"])
+            option = {"tipo_esperado": gap["expected_type"], "modulos": gap["expected_modules"],
+                      "nombrado_por": [e["name"] for e in linkers]}
+            in_sheet = bool(sheet_words) and words(link) in sheet_words
+            if in_sheet or notes >= CANON_NOTES:
+                reasons = [f"lo nombran {notes} nota(s)"] + (["lo nombra la Ficha"] if in_sheet else [])
+                references.append({"accion": "crear_canon", "referencia": link, **option,
+                                   "puntos": 3 * notes + 2 + (3 if in_sheet else 0),
+                                   "razones": reasons + ["canon de base"]})
+                continue
+            relevance = (linkers[0].get("relevancia") or 2) if linkers else 2
+            focused = any(in_focus(e, focus, by_name) for e in linkers)
+            reasons = [f"lo nombran {notes} nota(s)", f"relevancia {relevance} de la más importante"]
+            if focused:
+                reasons.append("está en el foco")
+            candidates.append({"accion": "completar_hueco", "hueco": link, **option,
+                               "puntos": 2 * notes + relevance + (3 if focused else 0), "razones": reasons})
+    shuffle_ties(references, rng)
+    shuffle_ties(candidates, rng)
+
+    # Equilibrio entre crear de la nada y completar lo pendiente, según la densidad
+    density = (len(references) + len(candidates)) / max(len(index), 1)
+    budget = budget_for(density)
+    factor = min(max((DENSITY_HIGH - density) / (DENSITY_HIGH - DENSITY_LOW), 0.0), 1.0)
+    new_chance = args.new_chance * (NEW_FLOOR + (1 - NEW_FLOOR) * factor)
+    balance = [f"densidad: {density:.1f} enlaces pendientes que se pueden crear por entidad "
+               f"({len(references) + len(candidates)} para {len(index)} entidades) · presupuesto {budget} · "
+               f"probabilidad de crear algo nuevo {new_chance:.0%}"]
+    if skipped:
+        balance.append(f"descartados: {len(skipped)} (sin tipo, sin módulo, pendientes de confirmar, "
+                       f"alias o con --skip)")
+    common = {"densidad": round(density, 2), "presupuesto": budget, "borradores_pendientes": pending,
+              "descartados": skipped}
+
+    # Arranque: la Ficha nombra un foco que aún no existe; se crea antes que nada
+    if world["foco"] and not focus and place_types and not args.skip_focus:
+        finish({"accion": "crear_foco", "foco_texto": world["foco"], "modulos": place_types, **common,
+                "resumen": f"ELEGIDO: crear el foco de la Ficha, «{world['foco']}» "
+                           f"(módulos: {', '.join(place_types)}); lo demás se generará dentro de él",
+                "detalle": balance}, types=place_types)
+
+    # Un paquete crea sus entidades de la nada: no vale si incluye un tipo sin módulo o con crear_desde_cero: false
+    available = [p for p in parse_packages(vault)
+                 if all(modules.get(i["tipo"], {}).get("crear_desde_cero", i["tipo"] in modules)
+                        for i in p["composicion"])]
+    create_new = not candidates or rng.random() < new_chance
+    if references and not args.skip_canon:
+        pool = references[:TOP_DRAW]
+        chosen = rng.choices(pool, weights=[r["puntos"] for r in pool])[0]
+        finish({**chosen, **common,
+                "resumen": f"ELEGIDO: crear [[{chosen['referencia']}]] → {chosen['tipo_esperado']} "
+                           f"(módulos: {', '.join(chosen['modulos'])}): canon de base · {chosen['puntos']} puntos",
+                "detalle": [f"razones: {'; '.join(chosen['razones'])}", "canon de base pendiente:"]
+                           + [f"  {r['puntos']:>3} pts  [[{r['referencia']}]] → {r['tipo_esperado']}"
+                              for r in references[:args.top]] + balance},
+               types=chosen["modulos"])
+    if create_new and available and rng.random() < PACKAGE_SHARE:
+        package = rng.choices(available, weights=[p["peso"] for p in available])[0]
+        why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"
+        finish({"accion": "paquete", "paquete": package["nombre"], "composicion": package["composicion"],
+                "foco": focus["name"] if focus else None, **common,
+                "resumen": f"ELEGIDO: paquete «{package['nombre']}»"
+                           + (f" en el foco [[{focus['name']}]]" if focus else "") + f" ({why})",
+                "detalle": [f"- {i['tipo']} ×{i['cantidad']} ({i['papel']})" for i in package["composicion"]]
+                           + balance},
+               types=[i["tipo"] for i in package["composicion"]])
+    if not create_new:
+        pool = candidates[:TOP_DRAW]
+        chosen = rng.choices(pool, weights=[c["puntos"] for c in pool])[0]
+        finish({**chosen, **common,
+                "resumen": f"ELEGIDO: completar [[{chosen['hueco']}]] → {chosen['tipo_esperado']} "
+                           f"(módulos: {', '.join(chosen['modulos'])}) · {chosen['puntos']} puntos",
+                "detalle": [f"razones: {'; '.join(chosen['razones'])}", "enlaces pendientes principales:"]
+                           + [f"  {c['puntos']:>3} pts  [[{c['hueco']}]] → {c['tipo_esperado']}"
+                              for c in candidates[:args.top]] + balance},
+               types=chosen["modulos"])
+    # Los secretos y los tipos con crear_desde_cero: false (las especies, por ejemplo) no se inventan
+    types = sorted(t for t, module in modules.items() if t != "secreto" and module.get("crear_desde_cero", True))
+    new_type = rng.choice(types)
+    why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"
+    finish({"accion": "nueva_entidad", "tipo": new_type, "foco": focus["name"] if focus else None, **common,
+            "resumen": f"ELEGIDO: nueva entidad de tipo {new_type}"
+                       + (f" en el foco [[{focus['name']}]]" if focus else "") + f" ({why})",
+            "detalle": balance}, types=[new_type])
+
+
+if __name__ == "__main__":
+    main()

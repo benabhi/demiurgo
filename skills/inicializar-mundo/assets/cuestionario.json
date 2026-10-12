@@ -1,0 +1,253 @@
+{
+  "rondas": [
+    {"id": 1, "titulo": "Identidad", "modo": "texto", "opcional": false,
+     "intro": "Empecemos por lo esencial. Responde con tus palabras; cualquier punto puede quedar 'por definir', o escribe 'decide tú' y lo decido yo."},
+    {"id": 2, "titulo": "Marco", "modo": "opciones", "opcional": false},
+    {"id": 3, "titulo": "Pilares", "modo": "opciones", "opcional": false},
+    {"id": 4, "titulo": "Colaboración", "modo": "opciones", "opcional": false},
+    {"id": 5, "titulo": "Detalle", "modo": "texto", "opcional": true,
+     "intro": "Última ronda, toda opcional: responde lo que tengas claro, deja el resto 'por definir' o escribe 'decide tú'."}
+  ],
+  "secciones_ficha": ["Identidad", "Tono y temas", "Pilares", "Lenguaje y tiempo", "Uso y colaboración"],
+  "opcion_decidir": {"etiqueta": "Decide tú", "descripcion": "Claude elige lo más coherente con lo que ya respondiste."},
+  "preguntas": [
+    {
+      "id": "nombre", "ronda": 1, "seccion": null, "titulo": "Nombre", "encabezado": "Nombre",
+      "formato": "texto", "obligatoria": true,
+      "pregunta": "¿Cómo se llama el mundo? Escríbelo con su ortografía real.",
+      "ejemplo": "Aldoria, Ys, N'gara"
+    },
+    {
+      "id": "premisa", "ronda": 1, "seccion": null, "titulo": "Premisa", "encabezado": "Premisa",
+      "formato": "texto",
+      "pregunta": "En 2 o 3 frases: ¿qué es este mundo y qué lo hace único?",
+      "ejemplo": "Un archipiélago donde las mareas devuelven los recuerdos de los ahogados y cada isla comercia con ellos."
+    },
+    {
+      "id": "genero", "ronda": 1, "seccion": "Identidad", "titulo": "Género", "encabezado": "Género",
+      "formato": "texto",
+      "pregunta": "¿Cuál es el género y el subgénero? Con tus palabras.",
+      "ejemplo": "fantasía oscura, space opera, cyberpunk, horror cósmico, post-apocalíptico, histórico con elementos fantásticos"
+    },
+    {
+      "id": "conflicto", "ronda": 1, "seccion": "Identidad", "titulo": "Conflicto central", "encabezado": "Conflicto",
+      "formato": "texto",
+      "pregunta": "¿Qué conflicto o fuerza define el presente del mundo?",
+      "ejemplo": "una guerra entre imperios, una plaga, una amenaza que avanza, el colapso de un recurso",
+      "regla": "Conflicto central: {valor}. Considera siempre cómo afecta a lo que crees."
+    },
+    {
+      "id": "foco", "ronda": 1, "seccion": "Identidad", "titulo": "Foco inicial", "encabezado": "Foco",
+      "formato": "texto",
+      "pregunta": "¿Qué zona o ámbito se desarrolla primero?",
+      "ejemplo": "una región, una ciudad, un planeta, una estación",
+      "regla": "Foco actual: {valor}. Desarrolla primero lo que está dentro del foco; lo de fuera aparece como referencia o rumor salvo que se pida."
+    },
+    {
+      "id": "escala", "ronda": 2, "seccion": "Identidad", "titulo": "Escala", "encabezado": "Escala",
+      "formato": "opcion",
+      "pregunta": "¿Qué escala abarca el mundo?",
+      "opciones": [
+        {"valor": "local", "etiqueta": "Una ciudad o región", "descripcion": "Un asentamiento, una zona o un territorio acotado.",
+         "regla": "Escala local o regional: el detalle se concentra en un territorio acotado; lo exterior aparece solo como referencia."},
+        {"valor": "mundial", "etiqueta": "Un continente o mundo", "descripcion": "Varias naciones, culturas y geografías.",
+         "regla": "Escala continental o planetaria: mantén la coherencia geográfica y las distancias entre regiones."},
+        {"valor": "multiple", "etiqueta": "Varios mundos o planos", "descripcion": "Planetas, dimensiones o planos conectados.",
+         "regla": "Escala múltiple: cada mundo o plano tiene su propia coherencia interna; documenta cómo se conectan."}
+      ]
+    },
+    {
+      "id": "tono", "ronda": 2, "seccion": "Tono y temas", "titulo": "Tono", "encabezado": "Tono",
+      "formato": "opcion",
+      "pregunta": "¿Qué tono tiene el mundo?",
+      "opciones": [
+        {"valor": "esperanzador", "etiqueta": "Esperanzador", "descripcion": "La oscuridad existe, pero puede vencerse; el heroísmo importa.",
+         "regla": "Tono esperanzador: los conflictos pueden resolverse y los actos nobles pesan; evita el cinismo gratuito."},
+        {"valor": "gris", "etiqueta": "Gris", "descripcion": "Moral ambigua; las victorias tienen coste.",
+         "regla": "Tono gris: nadie es del todo bueno ni malo; toda victoria tiene un coste."},
+        {"valor": "oscuro", "etiqueta": "Oscuro o brutal", "descripcion": "Mundo hostil y esperanza escasa; puede llegar al grimdark.",
+         "regla": "Tono oscuro: el mundo es hostil y la esperanza es escasa y cara; evita las resoluciones fáciles."}
+      ]
+    },
+    {
+      "id": "realidad", "ronda": 2, "seccion": "Pilares", "titulo": "Relación con el mundo real", "encabezado": "Realidad",
+      "formato": "opcion",
+      "pregunta": "¿Qué relación tiene el mundo con el mundo real?",
+      "opciones": [
+        {"valor": "inventado", "etiqueta": "Mundo inventado", "descripcion": "Sin ningún vínculo con la Tierra.",
+         "regla": "Mundo inventado: no uses referencias del mundo real (religiones, personajes, lugares, nombres de días o meses, expresiones con referentes reales); crea equivalentes propios."},
+        {"valor": "alternativo", "etiqueta": "Tierra alternativa o remota", "descripcion": "Nuestra historia con divergencias, o la Tierra en un pasado o futuro lejano.",
+         "regla": "Tierra alternativa o remota: lo real vale como historia divergente o como ecos lejanos (ruinas, mitos); documenta cada punto de divergencia."},
+        {"valor": "oculto", "etiqueta": "Real con capa oculta", "descripcion": "Fantasía urbana, horror moderno, conspiraciones.",
+         "regla": "Mundo real con capa oculta: la realidad conocida es canon; lo extraordinario permanece oculto para la mayoría y debe justificarse por qué."}
+      ]
+    },
+    {
+      "id": "proposito", "ronda": 2, "seccion": "Uso y colaboración", "titulo": "Propósito", "encabezado": "Propósito",
+      "formato": "multiple", "permite_decidir": false,
+      "pregunta": "¿Para qué se usará el mundo? (puedes elegir varias; si no lo tienes claro, Worldbuilding)",
+      "opciones": [
+        {"valor": "worldbuilding", "etiqueta": "Worldbuilding", "descripcion": "Construir el mundo por sí mismo, como enciclopedia.",
+         "regla": "Objetivo enciclopédico: prioriza la coherencia y la profundidad del mundo por encima de la trama."},
+        {"valor": "narrativa", "etiqueta": "Narrativa", "descripcion": "Novela, relatos, cómic o guion.",
+         "regla": "El mundo sirve a la narrativa: las notas de lore no contienen tramas; deja ganchos narrativos explícitos cuando sea útil."},
+        {"valor": "rol", "etiqueta": "Juego de rol", "descripcion": "Campañas o partidas de rol.",
+         "regla": "El mundo se usará para jugar rol: incluye ganchos aprovechables en partida y no cierres todos los misterios."},
+        {"valor": "juego", "etiqueta": "Videojuego u otro", "descripcion": "Videojuego, juego de mesa u otro formato.",
+         "regla": "El mundo se usará en un juego: favorece elementos jugables bien diferenciados (facciones, zonas, recursos)."}
+      ]
+    },
+    {
+      "id": "poderes", "ronda": 3, "seccion": "Pilares", "titulo": "Poderes extraordinarios", "encabezado": "Poderes",
+      "formato": "opcion",
+      "pregunta": "¿Existen poderes que rompen la ciencia real (magia, psiónica, dones, superpoderes)?",
+      "opciones": [
+        {"valor": "no", "etiqueta": "No existen", "descripcion": "Mundo realista: lo extraordinario es superstición o tiene explicación natural.",
+         "regla": "No existen poderes extraordinarios: todo fenómeno aparente tiene explicación natural o es superstición."},
+        {"valor": "raros", "etiqueta": "Raros y peligrosos", "descripcion": "Pocos los poseen y siempre cobran un precio.",
+         "regla": "Los poderes extraordinarios son raros y peligrosos: siempre tienen coste y consecuencias, y la gente común los teme o desconfía de ellos."},
+        {"valor": "limitados", "etiqueta": "Presentes con reglas", "descripcion": "Existen con reglas claras; pueden ser escasos o cotidianos.",
+         "regla": "Los poderes extraordinarios existen con reglas claras: documenta en Sistemas_de_Poder sus límites, sus costes y lo comunes que son, y no introduzcas efectos que las rompan."}
+      ]
+    },
+    {
+      "id": "tecnologia", "ronda": 3, "seccion": "Pilares", "titulo": "Tecnología", "encabezado": "Tecnología",
+      "formato": "opcion",
+      "pregunta": "¿Qué nivel tecnológico predomina?",
+      "opciones": [
+        {"valor": "antigua", "etiqueta": "Antigua o medieval", "descripcion": "Hasta la Edad Media: sin pólvora ni imprenta.",
+         "regla": "Tecnología antigua o medieval: no introduzcas pólvora, imprenta, relojes mecánicos ni conceptos científicos modernos sin aprobación."},
+        {"valor": "moderna", "etiqueta": "De la pólvora a hoy", "descripcion": "Del Renacimiento y la industria a la tecnología actual.",
+         "regla": "Tecnología entre la pólvora y la actual: documenta en Tecnologia el nivel exacto y no lo superes sin aprobación."},
+        {"valor": "futurista", "etiqueta": "Futurista", "descripcion": "Más allá de la tecnología actual.",
+         "regla": "Tecnología futurista: documenta en Tecnologia los límites de cada avance (viaje, energía, inteligencia artificial) y respétalos."}
+      ]
+    },
+    {
+      "id": "entidades", "ronda": 3, "seccion": "Pilares", "titulo": "Dioses y entidades superiores", "encabezado": "Entidades",
+      "formato": "opcion",
+      "pregunta": "¿Existen dioses o entidades superiores?",
+      "opciones": [
+        {"valor": "intervienen", "etiqueta": "Existen e intervienen", "descripcion": "Actúan en el mundo de forma visible.",
+         "regla": "Las entidades superiores existen e intervienen: su influencia es visible y sus actos tienen consecuencias concretas."},
+        {"valor": "distantes", "etiqueta": "Existen pero distantes", "descripcion": "Son reales, pero rara vez actúan.",
+         "regla": "Las entidades superiores existen pero rara vez intervienen: sus manifestaciones son excepcionales y discutidas."},
+        {"valor": "ambiguo", "etiqueta": "Inciertas o inexistentes", "descripcion": "Nadie sabe si existen, o solo hay fe.",
+         "regla": "La existencia de entidades superiores no está probada: ninguna nota de lore la confirma; la verdad, si se define, va en 80_Secretos."}
+      ]
+    },
+    {
+      "id": "especies", "ronda": 3, "seccion": "Pilares", "titulo": "Especies inteligentes", "encabezado": "Especies",
+      "formato": "opcion",
+      "pregunta": "¿Qué especies inteligentes hay?",
+      "opciones": [
+        {"valor": "una", "etiqueta": "Solo humanos", "descripcion": "O un único pueblo inteligente.",
+         "regla": "Solo existe una especie inteligente: no crees especies inteligentes nuevas; la diversidad es cultural."},
+        {"valor": "pocas", "etiqueta": "Humanos y otras especies", "descripcion": "Conviven otras especies inteligentes.",
+         "regla": "Hay otras especies inteligentes además de los humanos: cada una necesita biología, cultura y lugar coherentes; no añadas especies nuevas sin aprobación."},
+        {"valor": "sin_humanos", "etiqueta": "Sin humanos", "descripcion": "Ninguna especie inteligente es humana.",
+         "regla": "No existen humanos: no asumas por defecto biología, costumbres ni expresiones humanas."}
+      ]
+    },
+    {
+      "id": "sistema_rol", "ronda": 4, "seccion": "Uso y colaboración", "titulo": "Sistema de rol", "encabezado": "Sistema rol",
+      "formato": "opcion", "condicion": {"pregunta": "proposito", "incluye": "rol"}, "permite_decidir": false,
+      "pregunta": "¿Qué sistema de reglas de rol se usará?",
+      "regla": "Sistema de juego: {valor}. Las mecánicas deben ser compatibles con ese sistema y edición; lo que no sea oficial se marca como homebrew.",
+      "opciones": [
+        {"valor": "dnd5e_2024", "etiqueta": "D&D 5e (2024)", "descripcion": "Dungeons & Dragons, reglas revisadas de 2024."},
+        {"valor": "dnd5e_2014", "etiqueta": "D&D 5e (2014)", "descripcion": "Dungeons & Dragons, reglas de 2014."},
+        {"valor": "pf2e", "etiqueta": "Pathfinder 2e", "descripcion": "Pathfinder segunda edición."},
+        {"valor": "propio", "etiqueta": "Sistema propio", "descripcion": "Reglas creadas para este mundo.",
+         "regla": "Sistema de juego propio: sus reglas se documentan en el proyecto; no inventes mecánicas sin aprobación."}
+      ]
+    },
+    {
+      "id": "crudeza", "ronda": 4, "seccion": "Tono y temas", "titulo": "Crudeza", "encabezado": "Crudeza",
+      "formato": "opcion",
+      "pregunta": "¿Qué nivel de crudeza admite el contenido?",
+      "opciones": [
+        {"valor": "contenida", "etiqueta": "Contenida", "descripcion": "Violencia y horror sugeridos, sin detalle gráfico.",
+         "regla": "Crudeza contenida: la violencia, el horror y la sexualidad se sugieren, nunca se describen con detalle gráfico."},
+        {"valor": "moderada", "etiqueta": "Moderada", "descripcion": "Violencia explícita si aporta; sin sexo explícito.",
+         "regla": "Crudeza moderada: la violencia puede ser explícita cuando aporta; nada de contenido sexual explícito."},
+        {"valor": "adulta", "etiqueta": "Adulta", "descripcion": "Temas y descripciones adultas permitidas.",
+         "regla": "Crudeza adulta: se permiten temas y descripciones adultas cuando sirven al mundo, nunca de forma gratuita."}
+      ]
+    },
+    {
+      "id": "voz", "ronda": 4, "seccion": "Uso y colaboración", "titulo": "Voz de las notas", "encabezado": "Voz",
+      "formato": "opcion",
+      "pregunta": "¿Con qué voz se escriben las notas?",
+      "opciones": [
+        {"valor": "enciclopedica", "etiqueta": "Enciclopédica", "descripcion": "Neutral y objetiva, como un compendio.",
+         "regla": "Voz enciclopédica: las notas son neutrales y objetivas; las opiniones del mundo se atribuyen a sus fuentes."},
+        {"valor": "in_world", "etiqueta": "Desde el mundo", "descripcion": "Escritas por cronistas del mundo, con sus sesgos.",
+         "regla": "Voz desde el mundo: las notas se escriben como documentos del mundo, con el sesgo de su autor; la verdad objetiva va en 80_Secretos."},
+        {"valor": "mixta", "etiqueta": "Mixta", "descripcion": "Base neutral con citas y fragmentos del mundo.",
+         "regla": "Voz mixta: base neutral y enciclopédica, enriquecida con citas o fragmentos atribuidos a fuentes del mundo."}
+      ]
+    },
+    {
+      "id": "autonomia", "ronda": 4, "seccion": "Uso y colaboración", "titulo": "Autonomía de Claude", "encabezado": "Autonomía",
+      "formato": "opcion",
+      "pregunta": "¿Cuánta libertad tiene Claude para inventar?",
+      "opciones": [
+        {"valor": "moderada", "etiqueta": "Moderada", "descripcion": "Rellena detalles menores y lista lo inventado.", "recomendada": true,
+         "regla": "Autonomía moderada: puedes inventar detalles menores (nombres secundarios, descripciones, datos de color) y debes listarlos al final; los hechos importantes requieren aprobación."},
+        {"valor": "estricta", "etiqueta": "Estricta", "descripcion": "Solo lo pedido; pregunta ante cualquier hueco.",
+         "regla": "Autonomía estricta: crea solo lo pedido; ante cualquier hueco, pregunta o regístralo en Preguntas_Abiertas. No inventes nombres ni hechos."},
+        {"valor": "creativa", "etiqueta": "Creativa", "descripcion": "Propone libremente; todo nace como borrador.",
+         "regla": "Autonomía creativa: puedes proponer contenido nuevo con libertad, siempre como borrador y listando lo inventado al final."}
+      ]
+    },
+    {
+      "id": "temas", "ronda": 5, "seccion": "Tono y temas", "titulo": "Temas centrales", "encabezado": "Temas",
+      "formato": "texto",
+      "pregunta": "¿Cuáles son los temas centrales del mundo (2 a 4)?",
+      "ejemplo": "corrupción, sacrificio, memoria, fe, poder, supervivencia",
+      "regla": "Temas centrales: {valor}. Todo contenido nuevo debe reforzar al menos uno."
+    },
+    {
+      "id": "idioma", "ronda": 5, "seccion": "Lenguaje y tiempo", "titulo": "Idioma", "encabezado": "Idioma",
+      "formato": "texto", "defecto": "Español", "en_frontmatter": true,
+      "pregunta": "¿En qué idioma se escribe la bóveda?",
+      "ejemplo": "Español (por defecto)",
+      "regla": "Escribe todo el contenido en {valor}."
+    },
+    {
+      "id": "nombres", "ronda": 5, "seccion": "Lenguaje y tiempo", "titulo": "Sonoridad de los nombres", "encabezado": "Nombres",
+      "formato": "texto",
+      "pregunta": "¿Qué sonoridad tienen los nombres? ¿Es distinta en cada cultura?",
+      "ejemplo": "latina, nórdica, eslava, árabe, inventada con apóstrofes; una por cultura",
+      "regla": "Sonoridad de los nombres: {valor}. Mantén la coherencia fonética dentro de cada cultura."
+    },
+    {
+      "id": "calendario", "ronda": 5, "seccion": "Lenguaje y tiempo", "titulo": "Calendario", "encabezado": "Calendario",
+      "formato": "texto",
+      "pregunta": "¿Qué hecho marca el año 0 del calendario y cómo se escriben los años?",
+      "ejemplo": "la caída del imperio; los años se escriben '312 DC' (después de la Caída)",
+      "regla": "Calendario: {valor}. Las fechas se guardan como número de años respecto al año 0 (negativas si son anteriores)."
+    },
+    {
+      "id": "ano_actual", "ronda": 5, "seccion": "Lenguaje y tiempo", "titulo": "Año actual", "encabezado": "Año actual",
+      "formato": "texto", "en_frontmatter": true, "numerico": true,
+      "pregunta": "¿En qué año del calendario está el presente? (un número)",
+      "ejemplo": "312",
+      "regla": "El presente es el año {valor} del calendario: edades y fechas se calculan desde ahí."
+    },
+    {
+      "id": "vetos", "ronda": 5, "seccion": "Tono y temas", "titulo": "Contenido vetado", "encabezado": "Vetos",
+      "formato": "texto",
+      "pregunta": "¿Hay contenido que nunca debe aparecer?",
+      "ejemplo": "violencia sexual explícita, crueldad animal, referencias a religiones reales",
+      "regla": "Nunca incluyas: {valor}."
+    },
+    {
+      "id": "referencias", "ronda": 5, "seccion": "Tono y temas", "titulo": "Inspiraciones y cosas a evitar", "encabezado": "Referencias",
+      "formato": "texto",
+      "pregunta": "¿Qué obras inspiran el mundo y qué hay que evitar (clichés, obras a no imitar)?",
+      "ejemplo": "inspira: una saga, un videojuego, un periodo histórico; evitar: un cliché concreto"
+    }
+  ]
+}

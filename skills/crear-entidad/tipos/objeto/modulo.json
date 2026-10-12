@@ -1,0 +1,66 @@
+{
+  "tipo": "objeto",
+  "familia": "objeto",
+  "emoji": "🗝️",
+  "huecos_propios": {
+    "min": 1,
+    "max": 5
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "artefacto": "60_Objetos_y_Recursos/Artefactos_y_Reliquias",
+      "reliquia": "60_Objetos_y_Recursos/Artefactos_y_Reliquias",
+      "arma": "60_Objetos_y_Recursos/Armas_y_Armaduras",
+      "armadura": "60_Objetos_y_Recursos/Armas_y_Armaduras",
+      "herramienta": "60_Objetos_y_Recursos/Herramientas_y_Equipamiento",
+      "instrumento": "60_Objetos_y_Recursos/Herramientas_y_Equipamiento",
+      "vehiculo": "60_Objetos_y_Recursos/Vehiculos_y_Maquinaria",
+      "maquina": "60_Objetos_y_Recursos/Vehiculos_y_Maquinaria",
+      "prenda": "60_Objetos_y_Recursos/Vestimenta_y_Objetos_Cotidianos",
+      "joya": "60_Objetos_y_Recursos/Vestimenta_y_Objetos_Cotidianos",
+      "mueble": "60_Objetos_y_Recursos/Vestimenta_y_Objetos_Cotidianos",
+      "objeto_personal": "60_Objetos_y_Recursos/Vestimenta_y_Objetos_Cotidianos",
+      "material_procesado": "60_Objetos_y_Recursos/Materiales_Procesados",
+      "consumible": "60_Objetos_y_Recursos/Consumibles_y_Sustancias",
+      "sustancia": "60_Objetos_y_Recursos/Consumibles_y_Sustancias",
+      "moneda": "60_Objetos_y_Recursos/Monedas_y_Medios_de_Intercambio",
+      "otro": "60_Objetos_y_Recursos/Vestimenta_y_Objetos_Cotidianos"
+    }
+  },
+  "fechas": [
+    "creacion",
+    "destruccion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_uso", "guardado", "oculto"],
+    "pasado": "destruido"
+  },
+  "valores": {
+    "unico": ["true", "false"],
+    "rareza": ["comun", "escaso", "raro", "unico", "legendario"],
+    "situacion": ["en_uso", "guardado", "oculto", "perdido", "roto", "destruido"]
+  },
+  "reciprocas": {
+    "poseedor": "posesiones",
+    "facciones": "objetos",
+    "variante_de": "variantes",
+    "variantes": "variante_de",
+    "sistemas": "objetos"
+  },
+  "relaciones": {
+    "creador": "personaje",
+    "poseedor": "personaje",
+    "poseedores_anteriores": "personaje",
+    "ubicacion": "lugar",
+    "facciones": "faccion",
+    "culturas": "cultura",
+    "creencias": "creencia",
+    "sistemas": "sistema",
+    "eventos": "evento",
+    "variante_de": "objeto",
+    "variantes": "objeto",
+    "era": "era"
+  }
+}

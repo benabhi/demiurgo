@@ -1,0 +1,67 @@
+{
+  "tipo": "creencia",
+  "familia": "creencia",
+  "emoji": "🕯️",
+  "huecos_propios": {
+    "min": 3,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Creencias_y_Religiones"
+  },
+  "fechas": [
+    "fundacion",
+    "extincion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_auge", "extendida", "en_declive", "perseguida", "oculta"],
+    "pasado": "extinta"
+  },
+  "escalas": {
+    "influencia": [1, 5]
+  },
+  "valores": {
+    "categoria": ["religion", "culto", "fe_popular", "filosofia", "ideologia", "otro"],
+    "teologia": ["monoteista", "politeista", "dualista", "animista", "ancestral", "no_teista"],
+    "situacion": ["en_auge", "extendida", "en_declive", "perseguida", "oculta", "extinta"],
+    "alcance": ["mundial", "regional", "local"]
+  },
+  "reciprocas": {
+    "fundador": "creencias",
+    "figuras": "creencias",
+    "centro": "creencias",
+    "lugares_sagrados": "creencias",
+    "zonas": "creencias",
+    "culturas": "creencias",
+    "facciones": "creencias",
+    "objetos": "creencias",
+    "fenomenos": "creencias",
+    "creencia_madre": "ramas",
+    "ramas": "creencia_madre",
+    "rivales": "rivales",
+    "deidades": "creencias",
+    "sistemas": "creencias",
+    "mitos": "creencias"
+  },
+  "relaciones": {
+    "deidades": "deidad",
+    "fundador": "personaje",
+    "figuras": "personaje",
+    "centro": "lugar",
+    "lugares_sagrados": "lugar",
+    "zonas": "lugar",
+    "culturas": "cultura",
+    "facciones": "faccion",
+    "objetos": "objeto",
+    "fenomenos": "fenomeno",
+    "sistemas": "sistema",
+    "mitos": "mito",
+    "idiomas": "idioma",
+    "creencia_madre": "creencia",
+    "ramas": "creencia",
+    "rivales": "creencia",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

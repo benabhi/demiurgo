@@ -1,0 +1,63 @@
+{
+  "tipo": "evento",
+  "familia": "evento",
+  "emoji": "📜",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 2,
+    "max": 8
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "guerra": "40_Historia/Guerras_y_Conflictos",
+      "batalla": "40_Historia/Guerras_y_Conflictos",
+      "asedio": "40_Historia/Guerras_y_Conflictos",
+      "rebelion": "40_Historia/Guerras_y_Conflictos",
+      "enfrentamiento": "40_Historia/Guerras_y_Conflictos",
+      "catastrofe": "40_Historia/Acontecimientos",
+      "fundacion": "40_Historia/Acontecimientos",
+      "tratado": "40_Historia/Acontecimientos",
+      "sucesion": "40_Historia/Acontecimientos",
+      "descubrimiento": "40_Historia/Acontecimientos",
+      "migracion": "40_Historia/Acontecimientos",
+      "prodigio": "40_Historia/Acontecimientos",
+      "crimen": "40_Historia/Acontecimientos",
+      "otro": "40_Historia/Acontecimientos"
+    }
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "fecha_exacta": "inicio",
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": "en_curso",
+    "pasado": "concluido",
+    "futuro": "profetizado",
+    "cronologia": "Desarrollo"
+  },
+  "valores": {
+    "situacion": ["concluido", "en_curso", "legendario", "profetizado"],
+    "alcance": ["mundial", "regional", "local"]
+  },
+  "reciprocas": {
+    "causas": "consecuencias",
+    "consecuencias": "causas",
+    "evento_padre": "subeventos",
+    "subeventos": "evento_padre",
+    "fenomenos": "causas"
+  },
+  "relaciones": {
+    "lugares": "lugar",
+    "bandos": "faccion",
+    "participantes": "personaje",
+    "causas": "evento",
+    "consecuencias": "evento",
+    "evento_padre": "evento",
+    "subeventos": "evento",
+    "fenomenos": "fenomeno",
+    "era": "era"
+  }
+}

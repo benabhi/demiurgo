@@ -1,0 +1,49 @@
+{
+  "tipo": "mito",
+  "familia": "mito",
+  "emoji": "📖",
+  "huecos_propios": {
+    "min": 2,
+    "max": 7
+  },
+  "carpeta": {
+    "fija": "40_Historia/Mitos_y_Leyendas"
+  },
+  "fechas": [
+    "aparicion",
+    "plazo"
+  ],
+  "valores": {
+    "categoria": ["origen", "leyenda", "profecia", "cuento", "rumor", "otro"],
+    "alcance": ["local", "regional", "continental", "mundial"],
+    "situacion": ["vivo", "en_declive", "olvidado", "prohibido"],
+    "cumplimiento": ["pendiente", "cumplida", "incumplida", "discutida"]
+  },
+  "solo_si": {
+    "cumplimiento": {"categoria": ["profecia"]},
+    "plazo": {"categoria": ["profecia"]}
+  },
+  "reciprocas": {
+    "culturas": "mitos",
+    "creencias": "mitos",
+    "deidades": "mitos",
+    "relacionados": "relacionados"
+  },
+  "relaciones": {
+    "culturas": "cultura",
+    "creencias": "creencia",
+    "deidades": "deidad",
+    "figuras": "personaje",
+    "criaturas": "criatura",
+    "lugares": "lugar",
+    "objetos": "objeto",
+    "eventos": "evento",
+    "fenomenos": "fenomeno",
+    "sistemas": "sistema",
+    "costumbres": "costumbre",
+    "obras": "obra",
+    "relacionados": "mito",
+    "epoca": "era",
+    "era": "era"
+  }
+}

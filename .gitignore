@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Node: dependencias de los scripts de generar-imagen (se instalan con npm install)
+node_modules/
+
+# Claude Code: ajustes locales
+.claude/settings.local.json
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store

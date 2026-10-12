@@ -1,0 +1,123 @@
+{
+  "secciones": [
+    {
+      "nombre": "00_Sistema",
+      "desc": "Infraestructura de la bóveda: identidad del mundo, convenciones, activos y archivo. Aquí no vive lore.",
+      "nota": "Las carpetas `06_` en adelante quedan reservadas para herramientas que añadan otras skills (por ejemplo, tablas de generación procedural).",
+      "hijos": [
+        {"nombre": "01_Plantillas", "desc": "Plantillas de notas por tipo de entidad.", "va": "Las plantillas que añaden las skills de entidades, una por tipo registrado en la Guía de Organización.", "no_va": "Notas de lore."},
+        {"nombre": "02_Activos", "desc": "Archivos no textuales que usan las notas.", "va": "Imágenes, mapas, iconos y documentos adjuntos.", "no_va": "Notas Markdown.",
+          "hijos": [
+            {"nombre": "Mapas", "desc": "Mapas a cualquier escala.", "va": "Mapas de planetas, continentes, regiones, ciudades, planos de edificios, cartas estelares.", "no_va": "La descripción del lugar (va en 10_Mundo)."},
+            {"nombre": "Ilustraciones", "desc": "Arte del mundo.", "va": "Ilustraciones de personajes, criaturas, escenas, objetos y vehículos.", "no_va": "Mapas e iconos."},
+            {"nombre": "Iconos", "desc": "Símbolos reutilizables.", "va": "Emblemas, escudos, logotipos, símbolos de facciones y conceptos.", "no_va": "Ilustraciones grandes."},
+            {"nombre": "Documentos", "desc": "Documentos externos de referencia.", "va": "PDF, material previo y referencias de apoyo.", "no_va": "Notas del mundo."}
+          ]},
+        {"nombre": "03_Archivados", "desc": "Notas descartadas, obsoletas o reemplazadas.", "va": "Material que ya no es canon pero se conserva como historial.", "no_va": "Material vigente."},
+        {"nombre": "04_Convenciones", "desc": "Reglas del proyecto.", "va": "Guías de organización, nombres, canon y estilo; glosario y registro de canon.", "no_va": "Lore."},
+        {"nombre": "05_Bandeja_de_Entrada", "desc": "Ideas sin clasificar a la espera de ser procesadas.", "va": "Borradores rápidos, ideas sueltas, notas por ordenar.", "no_va": "Notas ya clasificadas: muévelas a su carpeta."}
+      ]
+    },
+    {
+      "nombre": "10_Mundo",
+      "desc": "Geografía y lugares: dónde ocurre todo, a cualquier escala.",
+      "hijos": [
+        {"nombre": "Grandes_Regiones", "desc": "Las mayores divisiones físicas del mundo.", "va": "Continentes, océanos, archipiélagos, planetas, lunas habitadas, sectores espaciales, planos habitables.", "no_va": "Divisiones políticas (Paises_y_Territorios) y astros que solo se observan desde el mundo (70_Sistemas_y_Cosmologia/Cosmos_y_Astros)."},
+        {"nombre": "Paises_y_Territorios", "titulo": "Países y Territorios","desc": "Divisiones políticas del mapa.", "va": "Reinos, naciones, provincias, feudos, colonias, zonas corporativas, dominios estelares.", "no_va": "El gobierno como institución (30_Sociedad_y_Cultura/Gobiernos_y_Estados)."},
+        {"nombre": "Ciudades_y_Asentamientos", "desc": "Núcleos habitados.", "va": "Aldeas, ciudades, metrópolis, campamentos, estaciones, colonias, refugios.", "no_va": "Edificios o sitios concretos (Lugares_y_Estructuras)."},
+        {"nombre": "Lugares_y_Estructuras", "desc": "Sitios y construcciones concretos y en uso.", "va": "Templos, fortalezas, puertos, mercados, laboratorios, fábricas, monumentos.", "no_va": "Sitios abandonados o peligrosos (Ruinas_y_Zonas_Peligrosas)."},
+        {"nombre": "Ruinas_y_Zonas_Peligrosas", "desc": "Sitios abandonados, hostiles o prohibidos.", "va": "Ruinas, mazmorras, pecios, zonas de cuarentena, yermos, zonas contaminadas o malditas.", "no_va": "Lugares habitados y en uso."},
+        {"nombre": "Rutas_y_Conexiones", "desc": "Cómo se viaja de un lugar a otro.", "va": "Caminos, rutas marítimas o aéreas, pasos de montaña, túneles, portales, rutas espaciales; distancias y tiempos de viaje.", "no_va": "El comercio que circula por ellas (30_Sociedad_y_Cultura/Economia_y_Comercio)."},
+        {"nombre": "Geografia_y_Clima", "titulo": "Geografía y Clima","desc": "Accidentes naturales, entornos y clima.", "va": "Montañas, ríos, bosques, desiertos, mares, climas, estaciones, entornos artificiales como hábitats o cúpulas.", "no_va": "Seres vivos (50_Naturaleza)."}
+      ]
+    },
+    {
+      "nombre": "20_Personajes",
+      "desc": "Individuos con nombre propio, de cualquier especie o naturaleza.",
+      "hijos": [
+        {"nombre": "Protagonistas", "desc": "Personajes centrales.", "va": "Figuras principales en torno a las que gira el mundo o la historia.", "no_va": "Antagonistas y personajes secundarios."},
+        {"nombre": "Personajes_Secundarios", "desc": "Aliados, neutrales y personajes de apoyo.", "va": "Mentores, comerciantes, rivales menores, contactos, habitantes notables.", "no_va": "Figuras del pasado (Figuras_Historicas)."},
+        {"nombre": "Antagonistas", "desc": "Oponentes y amenazas con rostro.", "va": "Villanos, rivales principales, líderes enemigos.", "no_va": "Fuerzas impersonales (70_Sistemas_y_Cosmologia)."},
+        {"nombre": "Figuras_Historicas", "titulo": "Figuras Históricas","desc": "Personas relevantes del pasado.", "va": "Fundadores, conquistadores, profetas, inventores, héroes y villanos de eras anteriores.", "no_va": "Personajes activos en el presente."},
+        {"nombre": "Deidades_y_Entidades", "desc": "Seres superiores con identidad propia.", "va": "Dioses, demonios, espíritus mayores, inteligencias trascendentes, entidades cósmicas o primordiales.", "no_va": "El culto o la religión (30_Sociedad_y_Cultura/Creencias_y_Religiones)."}
+      ]
+    },
+    {
+      "nombre": "30_Sociedad_y_Cultura",
+      "desc": "Cómo viven, creen, se organizan y comercian los pueblos.",
+      "hijos": [
+        {"nombre": "Pueblos_y_Culturas", "desc": "Grupos definidos por su cultura.", "va": "Etnias, tribus, clanes, naciones culturales, subculturas, diásporas.", "no_va": "La especie biológica (50_Naturaleza/Especies_Inteligentes)."},
+        {"nombre": "Facciones_y_Organizaciones", "desc": "Grupos con intereses y estructura propios.", "va": "Gremios, órdenes, sectas, corporaciones, ejércitos, bandas, sindicatos, sociedades secretas.", "no_va": "Estados completos (Gobiernos_y_Estados)."},
+        {"nombre": "Gobiernos_y_Estados", "desc": "Sistemas de poder político.", "va": "Monarquías, repúblicas, imperios, consejos, teocracias, corporaciones-estado, federaciones.", "no_va": "El territorio físico (10_Mundo/Paises_y_Territorios)."},
+        {"nombre": "Creencias_y_Religiones", "desc": "Sistemas de fe, ideologías y filosofías.", "va": "Religiones, cultos, herejías, ideologías políticas, filosofías, supersticiones.", "no_va": "Las entidades como seres (20_Personajes/Deidades_y_Entidades)."},
+        {"nombre": "Instituciones_y_Linajes", "desc": "Estructuras duraderas y familias.", "va": "Academias, universidades, casas nobles, dinastías, clanes familiares, castas.", "no_va": "Árboles genealógicos detallados (40_Historia/Genealogias)."},
+        {"nombre": "Leyes_y_Costumbres", "desc": "Normas formales e informales.", "va": "Leyes, tradiciones, tabúes, festividades, etiqueta, ritos de paso, gastronomía.", "no_va": "Los gobiernos que las dictan (Gobiernos_y_Estados)."},
+        {"nombre": "Idiomas_y_Escrituras", "desc": "Lenguas y sistemas de escritura o comunicación.", "va": "Idiomas, dialectos, alfabetos, jergas, códigos, lenguajes de señas.", "no_va": "Las reglas de nombres de archivo (00_Sistema/04_Convenciones)."},
+        {"nombre": "Economia_y_Comercio", "titulo": "Economía y Comercio","desc": "Producción, intercambio y riqueza.", "va": "Mercados, rutas comerciales, industrias, oficios, impuestos, contrabando.", "no_va": "Las monedas como objeto (60_Objetos_y_Recursos/Monedas_y_Medios_de_Intercambio)."},
+        {"nombre": "Arte_y_Expresion", "titulo": "Arte y Expresión","desc": "Expresiones artísticas y textos del mundo.", "va": "Estilos artísticos, música, literatura, teatro, medios, canciones, poemas y documentos escritos dentro del mundo.", "no_va": "Mitos y leyendas (40_Historia/Mitos_y_Leyendas)."}
+      ]
+    },
+    {
+      "nombre": "40_Historia",
+      "desc": "El pasado del mundo: eras, hechos, conflictos y relatos.",
+      "hijos": [
+        {"nombre": "Eras_y_Periodos", "desc": "Grandes divisiones del tiempo.", "va": "Eras, épocas, edades, calendarios y cómputo del tiempo.", "no_va": "Hechos puntuales (Acontecimientos)."},
+        {"nombre": "Cronologias", "titulo": "Cronologías","desc": "Líneas de tiempo ordenadas.", "va": "Cronologías generales, por región, por facción o por personaje.", "no_va": "La narración extensa de un hecho."},
+        {"nombre": "Acontecimientos", "desc": "Hechos puntuales con fecha y consecuencias.", "va": "Catástrofes, descubrimientos, coronaciones, tratados, fundaciones.", "no_va": "Conflictos prolongados (Guerras_y_Conflictos)."},
+        {"nombre": "Guerras_y_Conflictos", "desc": "Conflictos armados, políticos o sociales prolongados.", "va": "Guerras, batallas, revoluciones, rebeliones, guerras frías.", "no_va": "Hechos aislados sin conflicto."},
+        {"nombre": "Mitos_y_Leyendas", "desc": "Relatos que el mundo cree, sean ciertos o no.", "va": "Mitos de creación, leyendas, profecías, cuentos populares, rumores persistentes.", "no_va": "La verdad objetiva detrás del mito (80_Secretos)."},
+        {"nombre": "Genealogias", "titulo": "Genealogías","desc": "Árboles familiares y sucesiones.", "va": "Árboles genealógicos, líneas sucesorias, linajes de maestros y aprendices.", "no_va": "Fichas individuales (20_Personajes)."}
+      ]
+    },
+    {
+      "nombre": "50_Naturaleza",
+      "desc": "Seres vivos, ecosistemas, recursos y afecciones.",
+      "hijos": [
+        {"nombre": "Especies_Inteligentes", "desc": "Especies o tipos de seres con conciencia y cultura.", "va": "Fichas biológicas de especies pensantes, incluidas las artificiales cuando forman un tipo (androides, constructos conscientes).", "no_va": "Su cultura (30_Sociedad_y_Cultura/Pueblos_y_Culturas)."},
+        {"nombre": "Criaturas_y_Monstruos", "desc": "Seres peligrosos, anómalos o extraordinarios sin cultura propia.", "va": "Monstruos, bestias, aberraciones, constructos, no-muertos, xenoformas.", "no_va": "Animales comunes (Fauna)."},
+        {"nombre": "Flora", "desc": "Plantas, hongos y vida vegetal.", "va": "Árboles, hierbas, cultivos, hongos, flora exótica.", "no_va": "Materiales ya procesados (60_Objetos_y_Recursos)."},
+        {"nombre": "Fauna", "desc": "Animales comunes.", "va": "Animales salvajes y domésticos, monturas, ganado, plagas animales.", "no_va": "Monstruos (Criaturas_y_Monstruos)."},
+        {"nombre": "Ecosistemas", "desc": "Relaciones entre seres vivos y su entorno.", "va": "Biomas, cadenas tróficas, hábitats, ecosistemas artificiales.", "no_va": "Accidentes geográficos (10_Mundo/Geografia_y_Clima)."},
+        {"nombre": "Minerales_y_Materiales_Naturales", "desc": "Materiales en su estado natural.", "va": "Metales, gemas, piedras, maderas, cristales, compuestos exóticos.", "no_va": "Materiales procesados (60_Objetos_y_Recursos/Materiales_Procesados)."},
+        {"nombre": "Recursos_Naturales", "desc": "Recursos valiosos y su distribución.", "va": "Yacimientos, fuentes de agua, tierras fértiles, fuentes de energía.", "no_va": "El comercio de esos recursos (30_Sociedad_y_Cultura/Economia_y_Comercio)."},
+        {"nombre": "Enfermedades_y_Afecciones", "desc": "Lo que daña, transforma o corrompe a los seres vivos.", "va": "Enfermedades, plagas, venenos naturales, mutaciones, corrupciones, adicciones.", "no_va": "Sustancias fabricadas (60_Objetos_y_Recursos/Consumibles_y_Sustancias) y la fuerza que causa la afección (70_Sistemas_y_Cosmologia/Fenomenos_Extraordinarios)."}
+      ]
+    },
+    {
+      "nombre": "60_Objetos_y_Recursos",
+      "desc": "Cosas fabricadas, útiles y valiosas.",
+      "hijos": [
+        {"nombre": "Artefactos_y_Reliquias", "desc": "Objetos únicos o de gran poder o significado.", "va": "Artefactos, reliquias, prototipos únicos, objetos legendarios o sagrados.", "no_va": "Equipo común."},
+        {"nombre": "Armas_y_Armaduras", "desc": "Equipo de combate y protección.", "va": "Armas cuerpo a cuerpo, a distancia o de energía; munición; armaduras, escudos y trajes de combate.", "no_va": "Objetos únicos (Artefactos_y_Reliquias)."},
+        {"nombre": "Herramientas_y_Equipamiento", "desc": "Utensilios y equipo de oficio o viaje.", "va": "Herramientas, instrumentos, dispositivos, equipo de expedición o supervivencia.", "no_va": "Armas (Armas_y_Armaduras)."},
+        {"nombre": "Vehiculos_y_Maquinaria", "titulo": "Vehículos y Maquinaria","desc": "Medios de transporte y mecanismos.", "va": "Carros, barcos, aeronaves, naves espaciales, máquinas, autómatas sin conciencia.", "no_va": "Los principios tecnológicos (70_Sistemas_y_Cosmologia/Tecnologia)."},
+        {"nombre": "Vestimenta_y_Objetos_Cotidianos", "desc": "Ropa y objetos de la vida diaria.", "va": "Ropa, joyas, mobiliario, utensilios domésticos, objetos personales.", "no_va": "Objetos de poder (Artefactos_y_Reliquias)."},
+        {"nombre": "Materiales_Procesados", "desc": "Materiales transformados por algún oficio o industria.", "va": "Aleaciones, tejidos, cuero, papel, polímeros, tintes.", "no_va": "Materiales en bruto (50_Naturaleza/Minerales_y_Materiales_Naturales)."},
+        {"nombre": "Consumibles_y_Sustancias", "desc": "Lo que se ingiere, se aplica o se gasta.", "va": "Pociones, medicinas, drogas, venenos fabricados, alimentos, bebidas.", "no_va": "Ingredientes naturales (50_Naturaleza)."},
+        {"nombre": "Monedas_y_Medios_de_Intercambio", "desc": "Dinero y formas de pago.", "va": "Monedas, billetes, créditos, trueque, bienes usados como moneda.", "no_va": "El sistema económico (30_Sociedad_y_Cultura/Economia_y_Comercio)."}
+      ]
+    },
+    {
+      "nombre": "70_Sistemas_y_Cosmologia",
+      "titulo": "Sistemas y Cosmología",
+      "desc": "Las reglas profundas del mundo: poderes, tecnología, leyes de la realidad y cosmos.",
+      "hijos": [
+        {"nombre": "Sistemas_de_Poder", "desc": "Cómo funcionan los poderes extraordinarios, si existen.", "va": "Magia, psiónica, dones, superpoderes, implantes, fe con efectos reales: fuentes, reglas, límites y costes.", "no_va": "Objetos con poder (60_Objetos_y_Recursos)."},
+        {"nombre": "Tecnologia", "titulo": "Tecnología","desc": "Nivel y principios tecnológicos.", "va": "Avances, ciencia, ingeniería, alquimia, informática, medicina: qué es posible y qué no.", "no_va": "Máquinas concretas (60_Objetos_y_Recursos/Vehiculos_y_Maquinaria)."},
+        {"nombre": "Leyes_del_Universo", "desc": "Reglas físicas y metafísicas fundamentales.", "va": "Física particular del mundo, vida y muerte, alma, destino, causalidad.", "no_va": "Leyes de los pueblos (30_Sociedad_y_Cultura/Leyes_y_Costumbres)."},
+        {"nombre": "Fenomenos_Extraordinarios", "titulo": "Fenómenos Extraordinarios","desc": "Fuerzas, eventos y anomalías fuera de lo común.", "va": "Maldiciones, anomalías, tormentas extrañas, zonas de distorsión, fenómenos inexplicados, fuerzas persistentes.", "no_va": "Seres con identidad (20_Personajes/Deidades_y_Entidades) y sus efectos sobre los seres vivos (50_Naturaleza/Enfermedades_y_Afecciones)."},
+        {"nombre": "Planos_y_Dimensiones", "desc": "Otros niveles de existencia.", "va": "Planos, dimensiones, realidades paralelas, el más allá, espacios virtuales.", "no_va": "Lugares del mundo físico (10_Mundo)."},
+        {"nombre": "Cosmos_y_Astros", "desc": "El cielo y la forma del universo.", "va": "Soles, lunas, estrellas, constelaciones, cometas, forma del mundo, ciclos astronómicos.", "no_va": "Astros que se visitan o habitan (10_Mundo/Grandes_Regiones)."},
+        {"nombre": "Conceptos_Fundamentales", "desc": "Ideas abstractas clave del mundo.", "va": "Conceptos, principios y términos que sostienen el lore.", "no_va": "Entidades concretas."}
+      ]
+    },
+    {
+      "nombre": "80_Secretos",
+      "desc": "La verdad oculta del mundo: lo que realmente es, frente a lo que se cree. Contiene spoilers.",
+      "va": "Verdades ocultas, identidades secretas, orígenes reales, conspiraciones, respuestas a misterios.",
+      "no_va": "Lo que el mundo cree o cuenta (va en la nota de lore correspondiente).",
+      "nota": "Las notas de lore nunca enlazan aquí; los secretos enlazan a las notas que afectan. Así esta carpeta puede excluirse al compartir la bóveda.",
+      "hijos": []
+    }
+  ]
+}

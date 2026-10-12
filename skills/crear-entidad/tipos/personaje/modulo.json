@@ -1,0 +1,52 @@
+{
+  "tipo": "personaje",
+  "familia": "personaje",
+  "emoji": "👤",
+  "huecos_propios": {
+    "min": 3,
+    "max": 8
+  },
+  "carpeta": {
+    "propiedad": "rol",
+    "valores": {
+      "protagonista": "20_Personajes/Protagonistas",
+      "secundario": "20_Personajes/Personajes_Secundarios",
+      "antagonista": "20_Personajes/Antagonistas",
+      "historico": "20_Personajes/Figuras_Historicas"
+    }
+  },
+  "fechas": [
+    "nacimiento",
+    "muerte"
+  ],
+  "fecha_exacta": "nacimiento",
+  "valores": {
+    "situacion_vital": ["vivo", "muerto", "desaparecido", "desconocido"]
+  },
+  "reciprocas": {
+    "padres": "hijos",
+    "hijos": "padres",
+    "hermanos": "hermanos",
+    "pareja": "pareja"
+  },
+  "relaciones": {
+    "especie": "especie",
+    "pueblo": "cultura",
+    "region": "lugar",
+    "lugar_nacimiento": "lugar",
+    "residencia": "lugar",
+    "ubicacion_actual": "lugar",
+    "facciones": "faccion",
+    "creencias": "creencia",
+    "linaje": "linaje",
+    "padres": "personaje",
+    "hermanos": "personaje",
+    "pareja": "personaje",
+    "hijos": "personaje",
+    "vinculos": "personaje",
+    "posesiones": "objeto",
+    "afecciones": "afeccion",
+    "sistemas": "sistema",
+    "era": "era"
+  }
+}

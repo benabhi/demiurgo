@@ -1,0 +1,49 @@
+{
+  "tipo": "era",
+  "familia": "era",
+  "emoji": "⏳",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 2,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "40_Historia/Eras_y_Periodos"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": "actual",
+    "pasado": "pasada",
+    "futuro": "profetizada",
+    "cronologia": "Cronología"
+  },
+  "valores": {
+    "situacion": ["actual", "pasada", "legendaria", "profetizada"],
+    "alcance": ["mundial", "regional", "local", "de_un_pueblo"]
+  },
+  "reciprocas": {
+    "calendarios": "eras",
+    "era_padre": "periodos",
+    "periodos": "era_padre",
+    "anterior": "siguiente",
+    "siguiente": "anterior",
+    "figuras": "era"
+  },
+  "relaciones": {
+    "calendarios": "calendario",
+    "era_padre": "era",
+    "periodos": "era",
+    "anterior": "era",
+    "siguiente": "era",
+    "evento_inicio": "evento",
+    "evento_fin": "evento",
+    "regiones": "lugar",
+    "culturas": "cultura",
+    "potencias": "faccion",
+    "figuras": "personaje"
+  }
+}

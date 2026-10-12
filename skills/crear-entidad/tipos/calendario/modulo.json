@@ -1,0 +1,37 @@
+{
+  "tipo": "calendario",
+  "familia": "calendario",
+  "emoji": "📅",
+  "crear_desde_cero": false,
+  "huecos_propios": {
+    "min": 1,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "40_Historia/Eras_y_Periodos"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "valores": {
+    "referencia": ["true", "false"],
+    "base": ["solar", "lunar", "lunisolar", "estacional", "astral", "otra"]
+  },
+  "reciprocas": {
+    "culturas": "calendario",
+    "calendario_base": "derivados",
+    "derivados": "calendario_base",
+    "eras": "calendarios"
+  },
+  "relaciones": {
+    "culturas": "cultura",
+    "regiones": "lugar",
+    "evento_cero": "evento",
+    "eras": "era",
+    "festividades": "costumbre",
+    "guardianes": "faccion",
+    "calendario_base": "calendario",
+    "derivados": "calendario"
+  }
+}

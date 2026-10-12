@@ -1,0 +1,12 @@
+{
+  "name": "generar-imagen-scripts",
+  "private": true,
+  "description": "Dependencias de los scripts de la skill generar-imagen (generación de imágenes con Puter)",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@heyputer/puter.js": "2.6.4"
+  }
+}

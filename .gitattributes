@@ -1,0 +1,10 @@
+# Normaliza fines de línea a LF (Obsidian y los scripts de las skills escriben en LF)
+* text=auto eol=lf
+
+# Binarios
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary

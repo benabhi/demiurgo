@@ -1,0 +1,45 @@
+{
+  "tipo": "fenomeno",
+  "familia": "fenomeno",
+  "emoji": "🌫️",
+  "huecos_propios": {
+    "min": 3,
+    "max": 8
+  },
+  "carpeta": {
+    "fija": "70_Sistemas_y_Cosmologia/Fenomenos_Extraordinarios"
+  },
+  "fechas": [
+    "inicio",
+    "fin"
+  ],
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "alcance": ["local", "regional", "continental", "mundial", "cosmico"],
+    "permanencia": ["permanente", "ciclico", "esporadico"],
+    "comportamiento": ["estable", "en_expansion", "en_retroceso", "fluctuante", "desconocido"]
+  },
+  "reciprocas": {
+    "zonas_afectadas": "fenomenos",
+    "derivados": "fenomeno_padre",
+    "fenomeno_padre": "derivados",
+    "causas": "fenomenos",
+    "afecciones": "fenomenos",
+    "criaturas": "fenomenos"
+  },
+  "relaciones": {
+    "zonas_afectadas": "lugar",
+    "causas": "evento",
+    "fenomeno_padre": "fenomeno",
+    "derivados": "fenomeno",
+    "afecciones": "afeccion",
+    "criaturas": "criatura",
+    "protecciones": "cualquiera",
+    "estudiosos": "cualquiera",
+    "creencias": "creencia",
+    "era": "era"
+  }
+}

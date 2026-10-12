@@ -1,0 +1,171 @@
+---
+name: expandir-mundo
+description: Motor de generación de un mundo en su bóveda de Obsidian. En cada ciclo elige qué desarrollar según el estado del mundo (enlaces pendientes más nombrados, foco de la Ficha, paquetes, equilibrio entre completar lo pendiente y crear algo nuevo), tira ingredientes en tablas con azar real, arma el contexto de lo ya creado, crea las entidades con crear-entidad, valida y audita, registra el ciclo y hace un commit. Úsala para "expande el mundo", "genera más del mundo", "/expandir-mundo 3" o "/expandir-mundo prueba" (en una rama aparte para revisar antes).
+---
+
+# Expandir mundo
+
+Hace crecer el mundo de forma coherente, ciclo a ciclo. Los scripts aportan el azar real y los datos; Claude, la escritura y el criterio.
+
+Uso:
+- `/expandir-mundo` hace **un ciclo**.
+- `/expandir-mundo 5` hace **cinco seguidos**, y se detiene antes si se alcanza el límite de revisión.
+- `/expandir-mundo prueba 3` usa el **modo prueba**: trabaja en una rama git aparte para revisar y luego fusionar o descartar.
+- Si se añade "sin imagen", no se generan imágenes en esa tanda: va más rápida y no gasta saldo de Puter.
+- Si se indica una técnica ("en acuarela", "como cómic"), todas las imágenes de la tanda la usan en lugar de la de la Guía Visual.
+- Con `/loop` sigue sola hasta el límite de borradores sin revisar.
+
+**El ciclo:** qué crear → ingredientes → contexto → componer → validar → registrar → commit.
+
+**Cómo crece el mundo:** cada nota enlaza a las entidades que nombra, y las que aún no existen quedan como **enlaces pendientes** (ver `referencias/huecos.md` de `crear-entidad`). En cada ciclo, el motor completa uno de ellos o crea algo nuevo, y lo que crea nombra a su vez entidades nuevas. Para que el mundo no se llene de enlaces vacíos ni se quede sin hilos de los que tirar, el selector mira cuántos enlaces pendientes hay por entidad:
+- con pocos, crea algo nuevo más a menudo y cada nota puede abrir bastantes enlaces nuevos;
+- con muchos, casi siempre completa lo pendiente y cada nota abre los mínimos.
+
+## Archivos
+- `scripts/setup_generation.py`: prepara `00_Sistema/06_Generacion` la primera vez, sin sobrescribir nunca.
+- `scripts/select_target.py`: elige qué desarrollar (enlaces pendientes puntuados, paquetes o una entidad nueva) y cuántos enlaces nuevos puede abrir cada nota, o pide detenerse.
+- `scripts/roll_tables.py`: tira en las tablas de ingredientes y deriva ingredientes del canon.
+- Los scripts de `crear-entidad`: `build_context.py`, `find_gaps.py`, `generate_names.py`, `pending_links.py` (el registro de enlaces pendientes), `check_note.py`, `audit_world.py` y `report.py` (el informe final).
+- `assets/`: tablas, paquetes, registro y README por defecto, que se copian a la bóveda la primera vez. Después el usuario los edita allí.
+
+## Paso 0: preparar (una vez por tanda)
+1. **Bóveda:** por defecto `World_Building/`. La Ficha del Mundo y `CLAUDE.md` mandan.
+2. **Instantánea para el informe:** antes de tocar nada, ejecuta `python <crear-entidad>/scripts/report.py --snapshot` y guarda la ruta que imprime. Con ella, el informe final junta todos los ciclos y no confunde lo generado con cambios del usuario sin confirmar.
+3. **Carpeta de generación:** ejecuta `python <directorio de esta skill>/scripts/setup_generation.py`. Crea lo que falte en `06_Generacion`, la registra en la Guía de Organización y enlaza el registro desde `MOC_Inicio`.
+4. **Modo prueba:** crea antes del primer ciclo la rama `prueba/<AAAA-MM-DD-HHMM>` con `git switch -c`.
+5. **Pilares por definir:** si la Ficha deja sin definir pilares que afectan a lo que se va a crear (el calendario, las especies), se puede seguir, pero no los decides tú: quedan como preguntas.
+
+## Paso 1: qué crear
+```bash
+python <directorio de esta skill>/scripts/select_target.py --json
+```
+Opciones:
+- `--review-limit` (20 por defecto);
+- `--new-chance`: la probabilidad de crear algo nuevo cuando hay pocos enlaces pendientes por entidad (0.4 por defecto; con muchos, baja al 40 % de ese valor);
+- `--skip <enlace>` (repetible);
+- `--skip-canon`.
+
+Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
+
+Toda elección, salvo `detener`, trae además:
+- **`densidad`:** enlaces pendientes que se pueden crear por entidad.
+- **`presupuesto`:** `amplio`, `medio` o `justo`.
+- **`enlaces_nuevos`:** cuántos enlaces pendientes nuevos debe abrir cada nota, por tipo (por ejemplo `personaje: 3–5`). Respétalo al componer (Paso 4).
+
+El resultado dice qué hacer:
+- **`detener`:** hay demasiados borradores procedurales sin revisar. Para la tanda y avisa al usuario.
+- **`crear_foco`:** la Ficha nombra un foco (`foco_texto`) que aún no existe como lugar. Se crea antes que nada, porque lo demás se generará dentro de él:
+  - usa el módulo de `modulos` que encaje con el texto del foco (un continente, una cordillera o un territorio es una `region`), con relevancia alta;
+  - si su nombre no aparece en el texto del foco, añade ese texto a sus `aliases`: así el selector lo reconoce como foco;
+  - si ningún módulo encaja (el foco es una ciudad y aún no hay módulo de asentamientos, por ejemplo), anótalo en el registro y vuelve a ejecutar el selector con `--skip-focus`.
+- **`crear_canon`:** un enlace pendiente (`referencia`) que nombra la Ficha o que nombran al menos tres notas: el conflicto central, la especie, el gran hecho. Es canon de base, así que va antes que lo demás:
+  - crea la nota con **el mismo nombre de archivo que el enlace**, para que todas las notas que ya la nombran la encuentren sin reemplazar nada (si es un nombre de rol, ponle nombre y reemplázalo);
+  - lee lo que dicen de ella esas notas (`find_gaps.py --link <referencia>`) y construye sobre la Ficha: lo que la Ficha deja abierto queda abierto, y los hechos grandes nuevos van como `Confirmar: …`;
+  - relevancia alta (4 o 5);
+  - si la Ficha pide aprobación para ese tipo de entidad (las especies nuevas, por ejemplo), sigue la regla del módulo: anota `Confirmar: …` con la referencia como primer enlace de la línea (eso la bloquea) y vuelve a ejecutar el selector;
+  - si en realidad ningún módulo encaja, vuelve a ejecutar el selector con `--skip <referencia>`.
+- **`completar_hueco`:** indica el enlace pendiente (`hueco`), el tipo esperado, los módulos que pueden crearlo y las notas que lo nombran (`nombrado_por`, de la más relevante a la menos). Antes de seguir, lee lo que dicen de él esas notas (`find_gaps.py --link <hueco>`). Si en realidad ningún módulo encaja (el selector propone una `region` para lo que las notas describen como una aldea, por ejemplo), no lo fuerces: anótalo en el registro y vuelve a ejecutar el selector con `--skip <hueco>`.
+- **`paquete`:** un grupo de entidades que se crean juntas (ver `Paquetes.md`), en la región foco.
+- **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies).
+
+`paquete` y `nueva_entidad` salen cuando toca crear algo nuevo o cuando no hay enlaces pendientes que se puedan crear.
+
+Anota la semilla y las razones para el registro.
+
+## Paso 2: ingredientes
+```bash
+python <directorio de esta skill>/scripts/roll_tables.py --file <Tipo> --file Oraculos --file Insolito --derive <Nota>
+```
+- **`--file <Tipo>`:** la tabla del tipo que vas a crear, si existe (`--list` muestra cuáles hay). Si el mundo tiene tablas propias en `06_Generacion/Tablas` que encajan con lo que se crea, añádelas con otro `--file`.
+- **`--derive`:** la primera nota de `nombrado_por` (la más relevante de las que nombran el enlace pendiente) o, si no hay ninguna, la región foco. Así los ingredientes salen de lo que ya existe allí. En `crear_foco` no hay de dónde derivar: omítelo. En `crear_canon`, deriva de la región foco.
+- **Lo insólito** (`Insolito`) se tira siempre:
+  - la **chispa** solo se usa si sale `hay_chispa=Sí` (una de cada tres veces, de media), y entra al mundo según su `grado_de_verdad`: como rumor, exageración, verdad a medias o verdad literal. Si la verdad literal choca con las reglas de la Ficha, vuelve a tirar solo el grado (`--table "Grado de verdad"`);
+  - el **contraste** se integra en la entidad;
+  - la **conexión inesperada** se ata a una entidad del contexto (Paso 3). Si implica un hecho importante, va como `Confirmar: …`.
+
+  Lo insólito es lo que más riqueza da al mundo: no lo suavices hasta volverlo genérico. Intégralo con naturalidad en la ficha (en la historia, los rumores, los ganchos o las citas) y menciónalo en el registro del ciclo.
+
+Los ingredientes son una **semilla, no una orden**:
+- Lo que fijan el paquete o las notas que nombran el enlace pendiente manda. Si lo describen como una capital, es una ciudad, diga lo que diga la tabla.
+- Si un ingrediente choca con el canon o con el contexto, vuelve a tirar solo esa tabla (`--table <Nombre>`) y anota el motivo.
+- Los oráculos (motivación, complicación, giro…) se **interpretan** en el contexto del mundo; no se copian literalmente.
+- Nunca inventes un resultado: todo sale de `roll_tables.py`.
+
+## Paso 3: contexto
+```bash
+python <crear-entidad>/scripts/build_context.py --target <enlace pendiente, entidad relacionada o región foco>
+```
+Es todo lo que necesitas saber del mundo para esta creación. Lee entera solo la nota que haga falta en detalle.
+
+## Paso 4: componer
+Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingredientes y el contexto, salvo su instantánea y su informe final (el informe se da una sola vez, al terminar la tanda):
+- `origen: procedural` y `estado: borrador`.
+- **Enlace pendiente** (`crear_canon` y `completar_hueco`): modo `hueco=<Enlace>`. La nota se llama como el enlace; si es un nombre de rol, ponle nombre y reemplázalo en todas las notas que lo usan.
+- **Presupuesto:** cada nota abre los enlaces pendientes nuevos que diga `enlaces_nuevos` para su tipo, todos con tipo. Lo demás que nombre va sin nombre propio, o reutiliza lo que ya existe o ya está pendiente (el registro `Enlaces_Pendientes`).
+- **Paquete:** crea primero la entidad principal y después las demás. Cada una se enlaza con las anteriores (a su nota, no como pendiente) y usa su contexto. Respeta las cantidades y los papeles. La principal tiene una relevancia igual o mayor que la de las demás.
+- **Nueva entidad:** dentro de la región foco.
+- **Anclaje:** lo creado de la nada (un paquete, una entidad nueva) queda enlazado desde alguna nota existente (su asentamiento, su región…), como pide `crear-entidad`.
+- **Imagen:** automática, salvo que la tanda sea "sin imagen", y con la técnica de la tanda si se indicó una.
+- **Reglas de `crear-entidad` que siguen valiendo:**
+  - toda entidad nombrada lleva enlace (a su nota o como enlace pendiente);
+  - nombres con `generate_names.py`;
+  - hechos grandes como `Confirmar: …`;
+  - secretos por tirada;
+  - reciprocidad y Glosario;
+  - el registro de enlaces pendientes, regenerado con `pending_links.py` (con `--set` para los que solo nombra el cuerpo).
+
+## Paso 5: validar
+- `check_note.py` sobre cada nota creada o modificada.
+- `audit_world.py` sobre el mundo.
+
+Corrige los errores antes de seguir.
+
+## Paso 6: registrar
+Añade una entrada al principio de `00_Sistema/06_Generacion/Registro_de_Generacion.md`, debajo del comentario:
+```markdown
+## Ciclo <N> — <AAAA-MM-DD>
+- **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo>
+- **Por qué:** <razones del selector> (semilla <n>)
+- **Equilibrio:** densidad <n> enlaces pendientes por entidad · presupuesto <amplio, medio o justo> · enlaces pendientes nuevos abiertos: <n>
+- **Ingredientes:** <clave=valor, …> (semilla <n>); re-tiradas y su motivo
+- **Lo insólito:** la chispa y su grado de verdad, y cómo se integró (o "sin chispa")
+- **Contexto:** [[Nota]], [[Nota]]
+- **Creadas:** [[Nota]], … (los secretos sin enlace, solo su nombre)
+- **Modificadas:** [[Nota]] (qué cambió)
+- **Avisos:** los del auditor, o "ninguno"
+```
+`<N>` es el número de ciclos ya registrados más uno.
+
+## Paso 7: commit
+Un ciclo es un commit, así cada ciclo se puede revertir por separado (`git revert <hash>`).
+- Añade **solo** los archivos que creó o modificó el ciclo, más el registro de generación y el de enlaces pendientes (`git add <rutas>`), nunca `git add -A`. Si el usuario tiene otros cambios sin guardar, se quedan fuera.
+- El mensaje es `Generación <N>: <entidad principal>`, con la línea de co-autoría que indique la sesión.
+
+## Al terminar la tanda: informe
+El usuario tiene que ver con claridad qué se generó.
+1. Ejecuta:
+   ```bash
+   python <crear-entidad>/scripts/report.py --baseline <ruta de la instantánea>
+   ```
+   Si no hay instantánea, usa `--since <commit en que empezó la tanda>`.
+
+   El informe junta todos los ciclos, con enlaces que se abren con un clic:
+   - entidades nuevas (resumen, relaciones, quién las enlaza y enlaces pendientes que introducen) y secretos aparte;
+   - notas modificadas con los enlaces añadidos y quitados, y enlaces pendientes completados;
+   - decisiones pendientes (`Confirmar`), preguntas nuevas y términos del Glosario;
+   - los commits de los ciclos, que se deshacen por separado;
+   - el estado del mundo: auditor, borradores pendientes, enlaces pendientes que ya se pueden crear (y cuántos por entidad) y los que no tienen tipo.
+2. Muéstralo tal cual. Encima, resume la tanda en pocas líneas:
+   - ciclos hechos y la acción de cada uno (completar un enlace pendiente, paquete o nueva entidad), con el motivo del selector;
+   - cómo quedó el equilibrio: densidad y presupuesto al empezar y al terminar;
+   - los ingredientes o giros de las tablas que más marcaron lo creado;
+   - si se detuvo antes y por qué (límite de revisión, error).
+3. Si hay decisiones pendientes, recuerda que los enlaces pendientes que dependen de ellas quedan bloqueados hasta que el usuario decida.
+4. En **modo prueba**, pregunta si se fusiona la rama en la principal o se descarta: es la única decisión del flujo.
+
+## Reglas
+- **Canon:** nunca contradice el canon ni decide pilares por definir. Los hechos grandes nuevos van a Preguntas Abiertas como `Confirmar: …`.
+- **Límite de revisión:** no genera si hay más borradores procedurales sin revisar que el límite. Así no se construye sobre lo que el usuario aún no aprobó.
+- **Azar real:** ingredientes y decisiones al azar siempre por script, con semilla anotada.
+- **Archivos del usuario:** las tablas, perfiles y paquetes de `06_Generacion` son del usuario. Se leen y se usan, pero no se reescriben.
+- **Skill genérica:** nada de un mundo concreto en `assets/`.
