@@ -43,7 +43,7 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, dónde está y por qué importa.
 - **Datos clave:** la tabla completa. «Origen» dice cuándo y por quién se construyó (o cómo se formó, si es natural); «Tamaño», a escala humana (una sala, tres pisos, media legua de bosque).
 - **Exterior:** lo que se ve al acercarse, lo que se ve, se oye y se huele, y su forma y sus materiales (o la forma del terreno).
@@ -83,7 +83,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre, sus apodos y los términos nuevos.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien lo regenta o lo guarda (`dueno`, `ocupantes`);
 - quien lo controla (`facciones`);
 - lo que guarda (`objetos`);
@@ -91,12 +91,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - un lugar que contiene (`lugares_notables`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el lugar guarda un secreto (una sala que no figura en ningún plano, un muerto bajo el suelo, una puerta que no lleva a donde parece, algo que lo habita y nadie ha visto). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el lugar guarda un secreto (una sala que no figura en ningún plano, un muerto bajo el suelo, una puerta que no lleva a donde parece, algo que lo habita y nadie ha visto). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría lo lleva a su carpeta y sigue a lo que es hoy.
 - [ ] Su ubicación lo lista en `lugares_notables`; los fenómenos y eventos que ya existen, también.
 - [ ] La situación cuadra con sus fechas y con el año actual.
 - [ ] Un sitio de peso que no estaba en el canon quedó como `Confirmar: …`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 6 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

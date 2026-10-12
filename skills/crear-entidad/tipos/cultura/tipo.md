@@ -29,7 +29,7 @@ Cada cultura crea **su perfil de nombres**, que usarán todos sus personajes:
 El nombre de la propia cultura puede salir de su perfil (cómo se llaman a sí mismos) y, en `aliases`, cómo los llaman los demás.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** quiénes son y qué los hace reconocibles. No una lista de datos.
 - **Datos clave:** la tabla completa; la población, aproximada.
 - **Identidad y valores:** cómo se ven, qué valoran, qué desprecian y sus tabúes. Es el corazón de la ficha: todo lo demás se explica desde aquí.
@@ -61,7 +61,8 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
   - `idiomas` (recíproca con `culturas` del idioma) y `creencias`;
   - `calendario`: el suyo, si cuenta el tiempo a su manera (recíproca con `culturas` del calendario); vacío si usa el de referencia;
   - `cultura_madre` y `ramas`: de qué cultura viene y qué culturas nacieron de ella; recíprocas;
-  - `aliados` y `rivales`: otras culturas; recíprocas;
+  - `aliados`: otras culturas; recíproca, porque una alianza es de las dos;
+  - `rivales`: los pueblos que este tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
   - `instituciones`: sus gobiernos, órdenes o gremios (facciones, que la tienen en sus `culturas`);
   - `figuras`: sus miembros más notables (no hace falta listar a todos los personajes de la cultura);
   - `mitos` que cuenta: cada uno la tiene en sus `culturas`.
@@ -71,10 +72,10 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 ## Coherencia
 - **Especie:** su anatomía, su longevidad y su ciclo vital marcan la cultura (una especie que vive siglos no tiene la prisa de una que vive cuarenta años). Lee la ficha de la especie antes de escribir.
 - **Personajes existentes:** si ya hay personajes de esta cultura, sus costumbres, nombres y oficios deben encajar. Léelos (`build_context.py`).
-- **Reciprocidad:** la especie la lista en `culturas` y cada territorio que exista la lista en `pueblos`.
+- **Reciprocidad:** la especie la lista en `culturas`, cada territorio que exista la lista en `pueblos` y sus aliados que existan, en `aliados`. Sus rivales, no.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - su lengua (`idiomas`);
 - su fe (`creencias`);
 - su tierra (`territorios`);
@@ -84,13 +85,13 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - su propia cuenta del tiempo (`calendario`), solo si existe el calendario de referencia.
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la cultura guarda un secreto (un crimen de su historia, un origen distinto del que cuentan, una lealtad oculta). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la cultura guarda un secreto (un crimen de su historia, un origen distinto del que cuentan, una lealtad oculta). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] El nombre es único en la bóveda y en el Glosario.
 - [ ] El perfil `Nombres_<Cultura>` existe, se probó con `generate_names.py` y la sección "Nombres" tiene ejemplos.
 - [ ] Encaja con su especie, con los pilares de la Ficha y con los personajes que ya existen.
 - [ ] La especie y los territorios que existen la listan en `culturas` y `pueblos`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 10 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.
 - [ ] Si la creó el motor y es un pueblo nuevo de peso para el canon, su existencia va como `Confirmar: …`.

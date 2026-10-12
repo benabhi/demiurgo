@@ -51,7 +51,6 @@
     "fenomenos": "creencias",
     "creencia_madre": "ramas",
     "ramas": "creencia_madre",
-    "rivales": "rivales",
     "deidades": "creencias",
     "sistemas": "creencias",
     "mitos": "creencias"

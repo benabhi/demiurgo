@@ -55,7 +55,7 @@ Los relatos que el mundo cuenta y cree, sean ciertos o no: mitos de origen (cóm
 - Archivo en ASCII (`Gigante_que_Bebio_el_Mar.md`). H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** de qué trata, quién lo cuenta y por qué importa.
 - **Datos clave:** la tabla completa. «Antigüedad», casi siempre relativa. «Cuándo ocurre lo que cuenta», en el tiempo del relato («al principio de todo», «en tiempos de la primera reina») o, en una profecía, cuándo dice que pasará.
 - **El relato:** el relato entero, de 3 a 6 párrafos, contado como lo cuenta su pueblo; en una profecía, sus palabras y cómo se pronunció.
@@ -101,7 +101,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre (como mito), sus otros nombres y las palabras o fórmulas que nacen de él (un dicho, un nombre que nadie pone a sus hijos).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 7 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 7 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - el héroe, el villano o el profeta (`figuras`);
 - el lugar donde ocurrió, o donde dicen que ocurrió (`lugares`);
 - el monstruo o el objeto del relato (`criaturas`, `objetos`);
@@ -110,7 +110,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - el cantar o el libro que lo fijó (`obras`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 3 o 4, el mito guarda un secreto: lo que pasó de verdad, quién lo inventó y para qué, qué parte se borró o, en una profecía, quién la amañó o qué dice de verdad. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto que cambia lo que se sabe del conflicto central es un hecho enorme: además, va como `Confirmar: …` en Preguntas Abiertas, enlazando al mito y no al secreto.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 3 o 4, el mito guarda un secreto: lo que pasó de verdad, quién lo inventó y para qué, qué parte se borró o, en una profecía, quién la amañó o qué dice de verdad. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto que cambia lo que se sabe del conflicto central es un hecho enorme: además, va como `Confirmar: …` en Preguntas Abiertas, enlazando al mito y no al secreto.
 
 ## Comprobaciones antes de escribir
 - [ ] «El relato» suena a quien lo cuenta, y las demás secciones son neutras: la nota nunca dice si es cierto.
@@ -120,5 +120,5 @@ Tirada real con `roll_dice.py 1d4`: con 3 o 4, el mito guarda un secreto: lo que
 - [ ] No calca un mito del mundo real.
 - [ ] Si no es un detalle y no lo pidió el usuario, quedó como `Confirmar: …`.
 - [ ] Sus culturas, sus creencias, sus deidades y sus mitos relacionados que ya existen lo listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace (también en el relato) y hay entre 2 y 7 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace (también en el relato) y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

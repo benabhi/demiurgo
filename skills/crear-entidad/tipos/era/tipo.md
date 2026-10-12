@@ -29,7 +29,7 @@ Los grandes periodos de la historia del mundo: eras, edades, épocas y periodos 
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué fue la era y qué la define, no una lista de fechas.
 - **Datos clave:** la tabla completa. Las fechas, con sus nombres del calendario (o en relativo); la duración, en años.
 - **Qué la define:** su rasgo principal, lo que entonces era posible y hoy no (o al revés) y lo que entonces era impensable.
@@ -66,7 +66,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra el nombre de la era, sus otros nombres y los términos nuevos.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - el hecho que la abrió o la cerró (`evento_inicio`, `evento_fin`);
 - la potencia dominante (`potencias`);
 - una figura (`figuras`);
@@ -74,12 +74,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - la era anterior o la siguiente (`anterior`, `siguiente`), si no existen.
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la era guarda un secreto (su final no fue como se cuenta, una figura venerada causó la desgracia, se borraron años o pueblos de la crónica). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la era guarda un secreto (su final no fue como se cuenta, una figura venerada causó la desgracia, se borraron años o pueblos de la crónica). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Encaja en la línea del tiempo: empieza cuando termina la anterior y cabe en su era madre.
 - [ ] La situación cuadra con sus fechas y con el año actual de la Ficha.
 - [ ] La cronología va en orden y dentro de sus fechas (o en relativo, si el calendario está por definir).
 - [ ] Ni el calendario ni otro pilar se decidieron sin el usuario.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

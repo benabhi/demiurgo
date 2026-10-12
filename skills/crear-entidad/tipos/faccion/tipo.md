@@ -37,7 +37,7 @@ Una facción es lo que quiere y lo que está dispuesta a hacer para conseguirlo.
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** quiénes son, qué quieren y por qué importan.
 - **Datos clave:** la tabla completa; los miembros, aproximados («unos trescientos», «tres familias y sus criados»).
 - **Propósito:** ver arriba.
@@ -48,7 +48,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Recursos e influencia:** riqueza y medios, a quién pueden mover y dónde operan. Coherente con `recursos`.
 - **Métodos:** cómo actúan a la vista y lo que no se cuenta.
 - **Símbolos:** el emblema (lo que muestra la imagen), los colores y señales, y el lema.
-- **Aliados y enemigos:** de 2 a 4 filas, con la relación (alianza, rivalidad, vasallaje, deuda, guerra abierta) y el porqué.
+- **Aliados y enemigos:** de 2 a 4 filas, con la relación (alianza, rivalidad, vasallaje, deuda, guerra abierta), por qué existe y qué cambia para la facción, vistos desde ella.
 - **Historia:** su fundación, de 2 a 5 momentos decisivos y el presente.
 - **Relación con el mundo, secretos y rumores, ganchos, citas:** como en todo tipo.
 - **Imagen:**
@@ -61,7 +61,8 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
   - `sede` (un lugar o un asentamiento) y `zonas` donde operan (regiones o asentamientos);
   - `lider` y `figuras` (miembros notables): cada uno la tiene en sus `facciones`;
   - `faccion_madre` y `ramas`: de qué organización depende y qué capítulos o brazos tiene; recíprocas;
-  - `aliados` y `rivales`: otras facciones; recíprocas;
+  - `aliados`: otras facciones; recíproca, porque una alianza es de las dos;
+  - `rivales`: las que esta tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
   - `creencias` que siguen o administran;
   - `culturas` a las que pertenecen: cada cultura la tiene en sus `instituciones`;
   - `objetos` que guardan (reliquias, insignias, tesoros);
@@ -75,11 +76,11 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **La Ficha:** su tecnología, sus poderes (según los sistemas de poder) y su papel ante el conflicto central encajan con la Ficha. Si la Ficha prohíbe algo, la facción no lo tiene.
 - **Lo que ya existe:** su sede, sus miembros, los pueblos a los que pertenece, los eventos en que participó y las notas que ya la mencionan (como enlace pendiente) deben encajar con lo que dicen. Léelas (`build_context.py`).
 - **Su sede y su territorio:** la sede la lista en sus `facciones` (un lugar o un asentamiento) o en su `control` (una región que gobierna).
-- **Reciprocidad:** sus aliados, rivales, ramas, miembros, culturas y eventos que ya existen la listan en su propiedad inversa.
+- **Reciprocidad:** sus aliados, ramas, miembros, culturas y eventos que ya existen la listan en su propiedad inversa. Sus rivales, no.
 - **Glosario:** registra su nombre, sus otros nombres, sus rangos y sus términos propios.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien la dirige (`lider`);
 - un miembro notable (`figuras`);
 - su sede (`sede`);
@@ -88,13 +89,13 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - lo que guardan (`objetos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la facción guarda un secreto (su fundador no es quien dicen, sirve a otro amo, su objetivo verdadero es otro, uno de sus rangos no existe en ningún papel). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la facción guarda un secreto (su fundador no es quien dicen, sirve a otro amo, su objetivo verdadero es otro, uno de sus rangos no existe en ningún papel). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría la lleva a su carpeta.
 - [ ] Tiene un objetivo concreto, recursos coherentes con su alcance y una grieta interna.
 - [ ] Una facción regional o mundial que no estaba en el canon quedó como `Confirmar: …`.
 - [ ] La situación cuadra con sus fechas y con el año actual.
-- [ ] Sus miembros, aliados, rivales, ramas, culturas y eventos que ya existen la listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] Sus miembros, aliados, ramas, culturas y eventos que ya existen la listan.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

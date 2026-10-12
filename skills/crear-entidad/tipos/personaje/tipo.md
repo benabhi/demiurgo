@@ -35,7 +35,7 @@ Si el rol fue deducido, el resumen final lo dice y explica por qué. Un personaj
 - En `aliases`: el nombre real si difiere del archivo, apodos y títulos.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**: ningún campo queda vacío. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Concreto y específico:** colores, materiales, gestos, nombres. Nada genérico ("ojos bonitos", "es amable").
 - **Resumen:** quién es y qué lo hace interesante, no solo su oficio.
 - **Identidad:** la tabla completa. Si el calendario de la Ficha está por definir, la edad va en años y el nacimiento en términos relativos; si existe el calendario de referencia, el nacimiento va con su fecha («15 de Siega de 380 UE»).
@@ -97,7 +97,7 @@ La ficha se rellena **completa**: ningún campo queda vacío. Lo único sin reso
 - `imagen`: vacío hasta que `generar-imagen` lo complete.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - un familiar (`padres`, `hermanos`, `pareja`, `hijos`);
 - un vínculo (`vinculos`: un mentor, un rival, un amor perdido);
 - un lugar (`lugar_nacimiento`, `residencia`: su casa, su taller);
@@ -106,7 +106,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - el sistema de su poder, si lo tiene y aún no existe (`sistemas`).
 
 ## Secretos
-- **No todos los personajes tienen secreto: solo cada tanto.** Decídelo con una tirada real, nunca imaginada: `python <directorio de la skill>/scripts/roll_dice.py 1d4`. Con un **4**, el personaje tiene un secreto.
+- **No todos los personajes tienen secreto: solo cada tanto, y solo desde relevancia 3.** Decídelo con una tirada real, nunca imaginada: `python <directorio de la skill>/scripts/roll_dice.py 1d4`. Con un **4**, el personaje tiene un secreto. Con relevancia 1 o 2 no se tira: no lleva secreto.
 - Sin tirar, tiene secreto si el concepto lo implica o el usuario lo pide; y no lo tiene si el usuario lo descarta.
 - Cada secreto se crea con el tipo `secreto` (`tipos/secreto/tipo.md`) y enlaza al personaje en `afecta_a`.
 - La ficha del personaje **nunca enlaza** a su secreto: en "Secretos y rumores" solo van las señales visibles y los rumores.
@@ -117,7 +117,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - [ ] Es coherente con la Ficha: especies, tecnología, poderes, tono, crudeza y vetos.
 - [ ] Las edades familiares son coherentes, y `nacimiento`/`muerte` son números que cuadran con la edad (o están vacías si no hay calendario).
 - [ ] La `relevancia` va del 1 al 5 y es proporcional a su peso en el mundo.
-- [ ] No queda ningún campo del cuerpo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo del cuerpo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las propiedades de relación contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.
 - [ ] El frontmatter y el cuerpo coinciden.
 - [ ] Si tiene secreto, la ficha no menciona ni enlaza su verdad.

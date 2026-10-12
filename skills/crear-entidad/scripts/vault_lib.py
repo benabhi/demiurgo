@@ -72,14 +72,16 @@ def template_sections(template_body):
 
 def omitted_sections(module, template_body, relevance, props=None):
     """Títulos de las secciones que una nota con esa relevancia no necesita: las que la `profundidad`
-    del módulo reserva para una relevancia mayor, con sus subsecciones. El resto es el núcleo.
+    del módulo reserva para una relevancia mayor, con sus subsecciones, y las opcionales (las que
+    marca con 0: van solo si hay algo real que contar, a cualquier relevancia). El resto es el núcleo.
     La sección Mapa solo la necesita una nota a la que le toca mapa (por su categoría y su relevancia,
     según la regla `mapa` del módulo); sin las propiedades de la nota, cuenta como no necesaria."""
     depth = module.get("profundidad", {})
     needs_map = bool(map_applies(module, props, relevance)) if props is not None else False
     omitted, parent_omitted = [], False
     for level, title in template_sections(template_body):
-        own = depth.get(title, 1) > relevance
+        minimum = depth.get(title, 1)
+        own = minimum == 0 or minimum > relevance
         if title == MAP_SECTION and module.get("mapa"):
             own = not needs_map
         if level == 2:

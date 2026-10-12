@@ -1,15 +1,17 @@
 # Skills de creación de mundos para Claude Code y Obsidian
 
-Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crear mundos de ficción de cualquier género (fantasía, ciencia ficción, histórico, terror…) **dentro de una bóveda de Obsidian**. Una entrevista arma la base del mundo, cada entidad se crea como una nota completa y enlazada con las demás, un motor hace crecer el mundo por ciclos y cada nota lleva su imagen.
+Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crear mundos de ficción de cualquier género (fantasía, ciencia ficción, histórico, terror…) **dentro de una bóveda de Obsidian**. Una entrevista arma la base del mundo, cada entidad se crea como una nota enlazada con las demás y con el desarrollo que pide su importancia, un motor hace crecer el mundo por ciclos, cada nota lleva su imagen y los lugares que lo merecen, su mapa.
 
 > **Pensado para Obsidian.** Las skills escriben notas Markdown con propiedades (frontmatter), enlaces `[[…]]`, índices automáticos con el plugin **Bases** y una estructura de carpetas pensada para un mundo. Sin Obsidian las notas se pueden leer, pero se pierden la navegación por enlaces, las propiedades y los índices.
 
 ## Qué hace
 - **Una entrevista inicial** sobre los pilares del mundo (premisa, género, tono, poderes, tecnología, dioses, especies, calendario…), que crea la bóveda: carpetas con su README, guías de convenciones, índices, la **Ficha del Mundo** y un `CLAUDE.md` con las reglas que salen de tus respuestas.
 - **21 tipos de entidad**, cada uno con su ficha, sus reglas y su validación: personajes, regiones, asentamientos, lugares, facciones, linajes, objetos, creencias, deidades, especies, culturas, idiomas, calendarios, eras, eventos, fenómenos, afecciones, criaturas, sistemas (poderes, tecnología, leyes del universo), mitos y secretos.
-- **Un mundo entrelazado:** toda entidad que una nota nombra va enlazada. Las que todavía no existen quedan como **enlaces pendientes** con su tipo, y el mundo crece completándolos.
-- **Un motor de generación** que elige qué crear según el estado del mundo, tira ingredientes con azar real, crea las entidades, las valida y hace un commit por ciclo.
+- **Un mundo entrelazado:** toda entidad que una nota nombra va enlazada. Las que todavía no existen quedan como **enlaces pendientes** con su tipo, y el mundo crece completándolos. Las relaciones no son espejos: si alguien teme a un dragón, el dragón no tiene por qué temerle.
+- **Profundidad según la relevancia:** un antagonista central tiene una ficha extensa y un campesino, lo esencial; nada se inventa para llenar una plantilla. Cuando una entidad gana peso en el mundo, el motor la profundiza.
+- **Un motor de generación** que elige qué crear, profundizar o cartografiar según el estado del mundo, tira ingredientes con azar real, crea las entidades, las valida y hace un commit por ciclo.
 - **Imágenes** de cada entidad (retratos, paisajes, emblemas, escenas…) con la técnica artística que elijas: acuarela, óleo, grabado, cómic…
+- **Mapas** de las mazmorras, ruinas, ciudades y regiones que lo merecen, con su leyenda numerada en la nota y en el mismo estilo que el resto de las imágenes. Crecen con el mundo: cada lugar nuevo se añade a la leyenda y el mapa se redibuja cuando ha cambiado bastante.
 - **Coherencia por script:** cada nota se valida al crearla, un auditor revisa el mundo entero (fechas, relaciones recíprocas, nombres repetidos…) y cada generación termina con un informe.
 - **Pensado para mundos grandes:** la IA no lee la bóveda entera. Busca con scripts (entidades, enlaces pendientes, Glosario, preguntas), añade al Glosario y a otras notas sin leerlas, y valida y audita solo lo que tocó. Así un mundo de miles de notas no se come los tokens.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
@@ -18,9 +20,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | Skill | Para qué |
 |---|---|
 | `inicializar-mundo` | Entrevista y bóveda inicial: estructura, guías, Ficha del Mundo y `CLAUDE.md`. |
-| `crear-entidad` | Crea una entidad completa (`/crear-entidad personaje un herrero del puerto`) o completa un enlace pendiente (`/crear-entidad region hueco=Nombre_del_Enlace`). |
+| `crear-entidad` | Crea una entidad (`/crear-entidad personaje un herrero del puerto`), completa un enlace pendiente (`/crear-entidad region hueco=Nombre_del_Enlace`) o profundiza una nota que ganó importancia. |
 | `expandir-mundo` | Hace crecer el mundo por ciclos (`/expandir-mundo 3`), o en una rama aparte para revisarlo antes (`/expandir-mundo prueba`). |
-| `generar-imagen` | La imagen de una entidad. La invoca `crear-entidad` sola; también sirve para regenerarla (`/generar-imagen Nombre_de_la_Nota acuarela`). |
+| `generar-imagen` | La imagen de una entidad y el mapa de un lugar. La invoca `crear-entidad` sola; también sirve para regenerarla (`/generar-imagen Nombre_de_la_Nota acuarela`) o para dibujar un mapa (`/generar-imagen Nombre_de_la_Nota mapa`). |
 
 Las cuatro van juntas: `expandir-mundo` usa los scripts de `crear-entidad`.
 

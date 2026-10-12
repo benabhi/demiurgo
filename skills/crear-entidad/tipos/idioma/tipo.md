@@ -28,7 +28,7 @@ El idioma es la fuente del sonido de un pueblo: de él salen sus nombres de pers
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué lengua es, quién la habla y cómo suena. No una lista de datos.
 - **Datos clave:** la tabla completa; los hablantes, aproximados.
 - **Cómo suena:** los sonidos más frecuentes, los que no tiene, el ritmo y el acento, y cómo la oye un forastero (dura, cantarina, susurrada…).
@@ -66,19 +66,19 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra el nombre de la lengua, su nombre propio y las palabras que otras notas vayan a usar; no hace falta registrar todo el vocabulario.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** (los que solo nombra esta nota). Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota); con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - un dialecto o una lengua derivada (`derivadas`);
 - su lengua madre, si no existe (`lengua_madre`);
 - una obra escrita en ella (`obras`);
 - la región donde más se habla (`regiones`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la lengua guarda un secreto (una palabra que no debe pronunciarse, una escritura que oculta otra, un origen que sus hablantes niegan). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la lengua guarda un secreto (una palabra que no debe pronunciarse, una escritura que oculta otra, un origen que sus hablantes niegan). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] El nombre es único en la bóveda y en el Glosario.
 - [ ] Su fonética encaja con los perfiles de nombres de las culturas que la hablan.
 - [ ] Vocabulario, frases y citas usan esa fonética, sin palabras reales disfrazadas.
 - [ ] Las culturas y especies que la hablan y ya existen la listan en `idiomas`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 6 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

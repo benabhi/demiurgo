@@ -37,6 +37,8 @@ Lee entera solo la nota que necesites y, de una nota larga, solo la sección que
 - Propiedades en `snake_case` sin tildes; tags en minúsculas sin tildes.
 - `ultima_revision` es la fecha real (`AAAA-MM-DD`). Las fechas del mundo se guardan como número de años en el eje del calendario de la Ficha (negativas antes del año 0); en el texto se escriben con el formato de la Ficha y, si existe un calendario de referencia (tipo `calendario`), con los nombres de sus meses («15 de Siega de 412 UE»).
 - Las notas describen el mundo en su presente; el pasado va en su sección de historia.
+- La relevancia decide cuánto desarrollo lleva la nota: el frontmatter va siempre completo, pero las secciones de profundidad (ganchos, citas, secretos…) solo desde cierta relevancia (`check_note.py --depth`). No inventes para llenar.
+- Las relaciones no son espejos: si A teme a B, la nota de B cuenta la relación desde B (o no la cuenta). Solo se espejan las bilaterales por naturaleza (parentesco, vecindad, pertenencia, un pacto).
 - Enlaces con `[[...]]`: toda entidad que una nota nombra (persona, lugar, facción, hecho, fe, obra…) se enlaza cada vez que se nombra (también con su nombre corto), a su nota o, si aún no existe, como enlace pendiente con su tipo (el registro está en `00_Sistema/Enlaces_Pendientes.md`). Lo que es una entidad se enlaza aunque esté dentro de otra o sea un colectivo; solo los términos (rangos, títulos, oficios…) van al Glosario sin enlace. Los secretos no se enlazan.
 
 ## Flujo de trabajo

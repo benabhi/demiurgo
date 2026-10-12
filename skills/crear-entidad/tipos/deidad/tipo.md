@@ -35,7 +35,7 @@ La Ficha dice si existen y cuánto intervienen. La deidad encaja siempre con eso
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, qué gobierna y quiénes la veneran o la temen.
 - **Datos clave:** la tabla completa. «Fieles»: las fes y los pueblos que la veneran.
 - **Cómo se la representa:** su figura tal como la imaginan sus fieles (lo que muestra la imagen), sus atributos (lo que lleva, lo que la acompaña) y cómo la ven otros pueblos, que pueden temerla o despreciarla.
@@ -55,7 +55,8 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - `naturaleza`, `situacion`, `dominios`, `titulos` y `simbolo`: ver arriba.
 - Relaciones, solo con enlaces:
   - `creencias` que la veneran: cada una la tiene en sus `deidades`;
-  - `parientes`, `aliados` y `rivales`: otras deidades; recíprocas;
+  - `parientes` y `aliados`: otras deidades; recíprocas;
+  - `rivales`: las deidades a las que esta se opone, según sus fieles; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
   - `elegidos`: profetas, santos o avatares que hablan en su nombre;
   - `lugares_sagrados` donde se la venera o donde se manifestó;
   - `manifestaciones`: eventos en que se dice que intervino;
@@ -68,11 +69,11 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **La Ficha:** el pilar de las entidades superiores (ver arriba), el de los poderes y el tono. Si la deidad tiene que ver con el conflicto central, lo que la Ficha dice de él manda y lo que deja abierto queda abierto.
 - **Sus fes:** lo que dicen de ella las creencias que la veneran es su versión; la ficha la recoge y no la contradice. Si dos fes la cuentan distinto, la ficha cuenta las dos.
 - **Mundo inventado:** si la Ficha lo pide, nada de dioses, símbolos, iconografía ni nombres del mundo real con otro nombre.
-- **Reciprocidad:** las fes, los parientes, los aliados y los rivales que ya existen la listan en su propiedad inversa. Si una fe ya la nombra en su «Lo venerado» sin enlace, añade el enlace y el vínculo inverso.
+- **Reciprocidad:** las fes, los parientes y los aliados que ya existen la listan en su propiedad inversa. Los rivales, no. Si una fe ya la nombra en su «Lo venerado» sin enlace, añade el enlace y el vínculo inverso.
 - **Glosario:** registra su nombre, sus otros nombres, sus títulos y los términos nuevos.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 6 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien habla en su nombre (`elegidos`);
 - su santuario (`lugares_sagrados`);
 - su manifestación más famosa (`manifestaciones`);
@@ -80,12 +81,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una deidad rival o pariente (`rivales`, `parientes`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la deidad guarda un secreto (no es quien dicen sus fieles, murió hace siglos y otro responde en su nombre, nunca existió y alguien lo sabe, quiere lo contrario de lo que se predica). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la deidad guarda un secreto (no es quien dicen sus fieles, murió hace siglos y otro responde en su nombre, nunca existió y alguien lo sabe, quiere lo contrario de lo que se predica). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Encaja con el pilar de las entidades superiores de la Ficha; si está por definir, no se afirma ni se niega que exista.
 - [ ] "Naturaleza" separa lo que se sabe, lo que se cree y lo que se discute; la verdad, si se decide, va en un secreto.
 - [ ] Si no la pidió el usuario, quedó como `Confirmar: …`.
-- [ ] Las fes, parientes, aliados y rivales que ya existen la listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 6 enlaces pendientes nuevos, todos con tipo.
+- [ ] Las fes, parientes y aliados que ya existen la listan.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

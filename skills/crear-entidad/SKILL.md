@@ -1,11 +1,11 @@
 ---
 name: crear-entidad
-description: Crea entidades del mundo (personajes, regiones, secretos y los tipos que se vayan añadiendo) como notas completas en la bóveda de Obsidian, coherentes con la Ficha del Mundo y las convenciones del proyecto, con su imagen. Úsala para "crea un personaje…", "crea la región…", "/crear-entidad <tipo> …", para completar un enlace pendiente (un hueco: una entidad que otra nota ya nombra y que aún no tiene nota) creándola, o para profundizar una nota que ganó importancia ("profundiza a…"). Cada tipo de entidad es un módulo en tipos/.
+description: Crea entidades del mundo (personajes, regiones, secretos y los tipos que se vayan añadiendo) como notas en la bóveda de Obsidian, con el desarrollo que pide su relevancia, coherentes con la Ficha del Mundo y las convenciones del proyecto, con su imagen. Úsala para "crea un personaje…", "crea la región…", "/crear-entidad <tipo> …", para completar un enlace pendiente (un hueco: una entidad que otra nota ya nombra y que aún no tiene nota) creándola, o para profundizar una nota que ganó importancia ("profundiza a…"). Cada tipo de entidad es un módulo en tipos/.
 ---
 
 # Crear entidad
 
-Crea una entidad completa a partir de un pedido conversacional, de una semilla de atributos o de un enlace pendiente.
+Crea una entidad a partir de un pedido conversacional, de una semilla de atributos o de un enlace pendiente, con la profundidad que pide su relevancia.
 
 Toda entidad que la nota nombra va enlazada: a su nota, si existe, o como **enlace pendiente**, si no. Así el mundo crece desde lo que ya nombra (ver `referencias/huecos.md`).
 
@@ -83,7 +83,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
 - **Conversacional** ("un herrero del puerto"): si falta el concepto, pregúntalo. No preguntes nada más que lo imprescindible.
 - **Semilla** (`clave=valor`, normalmente del sistema procedural): respeta los valores dados, rellena el resto y marca `origen: procedural`.
 - **Completar un enlace pendiente** (`hueco=<Enlace>`): ejecuta `python <directorio de esta skill>/scripts/find_gaps.py --link <Enlace>` para ver el contexto, el tipo esperado y los módulos que pueden crearlo.
-  - La entidad debe encajar con todo lo que dicen las notas que la nombran.
+  - La entidad debe encajar con todo lo que dicen las notas que la nombran. Lo que esas notas cuentan de su relación con ella es su punto de vista: si una dice que alguien la teme, no la conviertas en alguien que teme (ver «Relaciones» en el Paso 4).
   - Si el tipo esperado es una **familia** (por ejemplo `lugar`), elige el módulo concreto que encaje con el contexto: una cordillera es una `region`; una taberna no lo es.
   - Si ningún módulo existente encaja (el módulo `asentamiento` aún no existe, por ejemplo), dilo y no fuerces otro tipo.
   - Antes, comprueba con `search_vault.py "<nombre legible>"` que no sea otro nombre de una entidad que ya existe (mira también los nombres parecidos): si lo es, corrige los enlaces en lugar de crear un duplicado.
@@ -112,9 +112,12 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   Así se respeta la autonomía de la Ficha sin detener el flujo.
 
 ## Paso 3: crear la nota
+- **Relevancia inicial:** la de `tipo.md` según su papel en el mundo. Si ya la nombran varias notas (`find_gaps.py --link` las lista), no baja de lo que pide ese peso: 3 notas, relevancia 3; 6, relevancia 4; 10, relevancia 5. Es la misma regla con la que el motor profundiza, así una nota no nace ya corta.
 - **Profundidad según la relevancia.** Decide primero la `relevancia` y ejecuta `python <directorio de esta skill>/scripts/check_note.py --depth <tipo>:<relevancia>` (en un lugar, con su categoría: `--depth lugar:3:mazmorra`): te dice qué secciones lleva la nota, cuántos enlaces pendientes nuevos puede abrir y si le toca mapa.
   - El **frontmatter va siempre completo**, con todas las propiedades de la plantilla, sea cual sea la relevancia.
   - El **núcleo** (las secciones sin relevancia mínima) va siempre. Las secciones de profundidad, solo desde su relevancia. Las que no le tocan se borran de la nota, con su título.
+  - Las secciones **opcionales** (las que la `profundidad` del módulo marca con 0, como los ganchos de un idioma) van solo si hay algo real que contar, a cualquier relevancia.
+  - **Las cantidades de `tipo.md`** («de 3 a 6 lugares notables», «de 2 a 4 ganchos») son para una nota de relevancia 3 o más. Con relevancia 1 o 2, basta con lo esencial: una o dos entradas donde pide varias.
   - **No inventes para llenar.** En lo que la nota lleva, escribe lo que aporta al mundo: una aldea de relevancia 1 necesita su ubicación, su función y sus vínculos, no una historia épica. Un dato de una tabla o una lista que de verdad no aplica se dice en pocas palabras («ninguna conocida»), no se adorna. Si una sección de profundidad tiene algo real que contar aunque la relevancia no la pida, puede ir.
 - Rellena las secciones que lleva siguiendo `tipo.md`. Lo único sin resolver son los enlaces pendientes.
 - **Mapa:** si le toca, escribe la leyenda de su sección Mapa con lo que cuenta la nota, como dice `referencias/mapas.md`: hasta 12 zonas por nivel, con su número, su orientación, lo que se ve y sus conexiones. El dibujo se hace en el Paso 6.
@@ -122,7 +125,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - a su nota, si existe;
   - si no, como enlace pendiente con su nombre real, su texto legible y su tipo. El tipo lo da su propiedad de relación (ponla siempre que haya una); si no la hay, asígnalo en el Paso 4.
   - Lo que es una entidad se enlaza siempre, aunque esté dentro de otra (un cabo, una costumbre de un pueblo) o sea un colectivo («los nueve jueces»). Solo los términos (rangos, títulos, oficios, expresiones…) van al Glosario sin enlace; registrar una entidad en el Glosario, con su tipo de entidad, no la libra del enlace. Los secretos no se enlazan nunca.
-- **Cuántos nuevos:** los que dice `check_note.py --depth` (el rango del módulo, reducido según la relevancia). Si el motor indica `enlaces_nuevos`, no pases del menor de los dos máximos. Lo menos importante va sin nombre propio («un herrero del puerto»), así no necesita enlace.
+- **Cuántos nuevos:** los que dice `check_note.py --depth` (el rango del módulo, reducido según la relevancia). Si el motor indica `enlaces_nuevos`, quédate dentro de los dos rangos; si no se solapan, manda el de la relevancia. Lo menos importante va sin nombre propio («un herrero del puerto»), así no necesita enlace.
 - **Reutiliza antes de crear:** si la entidad ya existe, enlaza su nota. Si otra nota ya la nombra como enlace pendiente (búscalo con `search_vault.py "<nombre>" --in pendientes`), usa ese mismo enlace (la frontera de un reino, la capital de una región, el gobierno de un pueblo). Dos enlaces para la misma cosa acabarían siendo dos entidades duplicadas.
 - **Nombres:** no los inventes a ojo, porque los modelos repiten patrones. Esto vale también para los de las entidades que dejas pendientes.
   - Genera candidatos con `python <directorio de esta skill>/scripts/generate_names.py --profile <perfil> --count 10` (añade `--surnames` si lleva apellido).
@@ -136,7 +139,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
 - Escribe la nota en la carpeta que corresponda según `modulo.json` (fija, o según el rol o la categoría). Nunca sobrescribas una nota existente.
 
 ### Profundizar una nota
-Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer puede ser hoy un personaje importante. Solo se profundizan las notas en `borrador`; en una nota `canon`, cambiar la relevancia es decisión del usuario.
+Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer puede ser hoy un personaje importante. El motor solo profundiza notas en `borrador`. Una nota `canon` se profundiza solo si lo pide el usuario, porque cambiar su relevancia y su contenido es decisión suya.
 1. Lee la nota entera y su contexto (`build_context.py --target <Nota>`), y lo que dicen de ella las notas que la nombran.
 2. Si cambia la relevancia, súbela en el frontmatter. Ejecuta `check_note.py --depth <tipo>:<relevancia>`: las secciones que ahora lleva y no tiene son las que hay que escribir.
 3. Añade esas secciones **en el orden de la plantilla**, con el mismo cuidado que una nota nueva y siguiendo `tipo.md`. **Lo que ya está escrito no se contradice ni se reescribe:** se construye sobre ello. Solo se amplía una sección existente si lo nuevo lo exige (un gancho que remite a un hecho de su historia).
@@ -144,9 +147,9 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
 5. Sigue con los pasos 4, 5 y 7 (efectos, validar e informe); la imagen ya existe y no se regenera, salvo que se pida. **El mapa sí:** si con la relevancia nueva le toca, escribe su leyenda (es una sección más) y dibuja su primera edición como en el Paso 6.
 
 ## Paso 4: efectos en el resto de la bóveda
-- **Secretos:** solo si el módulo lo decide (en personaje, con una tirada). Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
+- **Secretos:** solo si el módulo lo decide (con una tirada) y solo desde relevancia 3: una entidad menor no lleva secreto, salvo que el usuario o el concepto lo pidan. Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
 - **Reciprocidad documental:** en cada nota existente que enlazaste por una relación que el módulo declara recíproca (`reciprocas`: padres e hijos, una afección y sus afectados…), añade el vínculo inverso en su propiedad con `add_relation.py <Nota> <propiedad> <Entidad>`, sin leerla. Las demás relaciones no se espejan. No toques nada más.
-- **Relaciones: el otro lado no es un espejo.** Que la relación conste en las dos notas no la hace simétrica: si Aldric teme a un dragón, el dragón no teme a Aldric; quizá ni sabe que existe. Si la otra nota necesita la relación en su cuerpo (una fila de su tabla de relaciones), lee y edita solo esa sección y escríbela **desde el punto de vista del otro**: lo que esa entidad sabe, siente o hace respecto de la nueva, o nada si no le importa. Nunca copies ni inviertas la actitud. Antes de fijar una relación que importa (desde relevancia 3), pregúntate:
+- **Relaciones: el otro lado no es un espejo.** Por eso los módulos solo declaran recíprocas las relaciones bilaterales por naturaleza (el parentesco, la vecindad, la pertenencia, un pacto como una alianza), nunca las actitudes (la rivalidad, el miedo, el desprecio, la admiración): que A tenga a B por rival no hace que B tenga a A por rival. Y que una relación conste en las dos notas no la hace simétrica: si Aldric teme a un dragón, el dragón no teme a Aldric; quizá ni sabe que existe. Si la otra nota necesita la relación en su cuerpo (una fila de su tabla de relaciones), lee y edita solo esa sección y escríbela **desde el punto de vista del otro**: lo que esa entidad sabe, siente o hace respecto de la nueva, o nada si no le importa. Nunca copies ni inviertas la actitud. Antes de fijar una relación que importa (desde relevancia 3), pregúntate:
   - ¿por qué existe?;
   - ¿qué cambia en cada entidad por la otra, con consecuencias concretas?;
   - ¿es recíproca de verdad, en lo narrativo, o solo consta en las dos notas?;
@@ -231,6 +234,8 @@ Si la skill se ejecuta dentro de `expandir-mundo`, sáltate la instantánea y es
 - Toda decisión al azar que pida un módulo se tira con `scripts/roll_dice.py` (por ejemplo, `roll_dice.py 1d4`). Nunca inventes el resultado de una tirada.
 - Para añadir un tipo nuevo:
   - crea `tipos/<tipo>/` con `tipo.md`, `plantilla.md` y `modulo.json` (`tipo`, `familia`, `completa` si es de una familia, `emoji`, `huecos_propios`, `profundidad`, `mapa` si es un lugar con mapa, `carpeta`, `fechas`, `crear_desde_cero`, `escalas`, `valores` y `solo_si` si los tiene, `reciprocas` y `relaciones`);
+  - declara en `reciprocas` solo relaciones bilaterales por naturaleza (parentesco, vecindad, pertenencia, contención, un pacto); las actitudes (rivales, temidos, admirados) van sin recíproca;
+  - en `profundidad`, marca con 0 las secciones narrativas que el tipo no necesita por naturaleza (los ganchos de un idioma): van solo si hay algo real que contar;
   - añade su imagen en `generar-imagen/referencias/prompt.md`;
   - si se relaciona con una familia (`lugar`, por ejemplo) con una propiedad nueva, añádela al `completa` de los módulos de esa familia que puedan completarla;
   - ejecuta `python <directorio de esta skill>/scripts/check_modules.py`: revisa que la plantilla tenga todo lo que nombra el módulo y que cada relación y cada recíproca encajen con los demás módulos.

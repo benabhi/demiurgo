@@ -43,8 +43,7 @@
     "miembros": "linaje",
     "linaje_madre": "ramas",
     "ramas": "linaje_madre",
-    "aliados": "aliados",
-    "rivales": "rivales"
+    "aliados": "aliados"
   },
   "relaciones": {
     "fundador": "personaje",

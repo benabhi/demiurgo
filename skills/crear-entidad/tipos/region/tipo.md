@@ -30,7 +30,7 @@ Si una zona es a la vez natural y política (una isla que es un reino), crea la 
 - Archivo en ASCII (`Reino_de_Ejemplo.md`). H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es y qué la hace única; no una lista de datos.
 - **Datos clave:** la tabla completa. La población, aproximada ("unas cuarenta mil almas", "despoblada"). El estado actual, en una frase ("en guerra", "en declive", "aislada").
 - **Descripción:** la experiencia de llegar. Qué se ve primero, el paisaje que domina, sonidos y olores, y lo que no existe en ningún otro sitio.
@@ -88,7 +88,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Pilares:** tecnología, poderes y especies según la Ficha. Una región no inventa una especie ni una civilización nueva por su cuenta: eso va como `Confirmar: …` en Preguntas Abiertas.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - la capital o un asentamiento (`capital`, `asentamientos`);
 - un lugar notable (`lugares_notables`): una ruina, un santuario, un paso;
 - una ruta (`rutas`);
@@ -99,12 +99,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 Algunos enlaces pendientes apuntan a tipos que aún no tienen módulo (una ruta, un material…). No pasa nada: quedan esperando hasta que exista el módulo.
 
 ## Secretos
-Igual que en personaje: tirada real con `roll_dice.py 1d4` (con 4, la región guarda un secreto), salvo que el concepto o el usuario lo pidan. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Igual que en personaje: desde relevancia 3, tirada real con `roll_dice.py 1d4` (con 4, la región guarda un secreto), salvo que el concepto o el usuario lo pidan. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] El nombre es único en la bóveda y en el Glosario.
 - [ ] La categoría es la correcta y la nota está en su carpeta.
 - [ ] Encaja con la escala de la Ficha, con sus vecinos y con los pilares.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 10 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.
 - [ ] Los hechos de canon grandes que no estaban en el pedido van a Preguntas Abiertas como `Confirmar: …`.

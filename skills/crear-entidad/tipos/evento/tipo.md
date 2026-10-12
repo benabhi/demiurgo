@@ -34,7 +34,7 @@ Los hechos con fecha que cambiaron algo: guerras, batallas, asedios, rebeliones,
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué pasó, cuándo y por qué importa.
 - **Datos clave:** la tabla completa. «Resultado» dice quién ganó o qué quedó decidido; «Coste», lo que se perdió (vidas, tierras, alianzas, un saber).
 - **Causas:** las profundas (lo que venía de lejos), el detonante (lo que lo hizo estallar) y lo que pudo evitarlo. Las causas que merezcan nota propia van en `causas` (otros eventos).
@@ -72,7 +72,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra el nombre del evento, sus otros nombres y los términos nuevos.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - una causa o una consecuencia (`causas`, `consecuencias`);
 - un participante (`participantes`);
 - un bando (`bandos`);
@@ -80,7 +80,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una batalla, si es una guerra (`subeventos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el evento guarda un secreto (no fue como se cuenta, el héroe fue el traidor, alguien lo provocó a propósito, el resultado se pactó antes). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el evento guarda un secreto (no fue como se cuenta, el héroe fue el traidor, alguien lo provocó a propósito, el resultado se pactó antes). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría lleva el evento a su carpeta.
@@ -88,5 +88,5 @@ Tirada real con `roll_dice.py 1d4`: con 4, el evento guarda un secreto (no fue c
 - [ ] La situación cuadra con sus fechas y con el año actual; el desarrollo va en orden y dentro de sus fechas.
 - [ ] "Cómo se recuerda" tiene al menos dos versiones enfrentadas.
 - [ ] Ni el calendario ni otro pilar se decidieron sin el usuario.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

@@ -45,7 +45,7 @@ Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caserío
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué lugar es, dónde está y qué lo hace reconocible.
 - **Datos clave:** la tabla completa. La población, aproximada y coherente con la categoría y con el mundo (en un mundo arrasado, una ciudad de tres mil almas puede ser enorme).
 - **Aspecto y ambiente:** lo que se ve al llegar por el camino (es lo que muestra la imagen), lo que se ve, se oye y se huele dentro, la arquitectura y los materiales, y cómo es de noche.
@@ -87,7 +87,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre, sus apodos y los términos nuevos (cargos, oficios, expresiones).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien manda (`gobernante`) y la institución (`gobierno`);
 - un lugar notable (`lugares_notables`);
 - una facción presente (`facciones`);
@@ -95,12 +95,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - un asentamiento vecino (`vecinos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el asentamiento guarda un secreto (bajo sus calles hay algo, su fundación fue un crimen, quien manda no es quien parece, el pozo no da solo agua). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el asentamiento guarda un secreto (bajo sus calles hay algo, su fundación fue un crimen, quien manda no es quien parece, el pozo no da solo agua). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría, la población y la situación encajan entre sí y con el mundo.
 - [ ] La región lo contiene y lo lista en `asentamientos`; los vecinos, pueblos y fenómenos que ya existen, también.
 - [ ] Una ciudad grande o una capital que no estaba en el canon quedó como `Confirmar: …`.
 - [ ] Ni el calendario ni otro pilar se decidieron sin el usuario.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 10 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

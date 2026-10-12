@@ -41,7 +41,7 @@ Las reglas respetan los pilares de la Ficha. Si los poderes extraordinarios tien
 - Archivo en ASCII (`Marea_Roja.md`). H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, qué hace y por qué importa. No una lista de datos.
 - **Datos clave:** la tabla completa. "Desde cuándo", con el año del calendario o de forma relativa si está por definir.
 - **Manifestación:** cómo se percibe con los sentidos, cómo avisa de su llegada y si cambia de intensidad.
@@ -83,7 +83,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Derivados:** un fenómeno derivado (las tormentas que desata una marea maldita) respeta las reglas de su padre y lo enlaza en `fenomeno_padre`.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Los de `protecciones` y `estudiosos`, que admiten cualquier entidad, llevan su tipo en el registro (`pending_links.py --set`). Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Los de `protecciones` y `estudiosos`, que admiten cualquier entidad, llevan su tipo en el registro (`pending_links.py --set`). Buenos candidatos:
 - un fenómeno derivado (`derivados`);
 - una zona afectada (`zonas_afectadas`);
 - una afección que provoca (`afecciones`);
@@ -92,13 +92,13 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una creencia que gira en torno a él (`creencias`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 3 o 4, el fenómeno guarda un secreto (su verdadera naturaleza, quién lo provocó, cómo se detendría). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto sobre el fenómeno central es un hecho enorme: además, va como `Confirmar: …` en Preguntas Abiertas, enlazando al fenómeno y no al secreto.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 3 o 4, el fenómeno guarda un secreto (su verdadera naturaleza, quién lo provocó, cómo se detendría). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto sobre el fenómeno central es un hecho enorme: además, va como `Confirmar: …` en Preguntas Abiertas, enlazando al fenómeno y no al secreto.
 
 ## Comprobaciones antes de escribir
 - [ ] El nombre es único en la bóveda y en el Glosario.
 - [ ] Tiene reglas, límites y protecciones claras, y respeta los pilares de la Ficha.
 - [ ] Si es el fenómeno central, no decide nada que la Ficha deje abierto.
 - [ ] Las zonas afectadas que ya existen lo listan en `fenomenos`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.
 - [ ] Los hechos de canon grandes que no estaban en el pedido van a Preguntas Abiertas como `Confirmar: …`.

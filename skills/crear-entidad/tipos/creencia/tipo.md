@@ -37,7 +37,7 @@ Lo que la gente cree y cómo lo vive: religiones, cultos, fes populares y supers
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué enseña, quiénes la siguen y por qué importa.
 - **Datos clave:** la tabla completa. «Lo venerado», en pocas palabras (un dios, un panteón, los muertos, un principio).
 - **Doctrina:** lo que enseña en el centro, y lo que dice del origen del mundo, de la muerte y de por qué existen el mal y la desgracia. Es la respuesta de la fe a lo que más teme su gente. Los relatos que merecen nota propia (cómo empezó el mundo, cómo acabará) van en `mitos`.
@@ -70,7 +70,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
   - `mitos` que cuenta como sagrados o que condena: cada uno la tiene en sus `creencias`;
   - `idiomas`: su lengua sagrada;
   - `creencia_madre` y `ramas`: de qué fe nació y qué ramas o herejías salieron de ella; recíprocas;
-  - `rivales`: las fes con que choca; recíproca;
+  - `rivales`: las fes con que choca, vistas desde esta; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`);
   - `eventos` que la marcaron (su fundación, un cisma, una persecución);
   - `era` en que nació.
 - `relevancia`: 5 la fe que define el foco o el mundo; 4 una fe regional; 3 la fe de una comarca o un culto conocido; 2 un culto menor; 1 una superstición de unos pocos.
@@ -79,11 +79,11 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 ## Coherencia
 - **La Ficha:** sus dioses, sus prodigios, su técnica y su tono encajan con la Ficha. El conflicto central casi siempre tiene una explicación en la fe (un castigo, una prueba, un enemigo, una mentira de los poderosos), y esa explicación es lo que más la diferencia de las demás.
 - **Lo que ya existe:** sus fieles, sus lugares, su clero y las notas que ya la mencionan (como enlace pendiente) deben encajar con lo que dicen. Léelas (`build_context.py`). Si una cultura ya cuenta en qué cree, la fe no la contradice.
-- **Reciprocidad:** su fundador, sus figuras, sus lugares, sus zonas, sus culturas, sus facciones, sus objetos, sus fenómenos, sus ramas y sus rivales que ya existen la listan en su propiedad inversa.
+- **Reciprocidad:** su fundador, sus figuras, sus lugares, sus zonas, sus culturas, sus facciones, sus objetos, sus fenómenos y sus ramas que ya existen la listan en su propiedad inversa. Sus rivales, no.
 - **Glosario:** registra su nombre, sus otros nombres, sus rangos y sus términos propios; sus dioses y sus festividades, con su tipo de entidad.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien la fundó (`fundador`);
 - una figura notable (`figuras`);
 - su templo mayor (`centro`);
@@ -95,13 +95,13 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 El dios principal, si no tiene nota, queda como enlace pendiente en `deidades`, con su nombre (el de la Ficha, si lo nombra). Los dioses menores con nombre también son entidades: van en `deidades`, como enlaces pendientes. Si son muchos, nombra solo los que importan y describe el resto sin nombre propio («los dioses menores de la cosecha»).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la fe guarda un secreto (su fundador no creía en lo que predicó, su texto sagrado fue cambiado, su clero sabe que el dios calla, su rito mayor sirve a otra cosa). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la fe guarda un secreto (su fundador no creía en lo que predicó, su texto sagrado fue cambiado, su clero sabe que el dios calla, su rito mayor sirve a otra cosa). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Cuenta lo que creen sus fieles, no si tienen razón; la verdad, si se decide, va en un secreto.
 - [ ] Sus dioses y sus prodigios encajan con la Ficha; tiene su explicación del conflicto central.
 - [ ] Una religión regional o mundial que no estaba en el canon quedó como `Confirmar: …`.
 - [ ] La situación cuadra con sus fechas y con el año actual.
-- [ ] Sus fieles, lugares, facciones, objetos, ramas y rivales que ya existen la listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] Sus fieles, lugares, facciones, objetos y ramas que ya existen la listan.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

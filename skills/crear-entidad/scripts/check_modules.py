@@ -8,7 +8,8 @@ Comprueba en cada módulo:
     tiempo), que sus valores por defecto estén permitidos y que su título empiece por el emoji
     del tipo;
   - que las condiciones de `solo_si` usen valores permitidos;
-  - que cada sección de `profundidad` exista en la plantilla, con una relevancia mínima del 2 al 5;
+  - que cada sección de `profundidad` exista en la plantilla, con una relevancia mínima del 2 al 5, o 0 si
+    es opcional a cualquier relevancia;
   - que cada regla de `mapa` tenga una clase conocida, categorías que el módulo admite y una relevancia
     mínima del 1 al 5, y que la plantilla tenga la sección Mapa y las propiedades `mapa`,
     `mapa_edicion` y `mapa_zonas`;
@@ -86,8 +87,9 @@ def main():
         for title, minimum in module.get("profundidad", {}).items():
             if title not in titles:
                 errors.append(f"{where}: `profundidad` nombra la sección «{title}», que no está en la plantilla")
-            if not isinstance(minimum, int) or not 2 <= minimum <= 5:
-                errors.append(f"{where}: `profundidad` de «{title}» debe ser un número del 2 al 5 (encontrado: {minimum})")
+            if not isinstance(minimum, int) or not (minimum == 0 or 2 <= minimum <= 5):
+                errors.append(f"{where}: `profundidad` de «{title}» debe ser un número del 2 al 5, o 0 si es "
+                              f"opcional (encontrado: {minimum})")
         # `mapa`: qué lugares llevan mapa (clase, categorías y relevancia mínima)
         rules = module.get("mapa", [])
         if rules:

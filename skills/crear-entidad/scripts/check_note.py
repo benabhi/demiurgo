@@ -461,10 +461,14 @@ def print_depth(spec):
     low, high = own_gaps_range(module, relevance)
     print(f"{tipo} con relevancia {relevance}:")
     print(f"  Enlaces pendientes nuevos: entre {low} y {high}.")
-    if omitted:
+    optional = [t for t in omitted if depth.get(t) == 0]
+    left_out = [t for t in omitted if t not in optional]
+    if left_out:
         print("  Omite (no las escribas): " + ", ".join(
-            f"«{t}»" + (f" (desde {depth[t]})" if t in depth else "") for t in omitted) + ".")
-    else:
+            f"«{t}»" + (f" (desde {depth[t]})" if t in depth else "") for t in left_out) + ".")
+    if optional:
+        print("  Opcionales (solo si hay algo real que contar): " + ", ".join(f"«{t}»" for t in optional) + ".")
+    if not omitted:
         print("  Lleva todas las secciones de la plantilla.")
     if module.get("mapa"):
         if category:

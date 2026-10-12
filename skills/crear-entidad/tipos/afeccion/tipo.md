@@ -38,7 +38,7 @@ Las reglas respetan los pilares de la Ficha. Con tecnología antigua, nadie cono
 - Archivo en ASCII (`Tos_Negra.md`). H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, cómo se reconoce y por qué se teme.
 - **Datos clave:** la tabla completa.
 - **Síntomas y fases:** de 2 a 5 filas, de la primera señal al final (la cura, las secuelas o la muerte). Concreto, pero sin recrearse: la crudeza adulta sirve al mundo, nunca es gratuita.
@@ -77,7 +77,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre (como afección), sus otros nombres y los términos que nacen de ella (el nombre de los enfermos, un remedio, un oficio).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - el fenómeno o la criatura que la provoca o la transmite (`fenomenos`, `criaturas`);
 - un caso notable (`afectados`);
 - quien la trata (`sanadores`) y la fe que la explica o la castiga (`creencias`);
@@ -85,7 +85,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - un brote recordado (`eventos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la afección guarda un secreto (alguien la provocó a propósito, el remedio que se vende la empeora, no es una enfermedad sino otra cosa, los que la sufren cambian hacia algo). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la afección guarda un secreto (alguien la provocó a propósito, el remedio que se vende la empeora, no es una enfermedad sino otra cosa, los que la sufren cambian hacia algo). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Una plaga regional o mundial que no estaba en el canon, o una afección que cambia lo que se sabe del conflicto central, quedó como `Confirmar: …`.
@@ -93,5 +93,5 @@ Tirada real con `roll_dice.py 1d4`: con 4, la afección guarda un secreto (algui
 - [ ] La prevalencia cuadra con sus fechas y con el año actual.
 - [ ] Nada gráfico ni gratuito en la ficha ni en la imagen.
 - [ ] Sus fenómenos, especies y afectados que ya existen la listan en sus `afecciones`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

@@ -37,7 +37,9 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
 - **Orden:** primero el **canon base** (lo que todo lo demás necesita para ser coherente), después lo más enlazado.
 
 ## Esqueleto común de todas las fichas
-**La relevancia decide la profundidad.** El frontmatter va siempre completo. El núcleo (datos clave, lo que define al tipo, el origen y el presente, la relación con el mundo, la imagen) va siempre; las secciones de profundidad, desde la relevancia que declara `profundidad` en `modulo.json` (de forma general: ganchos, citas, secretos y rumores, y momentos decisivos desde 3). Nunca se inventa para llenar. El rango de enlaces pendientes nuevos también se reduce con la relevancia.
+**La relevancia decide la profundidad.** El frontmatter va siempre completo. El núcleo (datos clave, lo que define al tipo, el origen y el presente, la relación con el mundo, la imagen) va siempre; las secciones de profundidad, desde la relevancia que declara `profundidad` en `modulo.json` (de forma general: ganchos, citas, secretos y rumores, y momentos decisivos desde 3); las que el tipo no necesita por naturaleza (los ganchos de un idioma) se marcan con 0 y van solo si hay algo real que contar. Nunca se inventa para llenar: las cantidades de cada tipo son para relevancia 3 o más, el secreto se tira solo desde relevancia 3 y el rango de enlaces pendientes nuevos se reduce con la relevancia. La relevancia inicial no baja de la que pide el número de notas que ya la nombran (3, 6 y 10 notas: 3, 4 y 5).
+
+**Relaciones:** solo se espejan las bilaterales por naturaleza (parentesco, vecindad, pertenencia, un pacto); las actitudes (rivalidad, miedo, desprecio) no, y el otro lado se escribe desde su punto de vista.
 
 Cada módulo añade sus secciones propias sobre esta base común:
 - **Inicio:** título con el emoji del tipo, resumen en cita e imagen embebida.
@@ -54,8 +56,10 @@ Cada módulo añade sus secciones propias sobre esta base común:
 ## Definición de terminado (cada módulo)
 1. **Los tres archivos del módulo:**
    - `tipo.md` y `plantilla.md`, con `relevancia` y, si el tipo las tiene, fechas numéricas;
-   - `modulo.json`, con familia, `completa` si es de una familia, emoji, rango de enlaces pendientes nuevos (`huecos_propios`), carpeta, fechas, recíprocas y relaciones.
-2. **Imagen:** la fila y la sección del tipo en `generar-imagen/referencias/prompt.md`: qué muestra y su encuadre, válidos con cualquier técnica (incluidas las de papel 📄).
+   - `modulo.json`, con familia, `completa` si es de una familia, emoji, rango de enlaces pendientes nuevos (`huecos_propios`), `profundidad`, `mapa` si es un lugar que lo lleva, carpeta, fechas, recíprocas y relaciones;
+   - `profundidad`: qué secciones son de la profundidad (desde qué relevancia) y cuáles opcionales por naturaleza (0); las demás son el núcleo;
+   - `reciprocas`: solo relaciones bilaterales por naturaleza (parentesco, vecindad, pertenencia, contención, un pacto), nunca actitudes (rivalidad, miedo, desprecio).
+2. **Imagen:** la fila y la sección del tipo en `generar-imagen/referencias/prompt.md`: qué muestra y su encuadre, válidos con cualquier técnica (incluidas las de papel 📄). Si es un lugar con mapa, su clase de mapa en `generar-imagen/referencias/mapas.md`.
 3. **Tabla de ingredientes:** `expandir-mundo/assets/Tablas/<Tipo>.md`, y los paquetes que lo usen en `Paquetes.md`.
 4. **Ficha de ejemplo:** da "Correcta" en `check_note.py` (en una bóveda de prueba), y `check_modules.py` no da errores ni avisos nuevos.
 5. **Nada de un mundo concreto:** ni en los ejemplos, ni en las tablas, ni en los comentarios. Se comprueba con una búsqueda que ignora las tildes y cruzando los ejemplos con lo que salió en las pruebas.

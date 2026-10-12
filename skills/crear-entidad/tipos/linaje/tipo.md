@@ -35,7 +35,7 @@ Un linaje es lo que pasa de padres a hijos: un nombre, unas tierras, una deuda, 
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** quiénes son, de dónde viene su nombre y qué pesan hoy.
 - **Datos clave:** la tabla completa; los miembros vivos, aproximados («una veintena», «tres ramas y sus criados»).
 - **Origen:** la fundación (quién, cuándo y cómo), de dónde viene su poder (la tierra, una hazaña, un pacto, un oficio, un crimen) y lo que cuentan de su origen (la versión de la familia, sea verdad o no).
@@ -65,7 +65,8 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
   - `fundador`, `cabeza`, `heredero` y `miembros` (los que merecen nota): cada uno la tiene en su `linaje`;
   - `sede` (su castillo, su casa solariega, su taller: un lugar o un asentamiento) y `dominios` (las tierras que tiene: regiones o asentamientos);
   - `linaje_madre` y `ramas`: de qué casa se desgajó y qué ramas menores tiene; recíprocas;
-  - `aliados` y `rivales`: otras casas; recíprocas. Las facciones aliadas o enemigas van en la tabla y en `facciones`;
+  - `aliados`: otras casas; recíproca, porque una alianza es de las dos;
+  - `rivales`: las casas que esta tiene por rivales; no se espeja: la otra parte decide desde su lado si también la ve así (ver «Relaciones» en `SKILL.md`). Las facciones aliadas o enemigas van en la tabla y en `facciones`;
   - `facciones` que controla o a las que sirve (el gobierno de una dinastía, la compañía de una familia de mercaderes);
   - `culturas` a las que pertenece, `creencias` que profesa y `objetos` que guarda (reliquias, armas, documentos de la familia);
   - `eventos` en que tomó parte;
@@ -77,11 +78,11 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **La Ficha:** su tecnología, sus poderes (según los sistemas de poder) y su papel ante el conflicto central encajan con la Ficha. Un don o una maldición en la sangre es un poder extraordinario: respeta sus reglas.
 - **Lo que ya existe:** sus miembros, su sede, sus tierras y las notas que ya la mencionan (como enlace pendiente) deben encajar con lo que dicen. Léelas (`build_context.py`).
 - **Sus tierras:** la región o el asentamiento que gobierna no contradice lo que dice su ficha de quién lo controla (`control`, `gobernante`).
-- **Reciprocidad:** sus miembros la listan en su `linaje`; sus ramas, aliados y rivales que ya existen, en su propiedad inversa.
+- **Reciprocidad:** sus miembros la listan en su `linaje`; sus ramas y aliados que ya existen, en su propiedad inversa. Sus rivales, no.
 - **Glosario:** registra su nombre (como linaje), sus otros nombres, sus títulos y su lema.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 10 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien la fundó (`fundador`), quien manda (`cabeza`) y quien heredará (`heredero`);
 - un miembro que importa (`miembros`): el rival de dentro, la oveja negra, la que se casó fuera;
 - su sede (`sede`) o sus tierras (`dominios`);
@@ -89,13 +90,13 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una reliquia de la familia (`objetos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el linaje guarda un secreto (el heredero no es hijo de quien dicen, el fundador no fue quien cuentan, la fortuna salió de un crimen, la sangre lleva algo que no debería). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el linaje guarda un secreto (el heredero no es hijo de quien dicen, el fundador no fue quien cuentan, la fortuna salió de un crimen, la sangre lleva algo que no debería). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Una dinastía, o una casa regional o mundial que no estaba en el canon, quedó como `Confirmar: …`.
 - [ ] Tiene una herencia clara, una sucesión (con su disputa) y un rumbo.
 - [ ] La situación cuadra con sus fechas y con el año actual; si sigue viva, su cabeza también.
 - [ ] Las edades del árbol son coherentes con la especie.
-- [ ] Sus miembros enlazados la llevan en su `linaje`; sus ramas, aliados y rivales que ya existen la listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 10 enlaces pendientes nuevos, todos con tipo.
+- [ ] Sus miembros enlazados la llevan en su `linaje`; sus ramas y aliados que ya existen la listan.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

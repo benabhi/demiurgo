@@ -110,7 +110,7 @@ Es todo lo que necesitas saber del mundo para esta creación. Lee entera solo la
 Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingredientes y el contexto, salvo su instantánea y su informe final (el informe se da una sola vez, al terminar la tanda):
 - `origen: procedural` y `estado: borrador`.
 - **Enlace pendiente** (`crear_canon` y `completar_hueco`): modo `hueco=<Enlace>`. La nota se llama como el enlace; si es un nombre de rol, ponle nombre y reemplázalo en todas las notas que lo usan.
-- **Presupuesto:** cada nota abre los enlaces pendientes nuevos que diga `enlaces_nuevos` para su tipo, todos con tipo. Lo demás que nombre va sin nombre propio, o reutiliza lo que ya existe o ya está pendiente (el registro `Enlaces_Pendientes`).
+- **Presupuesto:** cada nota abre los enlaces pendientes nuevos que diga `enlaces_nuevos` para su tipo, recortados al rango de su relevancia (`check_note.py --depth`), todos con tipo. Lo demás que nombre va sin nombre propio, o reutiliza lo que ya existe o ya está pendiente (el registro `Enlaces_Pendientes`).
 - **Paquete:** crea primero la entidad principal y después las demás. Cada una se enlaza con las anteriores (a su nota, no como pendiente) y usa su contexto. Respeta las cantidades y los papeles. La principal tiene una relevancia igual o mayor que la de las demás.
 - **Nueva entidad:** dentro de la región foco.
 - **Cartografiar:** no se crea nada ni hay ingredientes ni contexto (sáltate los pasos 2 y 3): pide a `generar-imagen` el mapa de la `nota` (modo mapa, ver su `referencias/mapas.md`), con la técnica de mapas del mundo. Después, valida la nota, registra el ciclo y haz el commit como siempre.

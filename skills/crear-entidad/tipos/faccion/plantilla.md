@@ -91,7 +91,7 @@ fuentes: []
 - **Lema:**
 
 ## Aliados y enemigos
-| Quién | Relación | Por qué |
+| Quién | Relación | Por qué y qué cambia |
 |---|---|---|
 | | | |
 

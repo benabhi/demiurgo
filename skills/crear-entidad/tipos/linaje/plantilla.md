@@ -86,7 +86,7 @@ fuentes: []
 - **Lema:**
 
 ## Alianzas y enemistades
-| Quién | Relación | Por qué |
+| Quién | Relación | Por qué y qué cambia |
 |---|---|---|
 | | | |
 

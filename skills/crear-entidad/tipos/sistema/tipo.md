@@ -82,7 +82,7 @@ Un mundo con poderes suele tener un **sistema raíz**: las reglas comunes de tod
 - **Si el calendario está por definir,** las fechas quedan vacías y el texto usa fechas relativas. No decidas el calendario: es un pilar (ver `referencias/pilares.md`).
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, qué permite (o qué rige) y qué cuesta.
 - **Datos clave:** la tabla completa. «Coste» y «Límite», los principales, en pocas palabras; «Desde cuándo», con el año del calendario o de forma relativa.
 - **Qué es:** su naturaleza (qué es en el fondo, según lo que se sabe), de dónde sale su poder o su saber, y cómo se percibe cuando actúa: lo que se ve, se oye, se huele o se siente.
@@ -140,7 +140,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre (como sistema), sus otros nombres, sus manifestaciones (como técnica) y los términos que nacen de él (cómo se llama a quien lo practica, sus grados, sus útiles).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 7 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 2 y 7 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien lo enseña o lo persigue (`facciones`);
 - un practicante notable (`practicantes`);
 - donde se enseña o donde es más fuerte (`lugares`);
@@ -150,7 +150,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - el hecho que lo marcó (`eventos`) o el texto que lo enseña (`obras`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el sistema guarda un secreto (su poder sale de otro sitio del que se cree; tiene un coste oculto que nadie ha notado; alguien lo creó o lo enseñó a propósito; su primera regla es falsa; cada uso alimenta otra cosa). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto que cambia lo que se sabe del conflicto central es un hecho enorme: además va como `Confirmar: …` en Preguntas Abiertas, enlazando al sistema y no al secreto.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el sistema guarda un secreto (su poder sale de otro sitio del que se cree; tiene un coste oculto que nadie ha notado; alguien lo creó o lo enseñó a propósito; su primera regla es falsa; cada uso alimenta otra cosa). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Un secreto que cambia lo que se sabe del conflicto central es un hecho enorme: además va como `Confirmar: …` en Preguntas Abiertas, enlazando al sistema y no al secreto.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría lo lleva a su carpeta.
@@ -163,5 +163,5 @@ Tirada real con `roll_dice.py 1d4`: con 4, el sistema guarda un secreto (su pode
 - [ ] La situación cuadra con sus fechas y con el año actual.
 - [ ] Sus practicantes, sus facciones, sus objetos, sus creencias, su raíz y sus opuestos que ya existen lo listan.
 - [ ] Nada gráfico ni gratuito en la ficha ni en la imagen.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 2 y 7 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

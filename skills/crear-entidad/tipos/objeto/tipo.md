@@ -46,7 +46,7 @@ Las cosas del mundo: artefactos y reliquias, armas y armaduras, herramientas e i
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es, de quién es o quién lo usa, y por qué importa.
 - **Datos clave:** la tabla completa. «Origen» dice quién lo hizo y cuándo; «Dónde está», su ubicación (o dónde se encuentra, si es un tipo).
 - **Aspecto y tacto:** cómo se ve, cómo se siente en la mano (peso, temperatura, textura), las señas del tiempo y del uso, y sus marcas o inscripciones (descritas: el texto de una inscripción va en la lengua de quien la hizo, con su traducción).
@@ -83,7 +83,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Glosario:** registra su nombre, sus otros nombres y los términos nuevos.
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 1 y 5 nuevos** (los que solo nombra esta nota). Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 1 y 5 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota); con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - quien lo hizo (`creador`);
 - quien lo tiene o lo tuvo (`poseedor`, `poseedores_anteriores`);
 - dónde está (`ubicacion`);
@@ -91,12 +91,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - el hecho en que se perdió o se usó (`eventos`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el objeto guarda un secreto (es una copia, su creador no es quien dicen, hace algo que nadie sospecha, lleva escondido otro objeto). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el objeto guarda un secreto (es una copia, su creador no es quien dicen, hace algo que nadie sospecha, lleva escondido otro objeto). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría lo lleva a su carpeta, y `unico` dice si es una pieza o un tipo.
 - [ ] Encaja con la técnica de la Ficha; si tiene poderes, con sus límites y su precio.
 - [ ] Un artefacto, una reliquia o un objeto legendario que no estaba en el canon quedó como `Confirmar: …`.
 - [ ] Su poseedor, sus facciones y sus variantes que ya existen lo listan.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 1 y 5 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

@@ -40,7 +40,7 @@ Los de un pueblo, una fe o una institución que cuenta el tiempo a su manera: `r
 - Archivo en ASCII. H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué calendario es, quién lo usa y desde qué hecho cuenta los años.
 - **Datos clave:** la tabla completa. «Días del año» es la suma de los meses; «Año actual», en este calendario.
 - **Cómo se cuentan los años:** el hecho del año 0, cómo se escriben los años anteriores, cuándo empieza el año (una fecha, un fenómeno, una fiesta) y otras formas de contar que convivan (por reinados, por ciclos, años con nombre propio).
@@ -87,19 +87,19 @@ Cuando existe el calendario de referencia:
 - **Glosario:** registra el nombre del calendario, su sufijo, los nombres de los meses (como términos) y las festividades (como costumbres).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 1 y 8 nuevos** (los que solo nombra esta nota). Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 1 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota); con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - el hecho del año 0 (`evento_cero`), si no tiene nota, con su nombre (el de la Ficha, si lo nombra);
 - quienes lo guardan (`guardianes`);
 - su fiesta principal (`festividades`);
 - una era que cuenta (`eras`).
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, el calendario guarda un secreto (está mal y lo saben pocos, se borraron años de la cuenta, una fiesta recuerda algo distinto de lo que se cree). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el calendario guarda un secreto (está mal y lo saben pocos, se borraron años de la cuenta, una fiesta recuerda algo distinto de lo que se cree). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] Si es el de referencia: el año 0 y el año actual son los de la Ficha o los que decidió el usuario, y el pilar quedó resuelto (`referencias/pilares.md`).
 - [ ] Si no lo es: existe el de referencia y `ano_cero` dice dónde empieza su cuenta en el eje.
 - [ ] Las tablas de meses, estaciones y festividades respetan sus columnas, y `world_calendar.py --calendar <Nota>` lo muestra sin errores.
 - [ ] Nada de nombres reales de meses ni de días.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 1 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

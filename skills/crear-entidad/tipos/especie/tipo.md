@@ -36,7 +36,7 @@ Las especies son pilares del mundo. Antes de crear una, lee la regla de especies
 - Archivo en ASCII (`Humanos.md`). H1 con la ortografía real.
 
 ## Cómo rellenar la ficha
-La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendientes.
+La ficha se rellena **según su relevancia**: el frontmatter, completo; las secciones, las que dice `check_note.py --depth` (ver «Profundidad» en `SKILL.md`), sin dejar campos vacíos en lo que lleva y sin inventar para llenar. Lo único sin resolver son los enlaces pendientes.
 - **Resumen:** qué es y qué la distingue. No una lista de datos.
 - **Datos clave:** la tabla completa; longevidad y madurez, con las mismas cifras que el frontmatter.
 - **Anatomía:** concreta y visual: cuerpo, rostro, cobertura (piel, pelo, escamas…), variaciones dentro de la especie y lo que la delata a simple vista. Las variaciones (tallas, colores, subgrupos) van aquí; no son especies nuevas salvo que la Ficha lo diga.
@@ -73,7 +73,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Regiones:** cada región donde vive que ya exista la lista en `especies` (reciprocidad).
 
 ## Enlaces pendientes
-Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** (los que solo nombra esta nota), de al menos dos tipos. Buenos candidatos:
+Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y las que aún no existen quedan como enlaces pendientes, cada una con su tipo. **Entre 3 y 8 nuevos** con relevancia 4 o 5 (los que solo nombra esta nota), de al menos dos tipos si son varios; con menos relevancia, menos: el rango lo da `check_note.py --depth`. Buenos candidatos:
 - un pueblo o una cultura de la especie (`culturas`);
 - su tierra de origen o donde más abunda (`regiones`);
 - su lengua propia (`idiomas`), si la tiene;
@@ -83,12 +83,12 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 No nombres especies nuevas en `relacionadas` si la Ficha pide aprobación para ellas: serían especies inventadas.
 
 ## Secretos
-Tirada real con `roll_dice.py 1d4`: con 4, la especie guarda un secreto (su verdadero origen, una capacidad que oculta, lo que le pasó a una rama perdida). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Si el secreto cambia un pilar del mundo, además va como `Confirmar: …`.
+Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la especie guarda un secreto (su verdadero origen, una capacidad que oculta, lo que le pasó a una rama perdida). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza. Si el secreto cambia un pilar del mundo, además va como `Confirmar: …`.
 
 ## Comprobaciones antes de escribir
 - [ ] La especie está permitida: la nombra la Ficha o una nota `canon`, o el usuario la aprobó al preguntarle (y quedó en el Registro de Canon).
 - [ ] El nombre es único en la bóveda y en el Glosario.
 - [ ] `longevidad` y `madurez` son números coherentes con los personajes que ya existen.
 - [ ] Las regiones donde vive que ya existen la listan en `especies`.
-- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y hay entre 3 y 8 enlaces pendientes nuevos, todos con tipo.
+- [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.
