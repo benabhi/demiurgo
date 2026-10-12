@@ -1,3 +1,6 @@
+# Mundos de prueba: cada uno en pruebas/<mundo>/, con su propio repositorio y las skills enlazadas
+/pruebas/
+
 # Python
 __pycache__/
 *.pyc
