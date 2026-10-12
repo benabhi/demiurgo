@@ -57,7 +57,12 @@ Cada módulo añade sus secciones propias sobre esta base común:
 5. **Nada de un mundo concreto:** ni en los ejemplos, ni en las tablas, ni en los comentarios. Se comprueba con una búsqueda que ignora las tildes y cruzando los ejemplos con lo que salió en las pruebas.
 6. **Prueba del usuario** en un mundo de prueba, en una sesión nueva. Después se revisa, se limpia y se hace commit.
 
-**Dónde se prueba:** cada mundo de prueba vive en `pruebas/<mundo>/`, que git ignora. Tiene su propio repositorio y su `CLAUDE.md`, y las skills le llegan enlazadas en `.claude/skills/` (junctions en Windows). La prueba se hace en una sesión abierta en esa carpeta, y su bóveda se abre en Obsidian desde `pruebas/<mundo>/World_Building`.
+**Dónde se desarrolla y se prueba:** en la raíz de este repositorio, que tiene además un mundo de prueba que git ignora:
+- `World_Building/`: la bóveda, con su propio repositorio git dentro. Las skills hacen sus commits ahí, con `git -C World_Building`. Se abre en Obsidian desde esa carpeta.
+- `CLAUDE.md`: el del mundo de prueba.
+- `.claude/skills/`: las skills de `skills/`, enlazadas (junctions en Windows), así que cada cambio se prueba al instante.
+
+La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra (por ejemplo, para probar `inicializar-mundo` desde cero) está `pruebas/<mundo>/`, también ignorada, con sus propios enlaces a las skills.
 
 ## Infraestructura (hecha)
 - [x] **Familias de tipos y carpeta según categoría,** validadas por `check_note.py`.

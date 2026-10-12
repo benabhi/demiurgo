@@ -62,6 +62,8 @@ Las cuatro van juntas: `expandir-mundo` usa los scripts de `crear-entidad`.
 
 Los scripts buscan la bóveda en `World_Building/`. Si la tuya está en otra carpeta, todos aceptan `--vault <carpeta>`.
 
+Los comandos git de las skills (los commits del motor y su modo prueba) van al repositorio que contiene la bóveda. Puede ser el del proyecto o uno propio de la bóveda.
+
 ## Cómo es la bóveda
 - `00_Sistema/`: la Ficha del Mundo, el índice de inicio, las preguntas abiertas, las convenciones (organización, nombres, canon, estilo, Glosario), las plantillas, los activos (imágenes) y el registro de enlaces pendientes.
 - De `10_Mundo/` a `70_Sistemas_y_Cosmologia/`: las entidades, cada una en su carpeta según lo que es.

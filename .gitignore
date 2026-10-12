@@ -1,4 +1,10 @@
-# Mundos de prueba: cada uno en pruebas/<mundo>/, con su propio repositorio y las skills enlazadas
+# Mundo de prueba para desarrollar: la bóveda (con su propio repositorio git dentro), su CLAUDE.md
+# y las skills enlazadas desde skills/
+/World_Building/
+/CLAUDE.md
+/.claude/skills/
+
+# Mundos de prueba extra (por ejemplo, para probar inicializar-mundo): cada uno en pruebas/<mundo>/
 /pruebas/
 
 # Python

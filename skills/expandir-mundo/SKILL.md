@@ -35,8 +35,9 @@ Uso:
 1. **Bóveda:** por defecto `World_Building/`. La Ficha del Mundo y `CLAUDE.md` mandan.
 2. **Instantánea para el informe:** antes de tocar nada, ejecuta `python <crear-entidad>/scripts/report.py --snapshot` y guarda la ruta que imprime. Con ella, el informe final junta todos los ciclos y no confunde lo generado con cambios del usuario sin confirmar.
 3. **Carpeta de generación:** ejecuta `python <directorio de esta skill>/scripts/setup_generation.py`. Crea lo que falte en `06_Generacion`, la registra en la Guía de Organización y enlaza el registro desde `MOC_Inicio`.
-4. **Modo prueba:** crea antes del primer ciclo la rama `prueba/<AAAA-MM-DD-HHMM>` con `git switch -c`.
-5. **Pilares por definir:** si la Ficha deja sin definir pilares que afectan a lo que se va a crear (el calendario, las especies), se puede seguir, pero no los decides tú: quedan como preguntas.
+4. **Git:** el repositorio del mundo es el que contiene la bóveda. Todos los comandos git del motor van con `git -C <bóveda>` (por defecto `git -C World_Building`) y con rutas relativas a la bóveda, así funciona tanto si la bóveda está dentro del repositorio del proyecto como si tiene uno propio. Si no está en ningún repositorio, avisa: sin git no hay commits por ciclo ni modo prueba.
+5. **Modo prueba:** crea antes del primer ciclo la rama `prueba/<AAAA-MM-DD-HHMM>` con `git -C <bóveda> switch -c`.
+6. **Pilares por definir:** si la Ficha deja sin definir pilares que afectan a lo que se va a crear (el calendario, las especies), se puede seguir, pero no los decides tú: quedan como preguntas.
 
 ## Paso 1: qué crear
 ```bash
@@ -140,7 +141,8 @@ El script imprime el número del ciclo, que va en el mensaje del commit.
 
 ## Paso 7: commit
 Un ciclo es un commit, así cada ciclo se puede revertir por separado (`git revert <hash>`).
-- Añade **solo** los archivos que creó o modificó el ciclo, más el registro de generación y el de enlaces pendientes (`git add <rutas>`), nunca `git add -A`. Si el usuario tiene otros cambios sin guardar, se quedan fuera.
+- Añade **solo** los archivos que creó o modificó el ciclo, más el registro de generación y el de enlaces pendientes, con rutas relativas a la bóveda (`git -C <bóveda> add <rutas>`), nunca `git add -A`. Si el usuario tiene otros cambios sin guardar, se quedan fuera.
+- El commit también va en el repositorio de la bóveda: `git -C <bóveda> commit`.
 - El mensaje es `Generación <N>: <entidad principal>`, con la línea de co-autoría que indique la sesión.
 
 ## Al terminar la tanda: informe
@@ -163,7 +165,7 @@ El usuario tiene que ver con claridad qué se generó.
    - los ingredientes o giros de las tablas que más marcaron lo creado;
    - si se detuvo antes y por qué (límite de revisión, error).
 3. Si hay decisiones pendientes, recuerda que los enlaces pendientes que dependen de ellas quedan bloqueados hasta que el usuario decida.
-4. En **modo prueba**, pregunta si se fusiona la rama en la principal o se descarta: es la única decisión del flujo.
+4. En **modo prueba**, pregunta si se fusiona la rama en la principal o se descarta (en el repositorio de la bóveda, con `git -C <bóveda>`): es la única decisión del flujo.
 
 ## Reglas
 - **Canon:** nunca contradice el canon ni decide pilares por definir. Los hechos grandes nuevos van a Preguntas Abiertas como `Confirmar: …`.
