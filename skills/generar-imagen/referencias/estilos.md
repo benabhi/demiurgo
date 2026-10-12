@@ -75,6 +75,9 @@ Opcional: un tipo que figure aquí usa su técnica en lugar de la general.
 | Tipo | Técnica |
 |---|---|
 
+## Técnica de mapas
+<La de todos los mapas del mundo: la general si es sobre papel; si no, una técnica sobre papel elegida por el usuario. Se rellena con el primer mapa (ver `mapas.md`).>
+
 ## Fondos habituales
 <Lista en inglés de fondos coherentes con el mundo, para el campo FONDO.>
 

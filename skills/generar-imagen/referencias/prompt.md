@@ -44,6 +44,8 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 
 Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imagen: dilo y detente. Cada módulo nuevo añade aquí su fila y su sección.
 
+**Mapas:** además de esta imagen, los lugares con leyenda (regla `mapa` de su módulo) tienen mapa, en la carpeta `Mapas` y con el prefijo `Mapa_`. Su prompt no sale de esta tabla sino de `mapas.md`.
+
 ## Reglas comunes
 - **Concreto:** colores, materiales, formas y luz. Nada de nombres propios del mundo, porque el modelo no los conoce: describe lo que se ve.
 - **Punto de partida:** la "Descripción visual" de la sección Imagen de la nota, que ya reúne lo esencial.

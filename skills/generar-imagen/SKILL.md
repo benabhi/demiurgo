@@ -1,6 +1,6 @@
 ---
 name: generar-imagen
-description: Genera la imagen de una entidad del mundo (el retrato de un personaje, el paisaje de una región…) con Gemini en el Chrome del usuario (Claude in Chrome), con la ambientación del mundo y la técnica artística elegida (óleo, acuarela, cómic, lápiz a mano alzada, grabado… según su Guía Visual), y la guarda y enlaza en su nota de Obsidian de forma automática. La invoca crear-entidad al terminar; también sirve para "genera la imagen de…", "regenera el retrato de… en acuarela" o "cambia la técnica del mundo a óleo".
+description: Genera la imagen de una entidad del mundo (el retrato de un personaje, el paisaje de una región…) con Gemini en el Chrome del usuario (Claude in Chrome), con la ambientación del mundo y la técnica artística elegida (óleo, acuarela, cómic, lápiz a mano alzada, grabado… según su Guía Visual), y la guarda y enlaza en su nota de Obsidian de forma automática. También dibuja el mapa de los lugares que lo llevan (mazmorras, ruinas, ciudades, regiones…) a partir de la leyenda de su nota, con el mismo estilo. La invoca crear-entidad al terminar; también sirve para "genera la imagen de…", "regenera el retrato de… en acuarela", "dibuja el mapa de…" o "cambia la técnica del mundo a óleo".
 ---
 
 # Generar imagen
@@ -12,10 +12,13 @@ Arma un prompt con el estilo del mundo y los datos de la nota, genera la imagen 
 
 El estilo tiene dos capas: la **ambientación**, que marca el mundo (género, tono, materiales, paleta), y la **técnica**, que elige el usuario de un catálogo de 27 (óleo, acuarela, cómic, lápiz, grabado, vitral, fotograma de cine…).
 
+Además de su imagen principal, los lugares que lo merecen tienen **mapa**: una imagen que dibuja la leyenda numerada de su sección Mapa, con la técnica de mapas del mundo (ver `referencias/mapas.md`). La imagen principal sigue siendo obligatoria y la primera de la nota.
+
 Uso: `/generar-imagen <nota> [técnica]`.
 - `/generar-imagen Aldric_Voss` usa la técnica de la Guía Visual.
 - `/generar-imagen Aldric_Voss acuarela` usa otra técnica solo para esta imagen: un id o un nombre de `referencias/tecnicas.md`, o una descripción propia ("como un mapa antiguo").
 - "Cambia la técnica del mundo a óleo" o "los paisajes, en acuarela" cambian la Guía Visual: la técnica general o la tabla "Técnica por tipo". Solo se tocan esas secciones.
+- `/generar-imagen Puerto_Gris mapa` dibuja el mapa del lugar: la primera edición o una nueva, según su leyenda (`/generar-imagen Cripta_Honda mapa nivel 2` dibuja solo ese nivel).
 - `/generar-imagen tecnicas` (o "¿qué técnicas hay?") muestra el índice de `referencias/tecnicas.md` tal cual, con el total, y dice qué técnica usa ahora el mundo y cómo pedir otra. No genera nada.
 
 ## Autorización
@@ -26,7 +29,7 @@ El pedido del usuario (invocar esta skill o crear una entidad con `crear-entidad
 
 Al terminar, informa de lo que hizo (ver "Paso 5: informe").
 
-Solo se para en dos casos: para elegir la técnica al crear la Guía Visual (una vez por mundo) y cuando el navegador necesita algo que solo puede hacer el usuario (iniciar sesión, aceptar un aviso).
+Solo se para en estos casos: para elegir la técnica al crear la Guía Visual (una vez por mundo), para elegir la técnica de mapas si la general no es sobre papel (también una vez) y cuando el navegador necesita algo que solo puede hacer el usuario (iniciar sesión, aceptar un aviso).
 
 ## Requisitos
 - **Claude in Chrome:** la extensión de Claude conectada al Chrome del usuario.
@@ -37,6 +40,7 @@ Solo se para en dos casos: para elegir la técnica al crear la Guía Visual (una
 - `referencias/prompt.md`: qué muestra la imagen de cada tipo (formato, carpeta y prefijo del archivo), qué técnica usa cada imagen, la plantilla del prompt de cada tipo y de dónde sale cada campo.
 - `referencias/tecnicas.md`: el catálogo de técnicas artísticas, con sus bloques en inglés y las recomendadas por género.
 - `referencias/estilos.md`: la ambientación por género, cómo crear la Guía Visual y su plantilla.
+- `referencias/mapas.md`: el modo mapa: qué edición toca, la técnica de mapas, la plantilla del prompt (los marcadores y el formato A4), la edición sobre la anterior, la comprobación y cómo se guarda y se enlaza. La leyenda la mantiene `<crear-entidad>/scripts/map_key.py`.
 - `scripts/fetch_download.py`: mueve a la bóveda la imagen descargada desde el navegador, sin sobrescribir.
 
 ## Paso 1: preparar
@@ -46,7 +50,8 @@ Solo se para en dos casos: para elegir la técnica al crear la Guía Visual (una
    - Al guardarla, añádela a la lista de convenciones de `MOC_Inicio`.
    - Si es del formato anterior (sin sección "Técnica"), sigue "Guías de la versión anterior" de `estilos.md`. Si sus Restricciones incluyen un formato ("square 1:1") o "single subject", o su Estilo dice "portrait", **ignora esas partes** para tipos que no son retratos: el formato y el sujeto los pone cada tipo.
 3. **Técnica de esta imagen:** según "Qué técnica usa cada imagen" de `prompt.md`: la pedida para esta imagen, la del tipo en la Guía o la general (si es "Variada", con una tirada). Si piden una técnica que no está en el catálogo, escribe sus bloques como dice "Técnica propia" en `tecnicas.md`.
-4. **Primera imagen de este tipo:** si no existe la carpeta del tipo (`00_Sistema/02_Activos/<Carpeta>/`), créala con un `README.md` breve. Añade una fila a la tabla "Carpetas añadidas por skills" de la Guía de Organización: `| 00_Sistema/02_Activos/<Carpeta> | Imágenes de <tipo> (<Prefijo><Nota>.<ext>) | generar-imagen |`. Varias carpetas las comparten varios tipos (`Escenas`, `Lugares`…, según "Resumen por tipo" de `prompt.md`): si la carpeta ya existe pero es la primera imagen de este tipo en ella, añade el tipo a la descripción de su fila y a su README (`Imágenes de fenomeno y cultura (Fenomeno_…, Cultura_…)`). Las carpetas de la estructura inicial (como `Iconos`) no se registran en esa tabla, porque no las creó una skill: basta con añadir el tipo a su README.
+4. **Modo mapa** (si se pidió el mapa, o lo pide `crear-entidad` o el motor): ejecuta `python <crear-entidad>/scripts/map_key.py <Nota> --json` para saber qué edición toca y qué niveles se dibujan (ver «Qué edición toca» en `mapas.md`), y usa la **técnica de mapas** de la Guía (si no la tiene, ver «Técnica de mapas»). La carpeta es `Mapas` y el prefijo `Mapa_`. Los pasos que siguen valen igual para el mapa, con lo que dice `mapas.md`.
+5. **Primera imagen de este tipo:** si no existe la carpeta del tipo (`00_Sistema/02_Activos/<Carpeta>/`) o la de los mapas, créala con un `README.md` breve. Añade una fila a la tabla "Carpetas añadidas por skills" de la Guía de Organización: `| 00_Sistema/02_Activos/<Carpeta> | Imágenes de <tipo> (<Prefijo><Nota>.<ext>) | generar-imagen |`. Varias carpetas las comparten varios tipos (`Escenas`, `Lugares`…, según "Resumen por tipo" de `prompt.md`): si la carpeta ya existe pero es la primera imagen de este tipo en ella, añade el tipo a la descripción de su fila y a su README (`Imágenes de fenomeno y cultura (Fenomeno_…, Cultura_…)`). Las carpetas de la estructura inicial (como `Iconos`) no se registran en esa tabla, porque no las creó una skill: basta con añadir el tipo a su README.
 
 ## Paso 2: prompt
 Arma el prompt según la sección del tipo en `prompt.md`:
@@ -54,12 +59,14 @@ Arma el prompt según la sección del tipo en `prompt.md`:
 - la capa de la entidad, desde su nota (con el fondo fundido con el papel si la técnica es 📄);
 - el formato del tipo, al final.
 
+En modo mapa, el prompt es el de «La plantilla del prompt» de `mapas.md`, uno por nivel: se arma con la leyenda y con lo que la nota cuenta de cada zona.
+
 ## Paso 3: generar con Gemini en Chrome
 1. Si las herramientas de Claude in Chrome (`mcp__claude-in-chrome__*`) no están cargadas, cárgalas con ToolSearch en una sola llamada. Si existe la skill `anthropic-skills:chrome-browser`, léela antes.
 2. Si Chrome no está disponible, ve a "Si algo falla".
 3. Abre una **pestaña nueva** y navega a `https://gemini.google.com/app`.
 4. Comprueba la sesión. Si aparece "Iniciar sesión" o "Sign in", pide al usuario que inicie sesión por su cuenta y espera. **Nunca introduzcas credenciales.** Si aparece un aviso de términos, de cookies o de novedades, pide al usuario que lo resuelva por su cuenta: no aceptes acuerdos en su nombre.
-5. Escribe en el cuadro de la petición `Generate an image: <prompt>` y envíalo.
+5. Escribe en el cuadro de la petición `Generate an image: <prompt>` y envíalo. En una edición nueva de un mapa, primero intenta editar la anterior (ver «Edición nueva» en `mapas.md`).
 6. **Espera la imagen.** Gemini a veces termina de generar pero deja el **recuadro gris** hasta que se refresca la página; la conversación se conserva al refrescar.
    1. Comprueba cada 10 segundos, con una captura o buscando el botón (`find`: "Descargar" / "Download"), si ya aparece el **icono de la flechita de descarga** sobre la respuesta. Es la señal de que la imagen está generada.
    2. Cuando aparezca, si la imagen se ve, sigue con el Paso 3b.
@@ -68,7 +75,7 @@ Arma el prompt según la sección del tipo en `prompt.md`:
    5. Si aun así no se ve pero el icono de descarga está, intenta descargarla igualmente: la descarga suele funcionar aunque la vista previa falle.
    6. Si en 3 minutos no aparece ni la imagen ni el icono, ve a "Si algo falla".
 7. **Si Gemini rechaza la petición o responde solo con texto,** suaviza el prompt (más sugerido, menos explícito) y reintenta una vez en el mismo chat.
-8. **Acepta la primera imagen válida.** Si el usuario quiere otra, la pedirá después (se guardará como `_v2`).
+8. **Acepta la primera imagen que pase la comprobación** (Paso 3c). Si el usuario quiere otra, la pedirá después (se guardará como `_v2`).
 
 ## Paso 3b: descargar y guardar
 1. Ejecuta `python <directorio de la skill>/scripts/fetch_download.py mark` y guarda la marca que imprime.
@@ -80,13 +87,22 @@ Arma el prompt según la sección del tipo en `prompt.md`:
    El script imprime el nombre final, el tamaño y el nombre original de la descarga. Si ya existía un archivo con ese nombre, usa `_v2`, `_v3`…
 4. Si el script no encuentra la imagen (la descarga no arrancó), pulsa de nuevo el botón y repite el paso 3.
 5. Si Chrome abre un diálogo para elegir dónde guardar, la extensión no puede manejarlo. Pide al usuario que guarde en su carpeta de Descargas, o que desactive en Chrome "Preguntar dónde se guardará cada archivo", y repite el paso 3.
-6. **Mira la imagen** guardada (léela con la herramienta de lectura de archivos) para describirla en el informe. Si salió algo claramente distinto de lo pedido (otro sujeto, texto o marcos que el prompt prohíbe, varias figuras en un retrato), pide otra una sola vez en el mismo chat de Gemini con el prompt ajustado y enlaza la nueva. La anterior se conserva, como toda imagen, y se menciona en el informe.
+
+## Paso 3c: comprobar la imagen
+Mira la imagen guardada (léela con la herramienta de lectura de archivos) y compárala con lo que se pidió:
+- **Toda imagen:** el sujeto y los rasgos que lo definen (los de su descripción visual: «sin ojos», «la corona partida en dos»); en un retrato, una sola figura; ningún texto, marco ni firma (la marca de agua de Gemini no cuenta); la técnica y la paleta de la Guía; el formato pedido.
+- **Un mapa,** además, lo que dice «Comprobación» en `mapas.md`. Lo primero son los marcadores: todos, una vez cada uno.
+
+Si algo falla, pide la corrección **en el mismo chat de Gemini**, nombrando el problema exacto y pidiendo que no cambie nada más. Descarga y guarda la imagen corregida (Paso 3b) y vuelve a comprobar. Como mucho dos correcciones: después, quédate con la mejor, enlázala y anota lo que quedó mal en las incidencias (en un mapa, también en la línea de su edición). Las versiones descartadas se conservan, como toda imagen.
+
+Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle pequeño menos logrado no es un fallo.
 
 ## Paso 4: enlazar en la nota
 - Propiedad `imagen: "[[<nombre final>]]"`, con su extensión real.
 - Embed justo debajo del resumen en cita: `![[<nombre final>|300]]` para retratos y otras imágenes cuadradas, `![[<nombre final>|600]]` para las apaisadas. Sustituye al anterior si regeneras.
 - En la sección Imagen, `**Prompt:**` con la fecha de generación, la técnica y el modelo (`2026-10-10 · técnica: Boceto en acuarela (acuarela) · modelo: Gemini (navegador)`) y, debajo, el prompt en un bloque de código, tal cual se generó pero **sin** la orden `Generate an image:`, que es para Gemini. Así se puede reutilizar.
 - Actualiza `ultima_revision` (sin comillas).
+- **Un mapa** se enlaza como dice «Guardar y enlazar» en `mapas.md`: la propiedad `mapa`, el mapa embebido y la línea de la edición en la sección Mapa, el prompt del mapa en la sección Imagen y, al final, `map_key.py <Nota> --charted`.
 
 ## Paso 5: informe
 Si la invocó `crear-entidad` o `expandir-mundo`, devuélveles el nombre del archivo, la técnica usada y las incidencias: la imagen sale en su informe final. Si se invocó sola, termina con:
@@ -95,7 +111,8 @@ Si la invocó `crear-entidad` o `expandir-mundo`, devuélveles el nombre del arc
 - **Nota actualizada:** enlace a la nota y lo que cambió en ella: la propiedad `imagen`, el embed y el prompt en la sección Imagen.
 - **Prompt usado**, en un bloque de código.
 - **Versión:** si es una regeneración, qué versión es (`_v2`, `_v3`…) y que la anterior se conserva.
-- **Incidencias**, si las hubo: inicio de sesión, refrescos por el recuadro gris, reintentos, prompt suavizado o una segunda generación por no parecerse a lo pedido.
+- **Mapa** (si se dibujó): la edición, los niveles dibujados, la comprobación de los marcadores (`12/12, sin repetidos`), si se editó la edición anterior o se redibujó, y los detalles inventados para la leyenda (las salas menores de una mazmorra).
+- **Comprobación e incidencias**, si las hubo: inicio de sesión, refrescos por el recuadro gris, reintentos, prompt suavizado y las correcciones que se pidieron en la comprobación, con lo que quedó mal.
 - **Marca de agua:** la primera vez en el mundo, avisa de que las imágenes de Gemini llevan una marca de agua visible y SynthID.
 - **Guía Visual:** si se creó o cambió en esta ejecución, enlace a ella y la técnica elegida. Recuerda cuántas técnicas hay (están en la sección "Técnicas disponibles" de la Guía) y que se puede pedir otra para una imagen o fijar una por tipo.
 
@@ -104,6 +121,8 @@ Si no se puede generar la imagen (Chrome no está disponible, no hay sesión, Ge
 - guarda el prompt en la sección Imagen de la nota;
 - deja `imagen` vacío para generarla más tarde;
 - explica al usuario qué pasó y cómo seguir: generarla más tarde con `/generar-imagen <nota>`.
+
+Si falla un mapa, la leyenda se queda como estaba y no se ejecuta `map_key.py --charted`: la edición sigue pendiente y se puede dibujar más tarde con `/generar-imagen <nota> mapa`.
 
 Nunca dejes la nota a medias.
 
