@@ -8,7 +8,7 @@ Los lugares que lo merecen (ruinas, mazmorras, edificios, asentamientos, parajes
 - `nueva`: hay 3 zonas sin cartografiar o más, o un cuarto de las cartografiadas;
 - nada: no toca. Si el usuario pide el mapa igualmente (`/generar-imagen <Nota> mapa`), se dibuja una edición nueva con lo que haya; si la nota no tiene leyenda, dilo y detente.
 
-`niveles` dice qué niveles hay que dibujar: en una mazmorra de varios niveles, cada nivel es una imagen; en una edición nueva, solo los que tienen zonas sin cartografiar.
+`niveles` dice qué niveles hay que dibujar: en un lugar de varios niveles (los pisos de un edificio, los niveles de una mazmorra), cada nivel es una imagen; en una edición nueva, solo los que tienen zonas sin cartografiar.
 
 ## Técnica de mapas
 Los mapas de un mundo se ven todos igual, y casan con el resto de sus imágenes: misma ambientación y misma paleta de la Guía Visual, y una **técnica de mapas fija** en su sección `## Técnica de mapas`. Nunca «Variada» ni la técnica de un tipo: la de mapas vale para todos.
@@ -81,9 +81,9 @@ Correcciones, en el mismo chat y nombrando el problema exacto:
 
 ## Guardar y enlazar
 - **Carpeta:** `00_Sistema/02_Activos/Mapas`, que viene con la estructura inicial de la bóveda: no se registra. Solo si no existe (una bóveda anterior), créala con su `README.md` y regístrala en la tabla «Carpetas añadidas por skills» de la Guía de Organización: `| 00_Sistema/02_Activos/Mapas | Mapas de los lugares (Mapa_<Nota>.<ext>, Mapa_<Nota>_Nivel_<n>.<ext>) | generar-imagen |`.
-- **Nombre:** `Mapa_<Nota>`, y en una mazmorra de varios niveles, `Mapa_<Nota>_Nivel_<n>` desde el nivel 2. Una edición nueva no sobrescribe: `fetch_download.py` le pone `_v2`, `_v3`…, y las anteriores se conservan.
+- **Nombre:** `Mapa_<Nota>`, y en un lugar de varios niveles, `Mapa_<Nota>_Nivel_<n>` desde el nivel 2. Una edición nueva no sobrescribe: `fetch_download.py` le pone `_v2`, `_v3`…, y las anteriores se conservan.
 - **En la nota:**
   - `mapa`: la lista de imágenes de la edición vigente, una por nivel y en orden (`- "[[Mapa_Cripta_Honda.jpg]]"`). En una edición nueva, cambia solo las de los niveles redibujados.
-  - En la sección `## Mapa`, encima de la leyenda: el mapa embebido (`![[Mapa_Cripta_Honda.jpg|600]]`; con varios niveles, cada uno tras su título `**Nivel 2**`) y la línea de la edición: `*Edición 1 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 9/9 marcadores, sin repetidos*`. Sustituyen a los de la edición anterior.
+  - En la sección `## Mapa`: al principio, la línea de la edición (`*Edición 1 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 9/9 marcadores, sin repetidos*`) y, encima de las zonas, el mapa embebido (`![[Mapa_Cripta_Honda.jpg|600]]`). Con varios niveles, cada nivel lleva su título (`**Nivel 2**`), su mapa y debajo sus zonas. Sustituyen a los de la edición anterior.
   - En la sección Imagen, después del prompt del concept art: `**Prompt del mapa:**` con la fecha, la técnica y la edición (y el nivel), y el prompt en un bloque de código, tal cual se generó (sin la orden `Generate an image:`). Sustituye al de la edición anterior.
   - Al final, `python <crear-entidad>/scripts/map_key.py <Nota> --charted`: suma la edición, pone `mapa_zonas` en el último número y quita las marcas «sin cartografiar».

@@ -112,7 +112,13 @@ ORIENTATION_SYNONYMS = {"sudoeste": "suroeste", "sudeste": "sureste"}
 UNCHARTED_MARK = "*Sin cartografiar.*"
 # Edición nueva con tantas zonas sin cartografiar, o con un cuarto de las cartografiadas
 NEW_EDITION_ZONES = 3
-MAP_ITEM_RE = re.compile(r"^(\d+)\.\s+\*\*(.+?)\*\*\s+·\s+(.+?)\s+[—–-]\s+(.*)$")
+# Cada zona, una viñeta con su número en negrita: `- **9.** **Nombre** · orientación — descripción.` No es
+# una lista numerada porque Obsidian la renumeraría al leerla (1, 2, 3, 9 se vería 1, 2, 3, 4). Se acepta
+# también la forma anterior, `9. **Nombre** · …`
+MAP_ITEM_RE = re.compile(r"^(?:-\s+\*\*(?P<numero>\d+)\.\*\*|(?P<numero_lista>\d+)\.)\s+\*\*(?P<nombre>.+?)\*\*"
+                         r"\s+·\s+(?P<posicion>.+?)\s+[—–-]\s+(?P<resto>.*)$")
+MAP_ITEM_START_RE = re.compile(r"^(?:-\s+\*\*\d+\.\*\*|\d+\.)")
+MAP_ITEM_EMPTY_RE = re.compile(r"^(?:-\s+\*\*\d+\.\*\*|\d+\.)\s*$")
 MAP_POSITION_RE = re.compile(r"^(?:nivel\s+(\d+)\s*,\s*)?([a-z]+)$")
 CONNECTS_RE = re.compile(r"Conecta con ([\d ,y]+?)\.", re.IGNORECASE)
 
@@ -167,14 +173,15 @@ def parse_map_key(body):
     zones, problems = [], []
     for i, line in enumerate(lines):
         stripped = line.strip()
-        if not re.match(r"^\d+\.", stripped) or re.match(r"^\d+\.\s*$", stripped):
+        if not MAP_ITEM_START_RE.match(stripped) or MAP_ITEM_EMPTY_RE.match(stripped):
             continue
         match = MAP_ITEM_RE.match(stripped)
         if not match:
             problems.append(f"zona de la leyenda con formato no válido: «{stripped}» (debe ser "
-                            f"`N. **Nombre** · orientación — descripción.`)")
+                            f"`- **N.** **Nombre** · orientación — descripción.`)")
             continue
-        number, name, position, rest = match.groups()
+        number = match.group("numero") or match.group("numero_lista")
+        name, position, rest = match.group("nombre"), match.group("posicion"), match.group("resto")
         place = MAP_POSITION_RE.match(normalize(position))
         orientation = ORIENTATION_SYNONYMS.get(place.group(2), place.group(2)) if place else ""
         if orientation not in ORIENTATIONS:

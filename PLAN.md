@@ -130,7 +130,7 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
   | el mundo | mapa del mundo | a pedido y en `finalizar-mundo` |
   | ruta (#21) | mapa de itinerario, en tira | se define con el módulo |
 
-- **La leyenda** (sección `## Mapa`): `N. **Nombre** · <orientación> — una línea. Conecta con 2 y 5.`
+- **La leyenda** (sección `## Mapa`): `- **N.** **Nombre** · <orientación> — una línea. Conecta con 2 y 5.` (una viñeta con el número en negrita, porque Obsidian renumera las listas numeradas al leerlas).
   - Números estables: solo se añaden al final; nunca se renumeran ni se reutilizan (una zona destruida queda marcada).
   - Lo que es una entidad va enlazado (a su nota o como enlace pendiente); lo demás, como texto.
   - Orientación: una de 9 (noroeste, norte, noreste, oeste, centro, este, suroeste, sur, sureste); en una mazmorra, con su nivel (`nivel 2, norte`). Las conexiones son físicas y van en los dos sentidos.

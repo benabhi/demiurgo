@@ -66,7 +66,7 @@ En modo mapa, el prompt es el de «La plantilla del prompt» de `mapas.md`, uno 
 2. Si Chrome no está disponible, ve a "Si algo falla".
 3. Abre una **pestaña nueva** y navega a `https://gemini.google.com/app`.
 4. Comprueba la sesión. Si aparece "Iniciar sesión" o "Sign in", pide al usuario que inicie sesión por su cuenta y espera. **Nunca introduzcas credenciales.** Si aparece un aviso de términos, de cookies o de novedades, pide al usuario que lo resuelva por su cuenta: no aceptes acuerdos en su nombre.
-5. Escribe en el cuadro de la petición `Generate an image: <prompt>` y envíalo. En una edición nueva de un mapa, primero intenta editar la anterior (ver «Edición nueva» en `mapas.md`).
+5. **Espera a que la página termine de cargar** (el cuadro de la petición visible y vacío): lo que se escribe mientras carga se pierde. Escribe en el cuadro `Generate an image: <prompt>`, envíalo y **comprueba que el prompt aparece en la conversación**; si no, vuelve a escribirlo. Después de refrescar no lo reenvíes: la conversación se conserva. En una edición nueva de un mapa, primero intenta editar la anterior (ver «Edición nueva» en `mapas.md`).
 6. **Espera la imagen.** Gemini a veces termina de generar pero deja el **recuadro gris** hasta que se refresca la página; la conversación se conserva al refrescar.
    1. Comprueba cada 10 segundos, con una captura o buscando el botón (`find`: "Descargar" / "Download"), si ya aparece el **icono de la flechita de descarga** sobre la respuesta. Es la señal de que la imagen está generada.
    2. Cuando aparezca, si la imagen se ve, sigue con el Paso 3b.

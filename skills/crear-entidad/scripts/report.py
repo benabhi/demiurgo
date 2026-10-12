@@ -52,7 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_world import run_audit  # noqa: E402
 from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
-                       parse_note, readable_links)
+                       normalize, parse_note, readable_links)
 
 GLOSSARY = "00_Sistema/04_Convenciones/Glosario.md"
 OPEN_QUESTIONS = "00_Sistema/Preguntas_Abiertas.md"
@@ -565,6 +565,17 @@ def build_report(vault, prefix, changes):
     if mapped:
         log.append("- **Mapas:** " + listed([f"{wiki(e)} (edición {first(e['props'].get('mapa_edicion')) or '?'})"
                                              for e in mapped], LOG_LISTED) + ".")
+    def pending_name(gap):
+        """Nombre legible de un enlace pendiente: el texto con que lo enlaza una nota si es el mismo nombre con
+        sus tildes («Península de Valtara»); si no, el del enlace, con espacios."""
+        plain = gap["link"].replace("_", " ")
+        for path in gap["notes"]:
+            text = read_text(files[path]) if path in files else ""
+            for target, alias in LINK_WITH_ALIAS_RE.findall(text):
+                if target.strip().lower() == gap["link"].lower() and alias and normalize(alias) == normalize(plain):
+                    return alias.strip()
+        return plain
+
     # Enlaces pendientes nuevos: los que solo nombran notas creadas ahora o que acaban de enlazarlos
     new_pending = [g for g in gaps if g["notes"] and all(
         note in created_paths or g["link"].lower() in added_links.get(note, {}) for note in g["notes"])]
@@ -573,7 +584,7 @@ def build_report(vault, prefix, changes):
         parts = []
         if new_pending:
             parts.append(f"{plural(len(new_pending), 'nuevo', 'nuevos')} ("
-                         + listed([g["link"].replace("_", " ") for g in new_pending], LOG_PENDING) + ")")
+                         + listed([pending_name(g) for g in new_pending], LOG_PENDING) + ")")
         if completed or named:
             parts.append(plural(len(completed) + len(named), "completado", "completados")
                          + (f" ({listed(done, LOG_PENDING)})" if done else ""))

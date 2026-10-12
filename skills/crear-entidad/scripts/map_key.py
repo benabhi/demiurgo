@@ -29,7 +29,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_SECTION, MAX_MARKERS,  # noqa: E402
+from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP_SECTION, MAX_MARKERS,  # noqa: E402
                        ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK, first, format_connections,
                        int_value, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
                        parse_map_key, resolve_note, zones_per_level)
@@ -195,7 +195,7 @@ def main():
     if description and description[-1] not in ".!?…":
         description += "."
     position = (f"nivel {args.level}, " if args.level > 1 else "") + orientation
-    parts = [f"{number}. **{name}** · {position} — {description or 'Sin describir.'}"]
+    parts = [f"- **{number}.** **{name}** · {position} — {description or 'Sin describir.'}"]
     if connects:
         parts.append(format_connections(connects))
     if int_value(first(props.get("mapa_edicion"))):
@@ -206,13 +206,17 @@ def main():
         if zone["numero"] in connects:
             row = offset + zone["linea"]
             lines[row] = add_connection(lines[row], number)
-    # Va tras la última zona; en una leyenda vacía, en lugar del «1.» de la plantilla o al final de la sección
-    if zones:
+    # Va tras la última zona de su nivel (con varios niveles, cada uno lleva su mapa y debajo sus zonas); en un
+    # nivel nuevo, al final y con su título; en una leyenda vacía, en lugar del «1.» de la plantilla
+    same_level = [zone for zone in zones if zone["nivel"] == args.level]
+    if same_level:
+        lines.insert(offset + max(zone["linea"] for zone in same_level) + 1, new_line)
+    elif zones:
         at = offset + max(zone["linea"] for zone in zones) + 1
-        lines.insert(at, new_line)
+        lines[at:at] = ["", f"**Nivel {args.level}**", "", new_line]
     else:
         stop = next((i for i in range(offset, len(lines)) if lines[i].startswith("## ")), len(lines))
-        placeholder = next((i for i in range(offset, stop) if re.match(r"^\s*\d+\.\s*$", lines[i])), None)
+        placeholder = next((i for i in range(offset, stop) if MAP_ITEM_EMPTY_RE.match(lines[i].strip())), None)
         if placeholder is not None:
             lines[placeholder] = new_line
         else:

@@ -48,7 +48,7 @@ from vault_lib import (HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DI
                        VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
-                       load_modules, malformed_lines, map_applies, map_key_problems, map_rule,
+                       load_modules, malformed_lines, MAP_ITEM_EMPTY_RE, map_applies, map_key_problems, map_rule,
                        normalize, note_link_labels, omitted_sections, own_gaps_range, parse_calendar,
                        parse_map_key,
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
@@ -351,7 +351,7 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
         # Una etiqueta sin valor no está vacía si su contenido sigue en una sublista o un bloque de código
         has_content_below = bool(re.match(r"^\s+[-*] ", following)) or following.lstrip().startswith("```")
         if (EMPTY_FIELD_RE.match(line) and not has_content_below) or EMPTY_ROW_RE.match(stripped) \
-                or stripped == "-" or re.match(r"^\d+\.$", stripped) \
+                or stripped == "-" or MAP_ITEM_EMPTY_RE.match(stripped) \
                 or (stripped == ">" and not quote_separator(body, i)):
             errors.append(f"campo vacío: {stripped}")
     leftovers = {l.strip() for l in template_body if l.startswith("> ") and len(l.strip()) > 2}

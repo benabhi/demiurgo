@@ -79,7 +79,7 @@ fuentes: []
 -
 
 ## Mapa
-1.
+- **1.**
 
 ## Poder y fronteras
 - **Quién la controla:**

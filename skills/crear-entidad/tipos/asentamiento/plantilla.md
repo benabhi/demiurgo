@@ -83,7 +83,7 @@ fuentes: []
 -
 
 ## Mapa
-1.
+- **1.**
 
 ## Personajes notables
 -

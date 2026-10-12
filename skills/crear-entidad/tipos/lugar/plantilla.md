@@ -57,7 +57,7 @@ fuentes: []
 | | | |
 
 ## Mapa
-1.
+- **1.**
 
 ## Actividad
 - **Un día cualquiera:**

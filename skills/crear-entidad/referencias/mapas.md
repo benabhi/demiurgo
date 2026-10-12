@@ -20,16 +20,17 @@ La leyenda solo indexa lo que la nota cuenta: si una zona importa, la nota tambi
 
 ## Formato de cada zona
 ```
-N. **Nombre** · orientación — una línea. Conecta con 2 y 5.
+- **N.** **Nombre** · orientación — una línea. Conecta con 2 y 5.
 ```
+Es una viñeta con el número en negrita, no una lista numerada: Obsidian renumera las listas al leerlas, y una leyenda que crece (1, 2, 3, 9) se vería 1, 2, 3, 4.
 - **Nombre:** si la zona es una entidad (un palacio, un templo, un barrio con nombre propio), va enlazada, a su nota o como enlace pendiente con su texto legible: `**[[Palacio_de_Ormal|El palacio]]**`. Si no lo es, va como texto, en minúscula y por lo que es: `**la plaza de las cenizas**`. Es la misma regla de siempre: las entidades se enlazan y los demás nombres no.
-- **Orientación:** una de nueve: noroeste, norte, noreste, oeste, centro, este, suroeste, sur, sureste. En una mazmorra de varios niveles, con su nivel: `nivel 2, norte`. Tiene que cuadrar con lo que cuenta la nota («al norte del puerto»).
+- **Orientación:** una de nueve: noroeste, norte, noreste, oeste, centro, este, suroeste, sur, sureste. En un lugar de varios niveles (los pisos de una torre o un edificio, los niveles de una mazmorra), con su nivel: `nivel 2, norte`. El nivel 1 es el de la entrada; los demás siguen el orden en que se recorren, hacia arriba o hacia abajo, y la conexión lo dice («una escalera que baja al nivel 2»). Tiene que cuadrar con lo que cuenta la nota («al norte del puerto»).
 - **Una línea:** qué es y **lo que se ve** de ella, porque es lo que se dibuja: «sala del trono con un trono de piedra, charcos y relieves en los muros».
 - **Conecta con:** las zonas a las que se pasa directamente (un pasillo, una calle, un camino, una escalera entre niveles). Las conexiones son físicas: van en las dos zonas. Solo las que la nota sostiene; no todo tiene que estar conectado.
 
 ## Reglas
 - **Los números son estables:** las zonas nuevas van al final; nunca se renumera ni se reutiliza un número. Una zona que desaparece se queda, con lo que le pasó en su línea («derruida en el incendio»). Así, «la zona 7» significa lo mismo en todas las ediciones.
-- **Como mucho 12 zonas por mapa.** Una mazmorra mayor se divide en niveles, con la numeración seguida (si el nivel 1 acaba en la 8, el nivel 2 empieza en la 9). Una ciudad o una región que se llena agrupa lugares en una zona con mapa propio (un barrio, una subregión).
+- **Las zonas y los niveles son los que pida el lugar,** sin un número fijo: una cripta pequeña puede tener 3 salas en un nivel y una fortaleza, 30 en cuatro pisos. **Como mucho 12 zonas por mapa** (es lo que un generador de imágenes dibuja bien): un lugar mayor se divide en niveles o pisos, cada uno con su mapa, con la numeración seguida (si el nivel 1 acaba en la 8, el nivel 2 empieza en la 9). Una ciudad o una región que se llena agrupa lugares en una zona con mapa propio (un barrio, una subregión).
 - **Al crear un lugar dentro de otro** que tiene leyenda (su `ubicacion`, su `region`), añádelo a esa leyenda sin leerla:
   ```bash
   python <directorio de esta skill>/scripts/map_key.py <Lugar_que_lo_contiene> --add "[[Nota|Nombre]]" --position <orientación> --desc "<una línea>" [--level <n>] [--connects 2,5]
@@ -41,7 +42,7 @@ N. **Nombre** · orientación — una línea. Conecta con 2 y 5.
 
 ## La imagen
 La dibuja `generar-imagen` en modo mapa (ver su `referencias/mapas.md`), después del concept art. Una edición nueva toca cuando hay 3 zonas sin cartografiar o más, o un cuarto de las cartografiadas. Además de la leyenda, la sección `## Mapa` lleva:
-- el mapa embebido (`![[Mapa_<Nota>.jpg|600]]`; en una mazmorra, uno por nivel, cada uno con su título `**Nivel 2**`);
-- una línea con la edición: `*Edición 2 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 12/12 marcadores, sin repetidos*`.
+- una línea con la edición, al principio: `*Edición 2 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 12/12 marcadores, sin repetidos*`;
+- el mapa embebido (`![[Mapa_<Nota>.jpg|600]]`) encima de sus zonas. Con varios niveles, cada nivel lleva su título (`**Nivel 2**`), su mapa y debajo sus zonas; `map_key.py --add` pone cada zona nueva con las de su nivel.
 
 En el frontmatter, `mapa` lista sus imágenes (una por nivel), `mapa_edicion` es la edición y `mapa_zonas` el último número cartografiado. Los actualiza `map_key.py <Nota> --charted` al terminar cada edición.
