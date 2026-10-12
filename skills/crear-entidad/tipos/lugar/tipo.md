@@ -52,7 +52,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Actividad:** un día cualquiera (o quién pasa por un sitio abandonado) y quién viene y por qué.
 - **Peligros y defensas:** lo que amenaza a quien entra y lo que lo protege (guardias, trampas, criaturas, el propio terreno).
 - **Tesoros y recursos:** lo que guarda (objetos, saberes, secretos a la vista) y lo que se puede sacar de allí (madera, agua, mineral, información).
-- **Accesos:** las entradas, los pasos ocultos y cómo se llega desde su ubicación.
+- **Accesos:** las entradas, los pasos ocultos y cómo se llega desde su ubicación. Los pasos ocultos que se conocen (y se sabe dónde están) van también en la leyenda del mapa (`Paso oculto a 7.`), y las trampas conocidas de «Peligros y defensas», en su zona (`Trampa: …`). Lo que nadie conoce es un secreto: ni aquí ni en el mapa.
 - **Historia:** su origen, de 2 a 4 momentos decisivos y el presente.
 - **Relación con el mundo, secretos y rumores, ganchos, citas:** como en todo tipo.
 - **Imagen:**

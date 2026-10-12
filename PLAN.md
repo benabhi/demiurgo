@@ -138,6 +138,7 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
   - Solo indexa lo que la nota cuenta (en una mazmorra, las salas menores son detalles inventados).
 - **Cómo crece:** cada mapa muestra solo su nivel directo (la región, sus asentamientos y lugares; la ciudad, sus barrios y lugares notables; la mazmorra, sus salas), así que un lugar nuevo afecta como mucho al mapa de donde está. Al crearlo, `map_key.py --add` lo añade a la leyenda de ese lugar, «sin cartografiar». Edición nueva con 3 zonas sin cartografiar o más, o con un cuarto de las cartografiadas: la acción `cartografiar` del motor o el usuario. Primero se intenta editar la edición anterior en Gemini; si no sale, se redibuja desde la leyenda. Las ediciones anteriores se conservan.
 - **Variedad:** la forma, el tamaño, los niveles o pisos y las zonas (salas, barrios, partes, accidentes) se tiran en `expandir-mundo/assets/Tablas/Mapas.md` con azar real (`roll_tables.py --count`), como semilla que manda lo que cuenta la nota.
+- **Lo escondido:** los pasos ocultos (`Paso oculto a 7.`, en las dos zonas) y las trampas (`Trampa: …`) que la nota conoce van en la leyenda y en el mapa, con los símbolos de la Guía Visual (línea de puntos, triángulo); lo que nadie conoce es un secreto y no va en el mapa. Las trampas se tiran combinando mecanismo, disparador, efecto y quién la puso y para qué (unas 9.000 combinaciones), para que no se repitan.
 - **Caminos:** dentro de un mapa, las conexiones de la leyenda; entre lugares, solo los que la nota cuenta («Rutas y viajes»; con `ruta`, sus notas). No todo tiene que estar conectado.
 - **Estilo:** la Guía Visual del mundo, con una técnica de mapas fija (la general si es sobre papel; si no, se elige una vez entre las de papel). Marcadores: círculo negro con fondo blanco, exactamente los números de la leyenda, una vez cada uno, y ningún otro texto. Formato A4: vertical 3:4 u horizontal 4:3, según la forma del lugar.
 - **Comprobación de cada imagen:** la IA la mira (en un mapa, cuenta los marcadores y busca repetidos y faltantes, el texto de más y lo característico de cada zona); si falla, pide la corrección en el mismo chat, hasta dos veces, y anota lo que quede mal.
@@ -147,7 +148,7 @@ Etapas:
 - [ ] 2. `generar-imagen`: modo mapa (técnica de mapas, plantillas, A4) y comprobación con corrección (también del concept art).
 - [ ] 3. `crear-entidad`: la leyenda al crear, el mapa tras el concept art y la entrada en la leyenda del lugar donde está.
 - [ ] 4. Motor: acción `cartografiar`.
-- [ ] 5. Más adelante: las rutas (con el módulo #21) y el mapa del mundo (con `finalizar-mundo`).
+- [ ] 5. Más adelante: las rutas (con el módulo #21), el mapa del mundo (con `finalizar-mundo`) y, quizá, un «mapa del director» en el secreto que cambia la planta de un lugar (la sala que nadie conoce).
 
 ## Entidades por orden de prioridad
 

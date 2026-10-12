@@ -23,10 +23,19 @@ Formato de la sección en la Guía:
 `<bloque ACABADO>`
 ```
 
+## Símbolos de mapa
+Los pasos ocultos y las trampas que la nota conoce se dibujan con símbolos sin letras, iguales en todos los mapas del mundo. Están en la sección `## Símbolos de mapa` de la Guía Visual; si no la tiene, créala la primera vez que hagan falta, con estos, sin preguntar:
+```markdown
+## Símbolos de mapa
+- **Paso oculto:** `a thin dotted line crossing the wall, with no door drawn there` (en la nota: la línea de puntos que atraviesa un muro)
+- **Trampa:** `a small red-ochre triangle outline on the floor` (en la nota: el triángulo)
+```
+El usuario puede cambiarlos: valen desde el mapa siguiente. Si los cambia, ajusta la línea que los explica en las notas que redibujes.
+
 ## La plantilla del prompt
 Se escribe en inglés y se arma con la leyenda y lo que la nota cuenta del lugar. Un prompt por nivel.
 ```
-{APERTURA}. {TÉCNICA_MAPA}, on textured {SOPORTE} with no grid. {AMBIENTACIÓN}, {PALETA}. {FORMA}. Key features and layout, with north at the top: {ZONAS}. {CONEXIONES}. {MARCADORES}. {ACABADO}. No other text anywhere: no title, no labels, no names, no letters, no compass rose, no scale bar, no legend box. No grid, no border or frame, no watermark, no signature. {FORMATO}
+{APERTURA}. {TÉCNICA_MAPA}, on textured {SOPORTE} with no grid. {AMBIENTACIÓN}, {PALETA}. {FORMA}. Key features and layout, with north at the top: {ZONAS}. {CONEXIONES}. {OCULTO}{MARCADORES}. {ACABADO}. No other text anywhere: no title, no labels, no names, no letters, no compass rose, no scale bar, no legend box. No grid, no border or frame, no watermark, no signature. {FORMATO}
 ```
 
 | Campo | Fuente | Ejemplo |
@@ -38,6 +47,7 @@ Se escribe en inglés y se arma con la leyenda y lo que la nota cuenta del lugar
 | FORMA | La forma del conjunto y lo que hay en sus bordes, de su descripción | `The crypt is carved into dark bedrock; the east edge is flooded; the north edge breaks into a natural cave` |
 | ZONAS | Cada zona de la leyenda de este nivel, en orden: `{número} ({orientación}, {lo que es}): {lo que se ve}`. Lo que se ve sale de su línea y de lo que la nota cuenta de ella, concreto y sin nombres propios | `1 (south, entry): worn stone stairs descending from the surface into a pillared antechamber; 2 (center): a vaulted hall with a dry fountain and fallen statues` |
 | CONEXIONES | Las conexiones de la leyenda, con su forma (un pasillo, una escalera, una calle, un camino). Las que llevan a otro nivel se dibujan como una escalera que baja o sube, sin el marcador del otro nivel. En un territorio, solo los caminos que se citan: «the other places have no road» | `Passages: 1 to 2 by a short stair; 2 to 3 and 2 to 5 by narrow corridors; 5 leads down a spiral stair to the lower level` |
+| OCULTO | Solo si la leyenda tiene pasos ocultos o trampas en este nivel: los símbolos de la Guía Visual (`## Símbolos de mapa`) con las zonas donde van | `Hidden passages, each drawn as a thin dotted line crossing the wall, with no door drawn there: between 2 and 6. Traps, each marked with a small red-ochre triangle outline on the floor: in 4. ` |
 | MARCADORES | La regla de los marcadores (abajo), con la lista exacta de números de este nivel | |
 | ACABADO | El bloque ACABADO de la técnica de mapas | `airy, expressive sketchbook watercolor with loose unfinished edges` |
 | FORMATO | Vertical u horizontal, para A4 (abajo) | `Vertical 3:4 portrait format, to be printed on an A4 sheet` |
@@ -53,6 +63,7 @@ Es lo que más falla: Gemini a veces repite o salta números. La regla va siempr
 ```
 Exactly {N} circular map-key markers, one inside each zone listed above: bold hand-drawn black numerals in a solid black circle with an opaque white fill, large enough to read when printed on an A4 sheet, so they stand out clearly against the painted map. Use exactly these numbers, each one exactly once: {lista}. Do not repeat any number, do not skip any number, and add no other markers.
 ```
+Si hay símbolos de pasos ocultos o trampas, añade al final: `The dotted lines and the triangles are not markers and carry no numbers.`
 En una edición nueva o en un nivel, `{lista}` son los números de las zonas que van en esa imagen (por ejemplo `1, 2, 3, 4, 5, 6, 7, 8, 13`): los números son estables y una zona añadida después conserva el suyo.
 
 ### El formato
@@ -70,6 +81,7 @@ Para que el mapa no cambie de dibujo en cada edición, intenta primero **editar 
 Sigue la comprobación de `SKILL.md` (Paso 3c). En un mapa, además:
 - **Marcadores:** lee los números que se ven y compáralos con la lista: los que faltan, los repetidos y los que sobran. Es obligatorio que estén todos, una vez cada uno.
 - **Texto:** ni títulos, ni nombres, ni letras sueltas, ni cuadrícula, ni marco.
+- **Lo oculto:** la línea de puntos entre las zonas con paso oculto y el triángulo en las que tienen trampa; ninguno de más (sobre todo, ninguna puerta dibujada donde va un paso oculto).
 - **Zonas:** lo característico de cada una (el trono, el pozo, las rejas) y su sitio aproximado según su orientación, con el norte arriba.
 - **Estilo:** el de la técnica de mapas, y que case con el concept art del mundo.
 - **Formato:** vertical u horizontal, el pedido.

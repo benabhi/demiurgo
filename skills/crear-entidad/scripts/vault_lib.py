@@ -121,6 +121,10 @@ MAP_ITEM_START_RE = re.compile(r"^(?:-\s+\*\*\d+\.\*\*|\d+\.)")
 MAP_ITEM_EMPTY_RE = re.compile(r"^(?:-\s+\*\*\d+\.\*\*|\d+\.)\s*$")
 MAP_POSITION_RE = re.compile(r"^(?:nivel\s+(\d+)\s*,\s*)?([a-z]+)$")
 CONNECTS_RE = re.compile(r"Conecta con ([\d ,y]+?)\.", re.IGNORECASE)
+# Lo que la nota conoce de lo escondido: un paso oculto (una puerta disimulada, un pasadizo) hacia otras
+# zonas, en los dos sentidos como las conexiones, y una trampa. Lo que nadie conoce es un secreto: no va aquí
+HIDDEN_RE = re.compile(r"Pasos? ocultos? a ([\d ,y]+?)\.", re.IGNORECASE)
+TRAP_RE = re.compile(r"Trampa:\s*(.+?)\.(?=\s|$)")
 
 
 def map_rule(module, props):
@@ -154,13 +158,22 @@ def map_section(body):
     return lines
 
 
+def join_numbers(numbers):
+    """«2», «2 y 5», «1, 3 y 5»."""
+    numbers = [str(n) for n in sorted(set(numbers))]
+    return numbers[0] if len(numbers) == 1 else ", ".join(numbers[:-1]) + " y " + numbers[-1]
+
+
 def format_connections(numbers):
     """«Conecta con 2.», «Conecta con 2 y 5.», «Conecta con 1, 3 y 5.»"""
-    numbers = [str(n) for n in sorted(set(numbers))]
+    return f"Conecta con {join_numbers(numbers)}." if numbers else ""
+
+
+def format_hidden(numbers):
+    """«Paso oculto a 7.», «Pasos ocultos a 7 y 9.»"""
     if not numbers:
         return ""
-    joined = numbers[0] if len(numbers) == 1 else ", ".join(numbers[:-1]) + " y " + numbers[-1]
-    return f"Conecta con {joined}."
+    return f"{'Paso oculto' if len(set(numbers)) == 1 else 'Pasos ocultos'} a {join_numbers(numbers)}."
 
 
 def parse_map_key(body):
@@ -189,11 +202,15 @@ def parse_map_key(body):
                             f"en una mazmorra, con su nivel: «nivel 2, norte»)")
         link = LINK_RE.search(name)
         connects = CONNECTS_RE.search(rest)
+        hidden = HIDDEN_RE.search(rest)
+        trap = TRAP_RE.search(rest)
         zones.append({"numero": int(number), "linea": i, "nombre": strip_links(name).strip(),
                       "enlace": link.group(1).rstrip("\\").strip() if link else None,
                       "nivel": int(place.group(1)) if place and place.group(1) else 1,
                       "orientacion": orientation,
                       "conecta": [int(n) for n in re.findall(r"\d+", connects.group(1))] if connects else [],
+                      "ocultos": [int(n) for n in re.findall(r"\d+", hidden.group(1))] if hidden else [],
+                      "trampa": trap.group(1).strip() if trap else None,
                       "sin_cartografiar": "sin cartografiar" in normalize(rest),
                       "descripcion": rest.strip()})
     return zones, problems
@@ -214,12 +231,14 @@ def map_key_problems(zones):
                           f"último sin saltos; una zona que desaparece se marca, no se borra)")
     known = set(numbers)
     for zone in zones:
-        for other in zone["conecta"]:
-            if other == zone["numero"] or other not in known:
-                errors.append(f"leyenda del mapa: la zona {zone['numero']} conecta con {other}, que no existe")
-            elif not any(z["numero"] == other and zone["numero"] in z["conecta"] for z in zones):
-                warnings.append(f"leyenda del mapa: la zona {zone['numero']} conecta con {other}, pero {other} no "
-                                f"conecta con {zone['numero']} (las conexiones van en los dos sentidos)")
+        for key, what in (("conecta", "conecta con"), ("ocultos", "tiene un paso oculto a")):
+            for other in zone[key]:
+                if other == zone["numero"] or other not in known:
+                    errors.append(f"leyenda del mapa: la zona {zone['numero']} {what} {other}, que no existe")
+                elif not any(z["numero"] == other and zone["numero"] in z[key] for z in zones):
+                    warnings.append(f"leyenda del mapa: la zona {zone['numero']} {what} {other}, pero {other} no lo "
+                                    f"anota hacia {zone['numero']} (los pasos, también los ocultos, van en los dos "
+                                    f"sentidos)")
     for level, count in sorted(zones_per_level(zones).items()):
         if count > MAX_MARKERS:
             where = f"el nivel {level}" if len(zones_per_level(zones)) > 1 else "la leyenda"

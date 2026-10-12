@@ -7,11 +7,13 @@ son estables: solo se añaden al final, nunca se renumeran ni se reutilizan.
 Sin opciones, muestra la leyenda y su estado: si al lugar le toca mapa (por su categoría y su
 relevancia), la edición, las zonas sin cartografiar y si toca dibujar la primera edición o una nueva.
 
-  --add NOMBRE --position ORIENTACIÓN [--level N] --desc TEXTO [--connects 2,5]
+  --add NOMBRE --position ORIENTACIÓN [--level N] --desc TEXTO [--connects 2,5] [--hidden 7] [--trap TEXTO]
       Añade una zona al final de la leyenda. NOMBRE es texto («la plaza de las cenizas») o un enlace
-      («[[Torre_Hendida|La torre hendida]]»). Las conexiones se anotan en las dos zonas. Si el lugar
-      ya tiene mapa, la zona queda «sin cartografiar» hasta la edición siguiente. Si el enlace ya está
-      en la leyenda, no hace nada; si su nivel ya tiene 12 zonas, no la añade y sale con código 3.
+      («[[Torre_Hendida|La torre hendida]]»). Las conexiones y los pasos ocultos se anotan en las dos
+      zonas; la trampa, en la nueva. Solo lo que la nota conoce: lo que nadie conoce es un secreto y no
+      va en la leyenda. Si el lugar ya tiene mapa, la zona queda «sin cartografiar» hasta la edición
+      siguiente. Si el enlace ya está en la leyenda, no hace nada; si su nivel ya tiene 12 zonas, no la
+      añade y sale con código 3.
   --charted
       Tras dibujar una edición: suma una a `mapa_edicion`, pone `mapa_zonas` en el último número y
       quita las marcas «sin cartografiar».
@@ -20,6 +22,7 @@ Ejemplos:  map_key.py Puerto_Gris
            map_key.py Puerto_Gris --json
            map_key.py Puerto_Gris --add "[[Torre_Hendida|La torre hendida]]" --position noreste --desc "Vigía sobre el río." --connects 5
            map_key.py Cripta_Honda --add "las celdas" --position oeste --level 2 --desc "Cuatro celdas con rejas." --connects 9
+           map_key.py Cripta_Honda --add "la capilla" --position norte --desc "Altar tallado." --connects 2 --hidden 5 --trap "una losa que se hunde bajo el altar"
            map_key.py Puerto_Gris --charted"""
 import argparse
 import json
@@ -30,7 +33,8 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP_SECTION, MAX_MARKERS,  # noqa: E402
-                       ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK, first, format_connections,
+                       HIDDEN_RE, ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK, first, format_connections,
+                       format_hidden,
                        int_value, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
                        parse_map_key, resolve_note, zones_per_level)
 
@@ -61,13 +65,13 @@ def section_start(lines, end):
     return next((i for i in range(end + 1, len(lines)) if lines[i].strip() == f"## {MAP_SECTION}"), None)
 
 
-def add_connection(line, number):
-    """La línea de una zona con `number` añadido a sus conexiones."""
-    match = CONNECTS_RE.search(line)
+def add_connection(line, number, pattern=CONNECTS_RE, formatter=format_connections):
+    """La línea de una zona con `number` añadido a sus conexiones (o a sus pasos ocultos)."""
+    match = pattern.search(line)
     if match:
         current = [int(n) for n in re.findall(r"\d+", match.group(1))]
-        return line[:match.start()] + format_connections(current + [number]) + line[match.end():]
-    phrase = format_connections([number])
+        return line[:match.start()] + formatter(current + [number]) + line[match.end():]
+    phrase = formatter([number])
     if UNCHARTED_MARK in line:
         return line.replace(UNCHARTED_MARK, f"{phrase} {UNCHARTED_MARK}")
     return f"{line.rstrip()} {phrase}"
@@ -100,7 +104,9 @@ def show(path, status, zones, problems, as_json):
         extra = " · sin cartografiar" if zone["sin_cartografiar"] else ""
         link = f" → [[{zone['enlace']}]]" if zone["enlace"] else ""
         connects = f" · conecta con {', '.join(map(str, zone['conecta']))}" if zone["conecta"] else ""
-        print(f"  {zone['numero']:>2}. {zone['nombre']}{link} · {where}{connects}{extra}")
+        hidden = f" · paso oculto a {', '.join(map(str, zone['ocultos']))}" if zone["ocultos"] else ""
+        trap = f" · trampa: {zone['trampa']}" if zone["trampa"] else ""
+        print(f"  {zone['numero']:>2}. {zone['nombre']}{link} · {where}{connects}{hidden}{trap}{extra}")
     for problem in problems:
         print(f"  ERROR: {problem}")
 
@@ -120,6 +126,8 @@ def main():
     parser.add_argument("--level", type=int, default=1, help="Nivel de la zona nueva, en una mazmorra (1)")
     parser.add_argument("--desc", default="", help="Una línea que la defina")
     parser.add_argument("--connects", default="", help="Zonas con las que conecta: 2,5")
+    parser.add_argument("--hidden", default="", help="Zonas a las que lleva un paso oculto que la nota conoce: 7")
+    parser.add_argument("--trap", default="", help="La trampa de la zona, si la nota la conoce (una línea)")
     parser.add_argument("--charted", action="store_true", help="Marca la leyenda como cartografiada tras una edición")
     args = parser.parse_args()
 
@@ -187,9 +195,10 @@ def main():
         sys.exit(EXIT_FULL)
     numbers = {zone["numero"] for zone in zones}
     connects = sorted({int(n) for n in re.findall(r"\d+", args.connects)})
-    unknown = [n for n in connects if n not in numbers]
+    hidden = sorted({int(n) for n in re.findall(r"\d+", args.hidden)})
+    unknown = [n for n in connects + hidden if n not in numbers]
     if unknown:
-        sys.exit(f"Error: --connects nombra zonas que no existen: {', '.join(map(str, unknown))}.")
+        sys.exit(f"Error: --connects o --hidden nombran zonas que no existen: {', '.join(map(str, unknown))}.")
     number = max(numbers, default=0) + 1
     description = args.desc.strip()
     if description and description[-1] not in ".!?…":
@@ -198,14 +207,21 @@ def main():
     parts = [f"- **{number}.** **{name}** · {position} — {description or 'Sin describir.'}"]
     if connects:
         parts.append(format_connections(connects))
+    if hidden:
+        parts.append(format_hidden(hidden))
+    if args.trap.strip():
+        trap = args.trap.strip().rstrip(".")
+        parts.append(f"Trampa: {trap}.")
     if int_value(first(props.get("mapa_edicion"))):
         parts.append(UNCHARTED_MARK)
     new_line = " ".join(parts)
 
     for zone in zones:
+        row = offset + zone["linea"]
         if zone["numero"] in connects:
-            row = offset + zone["linea"]
             lines[row] = add_connection(lines[row], number)
+        if zone["numero"] in hidden:
+            lines[row] = add_connection(lines[row], number, HIDDEN_RE, format_hidden)
     # Va tras la última zona de su nivel (con varios niveles, cada uno lleva su mapa y debajo sus zonas); en un
     # nivel nuevo, al final y con su título; en una leyenda vacía, en lugar del «1.» de la plantilla
     same_level = [zone for zone in zones if zone["nivel"] == args.level]

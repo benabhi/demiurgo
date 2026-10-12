@@ -27,6 +27,13 @@ Es una viñeta con el número en negrita, no una lista numerada: Obsidian renume
 - **Orientación:** una de nueve: noroeste, norte, noreste, oeste, centro, este, suroeste, sur, sureste. En un lugar de varios niveles (los pisos de una torre o un edificio, los niveles de una mazmorra), con su nivel: `nivel 2, norte`. El nivel 1 es el de la entrada; los demás siguen el orden en que se recorren, hacia arriba o hacia abajo, y la conexión lo dice («una escalera que baja al nivel 2»). Tiene que cuadrar con lo que cuenta la nota («al norte del puerto»).
 - **Una línea:** qué es y **lo que se ve** de ella, porque es lo que se dibuja: «sala del trono con un trono de piedra, charcos y relieves en los muros».
 - **Conecta con:** las zonas a las que se pasa directamente (un pasillo, una calle, un camino, una escalera entre niveles). Las conexiones son físicas: van en las dos zonas. Solo las que la nota sostiene; no todo tiene que estar conectado.
+- **Lo escondido que se conoce,** si lo hay, al final de la línea:
+  - `Paso oculto a 7.` (o `Pasos ocultos a 7 y 9.`): una puerta disimulada, un pasadizo, una trampilla hacia esa zona. Va en las dos zonas, como las conexiones.
+  - `Trampa: <una línea>.` (una losa que se hunde y suelta la reja de la escalera): una por zona como mucho.
+
+  En el dibujo, el paso oculto es una línea de puntos que atraviesa el muro, y la trampa, un pequeño triángulo (los símbolos de la Guía Visual).
+
+**Lo que se sabe frente a lo que es:** la leyenda y el mapa están en la nota, que cuenta lo que se sabe. Solo llevan los pasos ocultos y las trampas que la nota conoce (sus Accesos y sus Peligros: alguien los usa, alguien los sufrió). Un paso del que se habla pero nadie sabe dónde está va en el texto, no en la leyenda. Lo que nadie conoce es un **secreto**: va en `80_Secretos` y nunca en la leyenda ni en el mapa.
 
 ## Reglas
 - **Los números son estables:** las zonas nuevas van al final; nunca se renumera ni se reutiliza un número. Una zona que desaparece se queda, con lo que le pasó en su línea («derruida en el incendio»). Así, «la zona 7» significa lo mismo en todas las ediciones.
@@ -53,6 +60,8 @@ Los modelos repiten patrones: sin azar, todas las mazmorras tendrían la misma p
 - **paraje:** `Paraje: partes` con `--count <zonas>`;
 - **territorio:** `Territorio: dónde vive la gente` y `Territorio: caminos`, y `Territorio: accidentes` con `--count <3 a 5>`.
 
+**Lo oculto:** tira `Interior: lo oculto`. Por cada trampa, tira juntas sus cuatro tablas: `Trampa: mecanismo`, `Trampa: disparador`, `Trampa: efecto` y `Trampa: quién la puso y para qué`. Por cada paso oculto, `Paso oculto: forma` y `Paso oculto: quién lo conoce`. Son categorías, no trampas hechas: combínalas en una sola, concreta, que encaje con el lugar y con su historia. Quién la puso y para qué es lo que la hace única. Nunca repitas una trampa en un mismo lugar, ni copies la de otro: cada una sale de su propia tirada.
+
 Las tiradas son una **semilla, no una orden**:
 - Manda lo que cuenta la nota y lo que pidió el usuario: si la nota dice que la cripta tiene cinco cámaras, el tamaño no la cambia. La entrada es siempre la zona 1 y la sala principal la pone el concepto; las tiradas varían el resto.
 - El tamaño se ajusta a la relevancia: con relevancia 2, como mucho mediano.
@@ -62,6 +71,7 @@ Las tiradas son una **semilla, no una orden**:
 ## La imagen
 La dibuja `generar-imagen` en modo mapa (ver su `referencias/mapas.md`), después del concept art. Una edición nueva toca cuando hay 3 zonas sin cartografiar o más, o un cuarto de las cartografiadas. Además de la leyenda, la sección `## Mapa` lleva:
 - una línea con la edición, al principio: `*Edición 2 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 12/12 marcadores, sin repetidos*`;
+- si la leyenda tiene pasos ocultos o trampas, debajo, la línea que explica sus símbolos (los de la Guía Visual): `*En el mapa, la línea de puntos que atraviesa un muro es un paso oculto, y el triángulo, una trampa.*`;
 - el mapa embebido (`![[Mapa_<Nota>.jpg|600]]`) encima de sus zonas. Con varios niveles, cada nivel lleva su título (`**Nivel 2**`), su mapa y debajo sus zonas; `map_key.py --add` pone cada zona nueva con las de su nivel.
 
 En el frontmatter, `mapa` lista sus imágenes (una por nivel), `mapa_edicion` es la edición y `mapa_zonas` el último número cartografiado. Los actualiza `map_key.py <Nota> --charted` al terminar cada edición.

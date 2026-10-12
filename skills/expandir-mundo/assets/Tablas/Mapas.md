@@ -116,6 +116,96 @@ Cada clase de mapa usa las suyas: las de **Interior** (edificios, ruinas, mazmor
 | 1 | Ocupado por quien no lo construyó |
 | 1 | A medio construir o a medio reformar |
 
+## Interior: lo oculto
+| Peso | Resultado |
+|---|---|
+| 3 | Nada oculto que se conozca |
+| 2 | Un paso oculto |
+| 2 | Una trampa |
+| 1 | Un paso oculto y una trampa |
+| 1 | Varias trampas: el lugar se hizo para defenderse |
+| 1 | Un paso oculto del que se habla, pero nadie sabe dónde está (va en el texto, no en el mapa) |
+
+## Trampa: mecanismo
+| Peso | Resultado |
+|---|---|
+| 2 | Un suelo que cede sobre un foso o una sima |
+| 2 | Algo que cae: una losa, una reja, escombros |
+| 2 | Algo que encierra: una jaula, una red, una puerta que se cierra sola |
+| 1 | Pinchos, cuchillas o agujas que salen de los muros o del suelo |
+| 1 | Algo que dispara: dardos, virotes, un resorte |
+| 1 | Gas, humo, polvo o esporas |
+| 1 | Agua que sube y anega la sala |
+| 1 | Fuego, aceite o brasas |
+| 1 | Un derrumbe provocado |
+| 1 | Algo que separa: un muro que baja, un suelo que gira, una escalera que se vuelve rampa |
+| 1 | Una alarma que avisa a quien vive allí |
+| 1 | Un engaño: un pasillo falso, una puerta pintada, un señuelo |
+| 1 | La fuerza extraordinaria del mundo (un sello, un glifo, un don), si el mundo la tiene |
+| 1 | Un peligro natural aprovechado: un nido, un hielo fino, una corriente |
+
+## Trampa: disparador
+| Peso | Resultado |
+|---|---|
+| 2 | Una losa que se pisa |
+| 2 | Abrir algo: una puerta, una tapa, un cajón |
+| 1 | Un hilo tendido |
+| 1 | Llevarse algo: quitar el peso de un pedestal, sacar un objeto de su sitio |
+| 1 | La luz: una antorcha, una contraventana que se abre |
+| 1 | El ruido o la voz |
+| 1 | Tocar lo que no se debe: una palanca equivocada, un pomo, una inscripción |
+| 1 | Pasar sin la señal, la llave o la palabra |
+| 1 | El tiempo: se activa a una hora, con la marea o con la estación |
+| 1 | Alguien que vigila y la acciona a mano |
+
+## Trampa: efecto
+| Peso | Resultado |
+|---|---|
+| 2 | Herir o matar |
+| 2 | Atrapar o encerrar |
+| 1 | Separar a los que entran |
+| 1 | Cerrar el camino de vuelta |
+| 1 | Avisar a quien vive allí |
+| 1 | Desgastar: agotar, enfermar, apagar las luces |
+| 1 | Marcar a quien la dispara: un tinte, un olor, una señal que se ve después |
+| 1 | Asustar: más ruido que daño, para que nadie siga |
+
+## Trampa: quién la puso y para qué
+| Peso | Resultado |
+|---|---|
+| 2 | Quienes lo construyeron, para proteger lo que guardaban |
+| 2 | Quien ocupa ahora el lugar, contra los intrusos |
+| 1 | Un cazador, para sus presas |
+| 1 | Un saqueador anterior, para que nadie le siguiera |
+| 1 | Una fe, como prueba o como castigo |
+| 1 | Nadie: es el propio lugar, que se ha vuelto peligroso |
+| 1 | Alguien que quería que lo encontraran, pero solo quien supiera cómo |
+| 1 | Nadie lo recuerda: es tan vieja como el lugar |
+
+## Paso oculto: forma
+| Peso | Resultado |
+|---|---|
+| 2 | Una puerta disimulada en el muro |
+| 2 | Una losa o una trampilla en el suelo |
+| 2 | Un pasadizo tras un mueble, un tapiz o una estatua |
+| 1 | Una grieta que parece no llevar a ningún sitio |
+| 1 | Un conducto: de agua, de humo o de aire |
+| 1 | Una escalera estrecha dentro de un muro |
+| 1 | Un paso bajo el agua |
+| 1 | Una chimenea o un pozo |
+| 1 | Un mecanismo que gira un muro, un altar o una chimenea |
+| 1 | Un hueco tapiado que se abre a golpes |
+
+## Paso oculto: quién lo conoce
+| Peso | Resultado |
+|---|---|
+| 2 | Los que lo usan a escondidas: contrabandistas, criados, fieles |
+| 2 | Quien manda en el lugar, y pocos más |
+| 1 | Los que lo construyeron, si queda alguno |
+| 1 | Se descubrió hace poco y ya corre la voz |
+| 1 | Lo conoce una sola persona |
+| 1 | Se ve, pero nadie sabe adónde lleva |
+
 ## Urbano: forma
 | Peso | Resultado |
 |---|---|
