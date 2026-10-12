@@ -70,18 +70,186 @@ def template_sections(template_body):
     return sections
 
 
-def omitted_sections(module, template_body, relevance):
+def omitted_sections(module, template_body, relevance, props=None):
     """Títulos de las secciones que una nota con esa relevancia no necesita: las que la `profundidad`
-    del módulo reserva para una relevancia mayor, con sus subsecciones. El resto es el núcleo."""
+    del módulo reserva para una relevancia mayor, con sus subsecciones. El resto es el núcleo.
+    La sección Mapa solo la necesita una nota a la que le toca mapa (por su categoría y su relevancia,
+    según la regla `mapa` del módulo); sin las propiedades de la nota, cuenta como no necesaria."""
     depth = module.get("profundidad", {})
+    needs_map = bool(map_applies(module, props, relevance)) if props is not None else False
     omitted, parent_omitted = [], False
     for level, title in template_sections(template_body):
         own = depth.get(title, 1) > relevance
+        if title == MAP_SECTION and module.get("mapa"):
+            own = not needs_map
         if level == 2:
             parent_omitted = own
         if own or (level == 3 and parent_omitted):
             omitted.append(title)
     return omitted
+
+
+# --- Mapas ---------------------------------------------------------------------
+# El mapa de un lugar es la leyenda numerada de su sección Mapa; la imagen es una edición de esa
+# leyenda. Los números son estables: solo se añaden al final, nunca se renumeran ni se reutilizan.
+
+MAP_SECTION = "Mapa"
+# Marcadores que un generador de imágenes dibuja bien en un mismo mapa
+MAX_MARKERS = 12
+MAP_CLASSES = ("interior", "urbano", "paraje", "territorio")
+ORIENTATIONS = ("noroeste", "norte", "noreste", "oeste", "centro", "este", "suroeste", "sur", "sureste")
+ORIENTATION_SYNONYMS = {"sudoeste": "suroeste", "sudeste": "sureste"}
+UNCHARTED_MARK = "*Sin cartografiar.*"
+# Edición nueva con tantas zonas sin cartografiar, o con un cuarto de las cartografiadas
+NEW_EDITION_ZONES = 3
+MAP_ITEM_RE = re.compile(r"^(\d+)\.\s+\*\*(.+?)\*\*\s+·\s+(.+?)\s+[—–-]\s+(.*)$")
+MAP_POSITION_RE = re.compile(r"^(?:nivel\s+(\d+)\s*,\s*)?([a-z]+)$")
+CONNECTS_RE = re.compile(r"Conecta con ([\d ,y]+?)\.", re.IGNORECASE)
+
+
+def map_rule(module, props):
+    """La regla de `mapa` del módulo que corresponde a una nota por su categoría, o None."""
+    category = first((props or {}).get("categoria"))
+    for rule in module.get("mapa", []):
+        if "categoria" not in rule or category in rule["categoria"]:
+            return rule
+    return None
+
+
+def map_applies(module, props, relevance):
+    """La regla de mapa si a la nota le toca leyenda por su categoría y su relevancia, o None."""
+    rule = map_rule(module, props)
+    return rule if rule and relevance is not None and relevance >= rule["desde"] else None
+
+
+def map_section(body):
+    """Líneas de la sección `## Mapa` (sin el título), o None si la nota no la tiene."""
+    lines, inside = None, False
+    for line in body:
+        if line.startswith("## "):
+            if inside:
+                break
+            inside = line[3:].strip() == MAP_SECTION
+            if inside:
+                lines = []
+            continue
+        if inside:
+            lines.append(line)
+    return lines
+
+
+def format_connections(numbers):
+    """«Conecta con 2.», «Conecta con 2 y 5.», «Conecta con 1, 3 y 5.»"""
+    numbers = [str(n) for n in sorted(set(numbers))]
+    if not numbers:
+        return ""
+    joined = numbers[0] if len(numbers) == 1 else ", ".join(numbers[:-1]) + " y " + numbers[-1]
+    return f"Conecta con {joined}."
+
+
+def parse_map_key(body):
+    """(zonas, problemas) de la leyenda de la sección Mapa; zonas es None si la nota no la tiene.
+    Cada zona: numero, linea (índice dentro de la sección), nombre (legible), enlace (destino o None),
+    nivel, orientacion, conecta (números), sin_cartografiar y descripcion."""
+    lines = map_section(body)
+    if lines is None:
+        return None, []
+    zones, problems = [], []
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if not re.match(r"^\d+\.", stripped) or re.match(r"^\d+\.\s*$", stripped):
+            continue
+        match = MAP_ITEM_RE.match(stripped)
+        if not match:
+            problems.append(f"zona de la leyenda con formato no válido: «{stripped}» (debe ser "
+                            f"`N. **Nombre** · orientación — descripción.`)")
+            continue
+        number, name, position, rest = match.groups()
+        place = MAP_POSITION_RE.match(normalize(position))
+        orientation = ORIENTATION_SYNONYMS.get(place.group(2), place.group(2)) if place else ""
+        if orientation not in ORIENTATIONS:
+            problems.append(f"zona {number}: orientación no válida «{position}» (una de: {', '.join(ORIENTATIONS)}; "
+                            f"en una mazmorra, con su nivel: «nivel 2, norte»)")
+        link = LINK_RE.search(name)
+        connects = CONNECTS_RE.search(rest)
+        zones.append({"numero": int(number), "linea": i, "nombre": strip_links(name).strip(),
+                      "enlace": link.group(1).rstrip("\\").strip() if link else None,
+                      "nivel": int(place.group(1)) if place and place.group(1) else 1,
+                      "orientacion": orientation,
+                      "conecta": [int(n) for n in re.findall(r"\d+", connects.group(1))] if connects else [],
+                      "sin_cartografiar": "sin cartografiar" in normalize(rest),
+                      "descripcion": rest.strip()})
+    return zones, problems
+
+
+def map_key_problems(zones):
+    """(errores, avisos) de una leyenda: números del 1 al N sin repetir ni saltar, conexiones con
+    zonas que existen (y en los dos sentidos) y como mucho MAX_MARKERS zonas por nivel."""
+    errors, warnings = [], []
+    numbers = [z["numero"] for z in zones]
+    repeated = sorted({n for n in numbers if numbers.count(n) > 1})
+    if repeated:
+        errors.append(f"leyenda del mapa: números repetidos: {', '.join(map(str, repeated))}")
+    if numbers:
+        missing = sorted(set(range(1, max(numbers) + 1)) - set(numbers))
+        if missing:
+            errors.append(f"leyenda del mapa: faltan los números {', '.join(map(str, missing))} (van del 1 al "
+                          f"último sin saltos; una zona que desaparece se marca, no se borra)")
+    known = set(numbers)
+    for zone in zones:
+        for other in zone["conecta"]:
+            if other == zone["numero"] or other not in known:
+                errors.append(f"leyenda del mapa: la zona {zone['numero']} conecta con {other}, que no existe")
+            elif not any(z["numero"] == other and zone["numero"] in z["conecta"] for z in zones):
+                warnings.append(f"leyenda del mapa: la zona {zone['numero']} conecta con {other}, pero {other} no "
+                                f"conecta con {zone['numero']} (las conexiones van en los dos sentidos)")
+    for level, count in sorted(zones_per_level(zones).items()):
+        if count > MAX_MARKERS:
+            where = f"el nivel {level}" if len(zones_per_level(zones)) > 1 else "la leyenda"
+            warnings.append(f"{where} tiene {count} zonas y un mapa admite {MAX_MARKERS}: divídela en niveles, o "
+                            f"agrupa lugares en una zona con mapa propio (un barrio, una subregión)")
+    return errors, warnings
+
+
+def zones_per_level(zones):
+    """{nivel: cuántas zonas tiene}."""
+    counts = {}
+    for zone in zones:
+        counts[zone["nivel"]] = counts.get(zone["nivel"], 0) + 1
+    return counts
+
+
+def map_status(module, props, zones, relevance):
+    """Estado del mapa de una nota: si le toca leyenda, su clase, la edición, cuántas zonas hay y cuántas
+    faltan por cartografiar, y si toca dibujar (`toca`: "primera", "nueva" o None, con su razón y
+    los niveles que hay que dibujar)."""
+    rule = map_applies(module, props, relevance)
+    zones = zones or []
+    edition = int_value(first(props.get("mapa_edicion"))) or 0
+    charted = int_value(first(props.get("mapa_zonas"))) or 0
+    uncharted = [z for z in zones if z["numero"] > charted] if edition else list(zones)
+    status = {"aplica": bool(rule), "clase": rule["clase"] if rule else None,
+              "desde": rule["desde"] if rule else None, "edicion": edition, "zonas": len(zones),
+              "cartografiadas": len(zones) - len(uncharted) if edition else 0,
+              "sin_cartografiar": len(uncharted) if edition else 0, "toca": None, "niveles": [], "razon": ""}
+    if not rule:
+        return status
+    per_level = zones_per_level(zones)
+    minimum = rule.get("zonas_minimas", 1)
+    if any(count > MAX_MARKERS for count in per_level.values()):
+        status["razon"] = f"un nivel pasa de {MAX_MARKERS} zonas: hay que dividir la leyenda antes de dibujarla"
+    elif not edition:
+        if len(zones) >= minimum:
+            status.update(toca="primera", niveles=sorted(per_level), razon="aún no tiene mapa")
+        else:
+            status["razon"] = f"tiene {len(zones)} zona(s); el mapa se dibuja desde {minimum}"
+    elif uncharted and (len(uncharted) >= NEW_EDITION_ZONES or 4 * len(uncharted) >= max(charted, 1)):
+        status.update(toca="nueva", niveles=sorted({z["nivel"] for z in uncharted}),
+                      razon=f"{len(uncharted)} zona(s) sin cartografiar")
+    elif uncharted:
+        status["razon"] = (f"{len(uncharted)} zona(s) sin cartografiar; la edición nueva toca con "
+                           f"{NEW_EDITION_ZONES} o con un cuarto de las cartografiadas")
+    return status
 
 
 def date_keys(module):

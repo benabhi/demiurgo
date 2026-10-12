@@ -33,6 +33,10 @@
     "Personajes notables": 2,
     "Vida cotidiana": 3
   },
+  "mapa": [
+    {"clase": "urbano", "categoria": ["metropoli", "ciudad", "villa"], "desde": 3},
+    {"clase": "urbano", "categoria": ["aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "otro"], "desde": 4}
+  ],
   "carpeta": {
     "fija": "10_Mundo/Ciudades_y_Asentamientos"
   },

@@ -29,6 +29,11 @@
     "Tesoros y recursos": 2,
     "Accesos": 2
   },
+  "mapa": [
+    {"clase": "interior", "categoria": ["ruina", "mazmorra", "cueva", "pecio", "fortaleza", "templo", "torre", "zona_peligrosa"], "desde": 2},
+    {"clase": "interior", "categoria": ["edificio", "posada", "mercado", "puerto", "taller", "residencia"], "desde": 3},
+    {"clase": "paraje", "categoria": ["isla", "bosque", "montana", "desierto", "agua", "paraje"], "desde": 4}
+  ],
   "carpeta": {
     "propiedad": "categoria",
     "valores": {

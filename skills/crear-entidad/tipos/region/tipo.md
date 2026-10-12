@@ -7,7 +7,7 @@ Las grandes extensiones del mundo: continentes, penínsulas, archipiélagos, des
 - **Emoji propio:** cada región tiene uno en la propiedad `emoji`, según su carácter (🏔️ montañosa, 🏜️ desértica, 🌊 costera, 🌫️ brumosa…).
 - **Familia:** `lugar`. Los enlaces pendientes de tipo "lugar" de otras fichas (por ejemplo, la `region` de un personaje) se crean con este módulo cuando el contexto es una gran extensión.
 - **Plantilla:** `plantilla.md`, que se instala como `Plantilla_Region.md`.
-- **Módulo:** `modulo.json` (familia, emoji, rango de enlaces pendientes, carpeta según la categoría y relaciones).
+- **Módulo:** `modulo.json` (familia, emoji, rango de enlaces pendientes, carpeta según la categoría, mapa y relaciones).
 
 ## Categoría y carpeta
 La propiedad `categoria` decide la carpeta (`check_note.py` la valida):
@@ -45,6 +45,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
   - qué creen;
   - cómo conviven y dónde están las tensiones.
 - **Asentamientos y lugares notables:** de 3 a 6 entradas, cada una con su enlace y una línea que la defina. La capital o el centro, primero.
+- **Mapa** (regiones físicas y políticas desde relevancia 4): la leyenda numerada del territorio: la capital, los asentamientos y lugares notables y los accidentes con nombre de su geografía, hasta 12, con su orientación, lo que se ve y sus conexiones (solo los caminos que cuenta la nota). La imagen espera a que haya 5 zonas. Si se sabe, la línea dice a cuántas jornadas queda de otra zona. Ver `referencias/mapas.md`.
 - **Poder y fronteras:** quién manda (una facción, un gobierno, nadie), con qué vecinos limita y qué se disputa.
 - **Rutas y viajes:**
   - las rutas principales;

@@ -18,6 +18,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **Añadir** al Glosario y a Preguntas Abiertas sin leerlos: `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>`, `--question <texto>` y `--confirm <texto>`.
 - **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
+- **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, y `--add` le añade una zona (ver `referencias/mapas.md`).
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
 
 Lee entera solo la nota que vas a escribir; de las demás, solo lo que el contexto no resuma bien. De una nota larga, lee solo la sección que necesites: búscala con `grep -n "^## <Sección>" <nota>` y lee ese tramo de líneas.
@@ -32,6 +33,7 @@ Cada carpeta de `tipos/` es un módulo con tres archivos:
   - `emoji`;
   - `huecos_propios`: cuántos enlaces pendientes nuevos puede abrir cada nota (los que solo nombra ella) con relevancia 4 o 5; con menos relevancia, el rango se reduce (ver «Profundidad»);
   - `profundidad`: la relevancia mínima desde la que va cada sección que no es del núcleo (`"Citas": 3`); las que no figuran van siempre;
+  - `mapa` (opcional, en los lugares): qué categorías llevan mapa, de qué clase (`interior`, `urbano`, `paraje` o `territorio`), desde qué relevancia y, si hace falta, con cuántas zonas como mínimo para dibujarlo (`zonas_minimas`). Ver `referencias/mapas.md`;
   - `carpeta` (fija, o según una propiedad como el rol o la categoría);
   - `crear_desde_cero` (opcional): `false` si el motor no debe inventar entidades de ese tipo, solo crear las que ya nombra el canon (las especies, por ejemplo);
   - `escalas` y `valores` (opcionales): propiedades numéricas con su rango (`peligrosidad` del 1 al 5) y propiedades con valores permitidos (`naturaleza`, `situacion_vital`), que valida `check_note.py`;
@@ -222,7 +224,7 @@ Si la skill se ejecuta dentro de `expandir-mundo`, sáltate la instantánea y es
 - No borres ni sobrescribas notas. En las existentes solo añades vínculos inversos y anclajes, o reemplazas un enlace pendiente con nombre de rol por el definitivo.
 - Toda decisión al azar que pida un módulo se tira con `scripts/roll_dice.py` (por ejemplo, `roll_dice.py 1d4`). Nunca inventes el resultado de una tirada.
 - Para añadir un tipo nuevo:
-  - crea `tipos/<tipo>/` con `tipo.md`, `plantilla.md` y `modulo.json` (`tipo`, `familia`, `completa` si es de una familia, `emoji`, `huecos_propios`, `profundidad`, `carpeta`, `fechas`, `crear_desde_cero`, `escalas`, `valores` y `solo_si` si los tiene, `reciprocas` y `relaciones`);
+  - crea `tipos/<tipo>/` con `tipo.md`, `plantilla.md` y `modulo.json` (`tipo`, `familia`, `completa` si es de una familia, `emoji`, `huecos_propios`, `profundidad`, `mapa` si es un lugar con mapa, `carpeta`, `fechas`, `crear_desde_cero`, `escalas`, `valores` y `solo_si` si los tiene, `reciprocas` y `relaciones`);
   - añade su imagen en `generar-imagen/referencias/prompt.md`;
   - si se relaciona con una familia (`lugar`, por ejemplo) con una propiedad nueva, añádela al `completa` de los módulos de esa familia que puedan completarla;
   - ejecuta `python <directorio de esta skill>/scripts/check_modules.py`: revisa que la plantilla tenga todo lo que nombra el módulo y que cada relación y cada recíproca encajen con los demás módulos.

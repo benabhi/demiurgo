@@ -25,6 +25,9 @@ fenomenos: []
 clima: ""
 poblacion: ""
 imagen: ""
+mapa: []
+mapa_edicion: ""
+mapa_zonas: ""
 era: ""
 fuentes: []
 ---
@@ -74,6 +77,9 @@ fuentes: []
 
 ## Asentamientos y lugares notables
 -
+
+## Mapa
+1.
 
 ## Poder y fronteras
 - **Quién la controla:**

@@ -92,7 +92,7 @@ def deepen_candidates(vault, index, modules):
         template = templates[entry["tipo"]]
         _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
         present = {line.strip() for line in body}
-        skipped = set(omitted_sections(module, template, target))
+        skipped = set(omitted_sections(module, template, target, entry["props"]))
         missing = [title for level, title in template_sections(template)
                    if title not in skipped and f"{'#' * level} {title}" not in present]
         if not missing:

@@ -109,6 +109,40 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
 - [ ] **Más tablas y paquetes,** a medida que lleguen los módulos.
 - [ ] **Tablas propias de cada mundo** en su `06_Generacion/Tablas`, propuestas a partir de su Ficha.
 
+## Mapas
+Además del concept art (que sigue siendo obligatorio y la primera imagen de la nota), los lugares que lo merecen tienen mapa. **El mapa no es la imagen: es la leyenda numerada de la nota.** La imagen es una *edición* de esa leyenda; el mundo crece en la leyenda y el dibujo se rehace cuando ha cambiado bastante.
+
+- **Qué lleva mapa** (`mapa` en `modulo.json`: clase, categorías y relevancia mínima):
+
+  | Entidad | Mapa | Desde |
+  |---|---|---|
+  | lugar: ruina, mazmorra, cueva, pecio, fortaleza, templo, torre, zona peligrosa | plano de interior, por niveles | relevancia 2 |
+  | lugar: edificio, posada, mercado, puerto, taller, residencia | plano de interior | relevancia 3 |
+  | lugar: isla, bosque, montaña, desierto, agua, paraje | mapa de paraje | relevancia 4 |
+  | asentamiento: metrópoli, ciudad, villa | plano urbano | relevancia 3 |
+  | asentamiento: aldea, caserío, campamento, refugio, colonia, estación, otro | plano urbano | relevancia 4 |
+  | región | mapa de territorio | relevancia 4, y la imagen cuando hay al menos 5 zonas que situar |
+  | el mundo | mapa del mundo | a pedido y en `finalizar-mundo` |
+  | ruta (#21) | mapa de itinerario, en tira | se define con el módulo |
+
+- **La leyenda** (sección `## Mapa`): `N. **Nombre** · <orientación> — una línea. Conecta con 2 y 5.`
+  - Números estables: solo se añaden al final; nunca se renumeran ni se reutilizan (una zona destruida queda marcada).
+  - Lo que es una entidad va enlazado (a su nota o como enlace pendiente); lo demás, como texto.
+  - Orientación: una de 9 (noroeste, norte, noreste, oeste, centro, este, suroeste, sur, sureste); en una mazmorra, con su nivel (`nivel 2, norte`). Las conexiones son físicas y van en los dos sentidos.
+  - Como mucho 12 marcadores por mapa: una mazmorra mayor va por niveles (numeración continua); el detalle de un barrio va en el mapa del barrio, cuando sea un lugar propio.
+  - Solo indexa lo que la nota cuenta (en una mazmorra, las salas menores son detalles inventados).
+- **Cómo crece:** cada mapa muestra solo su nivel directo (la región, sus asentamientos y lugares; la ciudad, sus barrios y lugares notables; la mazmorra, sus salas), así que un lugar nuevo afecta como mucho al mapa de donde está. Al crearlo, `map_key.py --add` lo añade a la leyenda de ese lugar, «sin cartografiar». Edición nueva con 3 zonas sin cartografiar o más, o con un cuarto de las cartografiadas: la acción `cartografiar` del motor o el usuario. Primero se intenta editar la edición anterior en Gemini; si no sale, se redibuja desde la leyenda. Las ediciones anteriores se conservan.
+- **Caminos:** dentro de un mapa, las conexiones de la leyenda; entre lugares, solo los que la nota cuenta («Rutas y viajes»; con `ruta`, sus notas). No todo tiene que estar conectado.
+- **Estilo:** la Guía Visual del mundo, con una técnica de mapas fija (la general si es sobre papel; si no, se elige una vez entre las de papel). Marcadores: círculo negro con fondo blanco, exactamente los números de la leyenda, una vez cada uno, y ningún otro texto. Formato A4: vertical 3:4 u horizontal 4:3, según la forma del lugar.
+- **Comprobación de cada imagen:** la IA la mira (en un mapa, cuenta los marcadores y busca repetidos y faltantes, el texto de más y lo característico de cada zona); si falla, pide la corrección en el mismo chat, hasta dos veces, y anota lo que quede mal.
+
+Etapas:
+- [ ] 1. Datos: regla `mapa`, sección `## Mapa`, validación en `check_note` y `check_modules`, `map_key.py`.
+- [ ] 2. `generar-imagen`: modo mapa (técnica de mapas, plantillas, A4) y comprobación con corrección (también del concept art).
+- [ ] 3. `crear-entidad`: la leyenda al crear, el mapa tras el concept art y la entrada en la leyenda del lugar donde está.
+- [ ] 4. Motor: acción `cartografiar`.
+- [ ] 5. Más adelante: las rutas (con el módulo #21) y el mapa del mundo (con `finalizar-mundo`).
+
 ## Entidades por orden de prioridad
 
 ### Fase 1 — Lugares base
@@ -250,7 +284,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - `narrar`: relatos, escenas o crónicas ambientados en el mundo, coherentes con el canon;
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;
   - `exportar-mundo`: un compendio del mundo (PDF, web o wiki);
-  - cronologías, genealogías y mapas generados a partir de eventos, linajes, personajes, regiones y rutas.
+  - cronologías y genealogías generadas a partir de eventos, linajes y personajes.
 
 ## Al cerrar el proyecto
 - [x] Repositorio propio (`skills-world-building`) y primer README.

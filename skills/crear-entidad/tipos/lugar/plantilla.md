@@ -25,6 +25,9 @@ fenomenos: []
 eventos: []
 era: ""
 imagen: ""
+mapa: []
+mapa_edicion: ""
+mapa_zonas: ""
 fuentes: []
 ---
 
@@ -52,6 +55,9 @@ fuentes: []
 | Zona | Cómo es | Qué hay |
 |---|---|---|
 | | | |
+
+## Mapa
+1.
 
 ## Actividad
 - **Un día cualquiera:**

@@ -27,6 +27,9 @@ creencias: []
 fenomenos: []
 era: ""
 imagen: ""
+mapa: []
+mapa_edicion: ""
+mapa_zonas: ""
 fuentes: []
 ---
 
@@ -78,6 +81,9 @@ fuentes: []
 
 ## Lugares notables
 -
+
+## Mapa
+1.
 
 ## Personajes notables
 -

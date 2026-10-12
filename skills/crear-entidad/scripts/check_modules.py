@@ -9,6 +9,9 @@ Comprueba en cada módulo:
     del tipo;
   - que las condiciones de `solo_si` usen valores permitidos;
   - que cada sección de `profundidad` exista en la plantilla, con una relevancia mínima del 2 al 5;
+  - que cada regla de `mapa` tenga una clase conocida, categorías que el módulo admite y una relevancia
+    mínima del 1 al 5, y que la plantilla tenga la sección Mapa y las propiedades `mapa`,
+    `mapa_edicion` y `mapa_zonas`;
   - que las recíprocas sean relaciones del módulo y que la regla de tiempo use valores permitidos
     y una sección que exista.
 Y entre módulos:
@@ -26,8 +29,8 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (SKILL_DIR, candidate_modules, first, parse_frontmatter, split_note,  # noqa: E402
-                       template_sections)
+from vault_lib import (MAP_CLASSES, MAP_SECTION, SKILL_DIR, candidate_modules, first,  # noqa: E402
+                       parse_frontmatter, split_note, template_sections)
 
 
 def template_of(tipo):
@@ -85,6 +88,29 @@ def main():
                 errors.append(f"{where}: `profundidad` nombra la sección «{title}», que no está en la plantilla")
             if not isinstance(minimum, int) or not 2 <= minimum <= 5:
                 errors.append(f"{where}: `profundidad` de «{title}» debe ser un número del 2 al 5 (encontrado: {minimum})")
+        # `mapa`: qué lugares llevan mapa (clase, categorías y relevancia mínima)
+        rules = module.get("mapa", [])
+        if rules:
+            categories = set(module.get("valores", {}).get("categoria", [])) | set(
+                module.get("carpeta", {}).get("valores", {}) if module.get("carpeta", {}).get("propiedad") == "categoria"
+                else [])
+            for rule in rules:
+                if rule.get("clase") not in MAP_CLASSES:
+                    errors.append(f"{where}: `mapa` con una clase desconocida «{rule.get('clase')}» "
+                                  f"(una de: {', '.join(MAP_CLASSES)})")
+                if not isinstance(rule.get("desde"), int) or not 1 <= rule["desde"] <= 5:
+                    errors.append(f"{where}: `mapa` necesita `desde`, una relevancia del 1 al 5")
+                for category in rule.get("categoria", []):
+                    if category not in categories:
+                        errors.append(f"{where}: `mapa` nombra la categoría «{category}», que el módulo no admite")
+                minimum = rule.get("zonas_minimas", 1)
+                if not isinstance(minimum, int) or minimum < 1:
+                    errors.append(f"{where}: `zonas_minimas` de `mapa` debe ser un número desde 1")
+            if MAP_SECTION not in titles:
+                errors.append(f"{where}: tiene `mapa` pero a la plantilla le falta la sección «{MAP_SECTION}»")
+            for key in ("mapa", "mapa_edicion", "mapa_zonas"):
+                if key not in props:
+                    errors.append(f"{where}: tiene `mapa` pero a la plantilla le falta la propiedad `{key}`")
         heading = next((line for line in body if line.startswith("# ")), "")
         if module.get("emoji") and not heading.startswith(f"# {module['emoji']} "):
             errors.append(f"{where}: el título de la plantilla debe empezar por `# {module['emoji']} `")

@@ -26,6 +26,9 @@
     "Momentos decisivos": 3,
     "Rutas y viajes": 3
   },
+  "mapa": [
+    {"clase": "territorio", "categoria": ["fisica", "politica"], "desde": 4, "zonas_minimas": 5}
+  ],
   "carpeta": {
     "propiedad": "categoria",
     "valores": {

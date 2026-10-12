@@ -19,6 +19,10 @@ Comprueba:
     ni términos del Glosario;
   - enlaces del cuerpo con texto legible (un aviso si Obsidian va a mostrar guiones bajos);
   - que la nota no enlace a un secreto y que su imagen exista;
+  - en los lugares con mapa (regla `mapa` del módulo): la sección Mapa cuando le toca por su categoría
+    y su relevancia, y su leyenda (números del 1 al N sin repetir ni saltar, orientaciones válidas,
+    conexiones con zonas que existen y en los dos sentidos, como mucho 12 zonas por nivel), y que las
+    imágenes de `mapa` existan y vayan embebidas, con `mapa_edicion` y `mapa_zonas` coherentes;
   - en un calendario, las tablas que leen los scripts (meses, estaciones, festividades);
   - en los tipos con `tiempo` en su módulo (era, evento), su situación frente al año actual (lo
     que sigue en curso no tiene fin, lo pasado no termina en el futuro, lo profetizado no ha
@@ -28,11 +32,11 @@ Comprueba:
 Las notas internas (MOC, Ficha, Preguntas Abiertas, Glosario, guías y registros) no son entidades:
 lo dice y no las valida. Sale con código 1 si encuentra errores.
 
-Con --depth <tipo>:<relevancia>, antes de escribir una nota, dice qué secciones lleva y cuántos
-enlaces pendientes nuevos puede abrir, sin validar nada.
+Con --depth <tipo>:<relevancia>[:<categoría>], antes de escribir una nota, dice qué secciones lleva,
+cuántos enlaces pendientes nuevos puede abrir y si le toca mapa, sin validar nada.
 
 Ejemplo:  check_note.py Aldric_Voss   check_note.py 20_Personajes/X.md 80_Secretos/Y.md
-          check_note.py --depth personaje:2"""
+          check_note.py --depth personaje:2   check_note.py --depth lugar:3:mazmorra"""
 import argparse
 import re
 import sys
@@ -44,8 +48,9 @@ from vault_lib import (HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DI
                        VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
-                       load_modules, malformed_lines, normalize, note_link_labels, omitted_sections,
-                       own_gaps_range, parse_calendar,
+                       load_modules, malformed_lines, map_applies, map_key_problems, map_rule,
+                       normalize, note_link_labels, omitted_sections, own_gaps_range, parse_calendar,
+                       parse_map_key,
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
                        reference_calendar, resolve_note, section_table, split_note, table_cell,
                        unlinked_entities, unlinked_mentions, unlinked_names, unquote)
@@ -298,6 +303,36 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
             elif f"![[{target}" not in text:
                 warnings.append(f"la imagen no está embebida en el cuerpo (`![[{target}|300]]`)")
 
+    # Mapa: la leyenda de la sección Mapa y las imágenes de sus ediciones
+    if module.get("mapa"):
+        zones, problems = parse_map_key(body)
+        errors += problems
+        if zones is not None:
+            key_errors, key_warnings = map_key_problems(zones)
+            errors += key_errors
+            warnings += key_warnings
+        edition, charted = first(props.get("mapa_edicion")), first(props.get("mapa_zonas"))
+        for key, raw in (("mapa_edicion", edition), ("mapa_zonas", charted)):
+            if raw and (int_value(raw) is None or int_value(raw) < 1):
+                errors.append(f"`{key}` debe ser un número desde 1 o quedar vacía (encontrado: {raw})")
+        maps = [value for value in props.get("mapa", []) if not is_empty_value([value])]
+        for value in maps:
+            if not QUOTED_LINK_RE.match(value):
+                errors.append(f"`mapa` solo admite enlaces entre comillas a sus imágenes (encontrado: {value})")
+            elif not link_exists(value[3:-3], names, paths):
+                errors.append(f"`mapa` apunta a un archivo que no existe: {value[3:-3]}")
+            elif f"![[{value[3:-3]}" not in text:
+                warnings.append(f"el mapa no está embebido en la sección Mapa (`![[{value[3:-3]}|600]]`)")
+        if maps and not int_value(edition):
+            errors.append("`mapa` tiene imágenes pero `mapa_edicion` está vacía: tras dibujar una edición, "
+                          "ejecuta `map_key.py <Nota> --charted`")
+        if int_value(edition) and not maps:
+            errors.append("`mapa_edicion` dice que hay una edición del mapa, pero `mapa` no tiene imágenes")
+        if int_value(edition) and zones is None:
+            errors.append("`mapa_edicion` dice que hay mapa, pero la nota no tiene sección Mapa")
+        if zones and int_value(charted) and int_value(charted) > max(z["numero"] for z in zones):
+            errors.append(f"`mapa_zonas` ({charted}) pasa del último número de la leyenda")
+
     # Cuerpo: título, secciones, campos vacíos y restos de la plantilla
     headings = [without_variation(line) for line in body if line.startswith("# ")]
     if not headings or not headings[0].startswith(f"# {without_variation(module['emoji'])} "):
@@ -305,7 +340,7 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     # Secciones: el núcleo siempre; las de la `profundidad` del módulo, desde su relevancia mínima.
     # Una sección opcional puede ir antes si tiene contenido real, pero nunca de relleno
     body_set = {line.strip() for line in body}
-    optional = set(omitted_sections(module, template_body, relevance))
+    optional = set(omitted_sections(module, template_body, relevance, props))
     for line in template_body:
         match = re.match(r"^#{2,3} (.+?)\s*$", line)
         if match and match.group(1) not in optional and line.strip() not in body_set:
@@ -316,7 +351,8 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
         # Una etiqueta sin valor no está vacía si su contenido sigue en una sublista o un bloque de código
         has_content_below = bool(re.match(r"^\s+[-*] ", following)) or following.lstrip().startswith("```")
         if (EMPTY_FIELD_RE.match(line) and not has_content_below) or EMPTY_ROW_RE.match(stripped) \
-                or stripped == "-" or (stripped == ">" and not quote_separator(body, i)):
+                or stripped == "-" or re.match(r"^\d+\.$", stripped) \
+                or (stripped == ">" and not quote_separator(body, i)):
             errors.append(f"campo vacío: {stripped}")
     leftovers = {l.strip() for l in template_body if l.startswith("> ") and len(l.strip()) > 2}
     for line in body:
@@ -405,8 +441,10 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
 
 
 def print_depth(spec):
-    """Imprime la profundidad de una nota de un tipo y una relevancia; devuelve el código de salida."""
-    tipo, _, raw = spec.partition(":")
+    """Imprime la profundidad de una nota de un tipo, una relevancia y, si se da, una categoría;
+    devuelve el código de salida."""
+    tipo, _, rest = spec.partition(":")
+    raw, _, category = rest.partition(":")
     modules = load_modules()
     module, relevance = modules.get(tipo), int_value(raw)
     if not module:
@@ -416,7 +454,9 @@ def print_depth(spec):
         print(f"Error: la relevancia debe ser un número del 1 al 5 (encontrado: {raw or 'vacío'}).")
         return 1
     _, template_body = split_note((SKILL_DIR / "tipos" / tipo / "plantilla.md").read_text(encoding="utf-8"))
-    omitted = omitted_sections(module, template_body, relevance)
+    props = {"categoria": [category]} if category else None
+    omitted = [t for t in omitted_sections(module, template_body, relevance, props or {})
+               if t != "Mapa" or category]
     depth = module.get("profundidad", {})
     low, high = own_gaps_range(module, relevance)
     print(f"{tipo} con relevancia {relevance}:")
@@ -426,6 +466,21 @@ def print_depth(spec):
             f"«{t}»" + (f" (desde {depth[t]})" if t in depth else "") for t in omitted) + ".")
     else:
         print("  Lleva todas las secciones de la plantilla.")
+    if module.get("mapa"):
+        if category:
+            rule = map_applies(module, props, relevance)
+            if rule:
+                minimum = rule.get("zonas_minimas", 1)
+                print(f"  Mapa: lleva la sección Mapa con su leyenda (mapa {rule['clase']}"
+                      + (f"; la imagen, desde {minimum} zonas" if minimum > 1 else "") + ").")
+            elif map_rule(module, props):
+                print(f"  Mapa: con la categoría {category}, desde relevancia {map_rule(module, props)['desde']}.")
+            else:
+                print(f"  Mapa: la categoría {category} no lleva mapa.")
+        else:
+            print("  Mapa: depende de la categoría: " + "; ".join(
+                f"{', '.join(rule.get('categoria', ['todas']))} desde {rule['desde']}" for rule in module["mapa"])
+                + f". Indícala: --depth {tipo}:{relevance}:<categoría>.")
     print("  En las que lleva, escribe solo lo que aporta: un dato que no sabes no se inventa para llenar.")
     return 0
 

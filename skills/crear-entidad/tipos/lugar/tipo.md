@@ -17,7 +17,7 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
 
   Un edificio en ruinas es `ruina`; un templo en uso, `templo`. La categoría sigue a lo que es hoy.
 - **Plantilla:** `plantilla.md`, que se instala como `Plantilla_Lugar.md`.
-- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, valores permitidos y relaciones). Es de la familia `lugar` y su `completa` dice qué enlaces pendientes de otras fichas puede crear:
+- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, valores permitidos, mapa y relaciones). Es de la familia `lugar` y su `completa` dice qué enlaces pendientes de otras fichas puede crear:
   - la residencia, la ubicación actual o el lugar de nacimiento de un personaje, cuando las notas describen un sitio («su taller», «la atalaya»), no un pueblo;
   - los lugares notables de una región, de un asentamiento o de otro lugar, y la ubicación de un lugar;
   - el escenario de un evento y la zona que afecta un fenómeno;
@@ -47,7 +47,8 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Resumen:** qué es, dónde está y por qué importa.
 - **Datos clave:** la tabla completa. «Origen» dice cuándo y por quién se construyó (o cómo se formó, si es natural); «Tamaño», a escala humana (una sala, tres pisos, media legua de bosque).
 - **Exterior:** lo que se ve al acercarse, lo que se ve, se oye y se huele, y su forma y sus materiales (o la forma del terreno).
-- **Recorrido:** de 3 a 6 zonas en el orden en que se recorren: las salas de un edificio, los niveles de una mazmorra, las partes de un bosque. Cada una con cómo es y qué hay.
+- **Recorrido:** de 3 a 6 zonas en el orden en que se recorren: las salas de un edificio, los niveles de una mazmorra, las partes de un bosque. Cada una con cómo es y qué hay. Si el lugar tiene mapa, nombra cada zona con su número de la leyenda («de la escalera (1) a la antecámara (2)»).
+- **Mapa** (solo si le toca por su categoría y su relevancia; `check_note.py --depth lugar:<relevancia>:<categoría>`): la leyenda numerada de sus salas o partes, hasta 12 por nivel, con su orientación, lo que se ve y sus conexiones. Ruinas, mazmorras, cuevas, pecios, fortalezas, templos, torres y zonas peligrosas lo llevan desde relevancia 2; los demás edificios, desde 3; los parajes naturales, desde 4; los monumentos, nunca. Ver `referencias/mapas.md`.
 - **Actividad:** un día cualquiera (o quién pasa por un sitio abandonado) y quién viene y por qué.
 - **Peligros y defensas:** lo que amenaza a quien entra y lo que lo protege (guardias, trampas, criaturas, el propio terreno).
 - **Tesoros y recursos:** lo que guarda (objetos, saberes, secretos a la vista) y lo que se puede sacar de allí (madera, agua, mineral, información).

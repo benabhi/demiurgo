@@ -12,7 +12,7 @@ Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caserío
 - **Emoji propio:** en la propiedad `emoji`, según su carácter (🏙️ metrópoli, 🏰 ciudad amurallada, ⚓ puerto, 🛖 aldea, ⛺ campamento, 🕳️ refugio, 🛰️ estación…).
 - **Carpeta:** fija, `10_Mundo/Ciudades_y_Asentamientos`.
 - **Plantilla:** `plantilla.md`, que se instala como `Plantilla_Asentamiento.md`.
-- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, valores permitidos y relaciones). Es de la familia `lugar` y su `completa` dice qué enlaces pendientes de otras fichas puede crear:
+- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, valores permitidos, mapa y relaciones). Es de la familia `lugar` y su `completa` dice qué enlaces pendientes de otras fichas puede crear:
   - el lugar de nacimiento, la residencia o la ubicación actual de un personaje;
   - la capital y los asentamientos de una región;
   - el territorio de un pueblo y los vecinos de otro asentamiento;
@@ -55,6 +55,7 @@ La ficha se rellena **completa**. Lo único sin resolver son los enlaces pendien
 - **Defensas:** murallas, guardia o escondites, y de qué tiene que defenderse.
 - **Gente:** los pueblos que viven allí y cómo conviven, las clases y sus tensiones, y cómo se trata a los forasteros.
 - **Lugares notables:** de 3 a 6, cada uno con su enlace (los que no existen quedan como enlaces pendientes para el módulo `lugar`) y una línea que lo defina.
+- **Mapa** (metrópolis, ciudades y villas desde relevancia 3; los demás, desde 4): la leyenda numerada del plano: sus barrios y zonas, sus lugares notables y lo que da forma al plano (las puertas, el puerto, la plaza), hasta 12, con su orientación, lo que se ve y sus conexiones. Ver `referencias/mapas.md`.
 - **Personajes notables:** de 2 a 4, con su enlace y su papel: quien manda, quien se le opone, alguien a quien todos conocen.
 - **Vida cotidiana:** un día cualquiera, sus fiestas y costumbres (con fechas del calendario, si existe) y sus creencias.
 - **Historia:** su fundación (por qué está ahí: un vado, un pozo, una mina, un cruce, un refugio), de 2 a 5 momentos decisivos y el presente.
