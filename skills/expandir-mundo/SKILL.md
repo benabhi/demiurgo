@@ -24,7 +24,7 @@ Uso:
 ## Archivos
 - `scripts/setup_generation.py`: prepara `00_Sistema/06_Generacion` la primera vez, sin sobrescribir nunca.
 - `scripts/select_target.py`: elige qué desarrollar (enlaces pendientes puntuados, paquetes o una entidad nueva) y cuántos enlaces nuevos puede abrir cada nota, o pide detenerse.
-- `scripts/roll_tables.py`: tira en las tablas de ingredientes y deriva ingredientes del canon.
+- `scripts/roll_tables.py`: tira en las tablas de ingredientes (con `--count`, varios resultados distintos: las salas de una mazmorra, los barrios de una ciudad) y deriva ingredientes del canon.
 - `scripts/log_cycle.py`: añade la entrada del ciclo al registro de generación sin leerlo entero.
 - Los scripts de `crear-entidad`: `build_context.py`, `search_vault.py`, `find_gaps.py`, `generate_names.py`, `add_entries.py`, `add_relation.py`, `rename_link.py`, `pending_links.py` (el registro de enlaces pendientes), `check_note.py`, `audit_world.py` y `report.py` (el informe final).
 
@@ -87,6 +87,7 @@ python <directorio de esta skill>/scripts/roll_tables.py --file <Tipo> --file Or
 ```
 - **`--file <Tipo>`:** la tabla del tipo que vas a crear, si existe (`--list` muestra cuáles hay). Si el mundo tiene tablas propias en `06_Generacion/Tablas` que encajan con lo que se crea, añádelas con otro `--file`.
 - **`--derive`:** la primera nota de `nombrado_por` (la más relevante de las que nombran el enlace pendiente) o, si no hay ninguna, la región foco. Así los ingredientes salen de lo que ya existe allí. En `crear_foco` no hay de dónde derivar: omítelo. En `crear_canon`, deriva de la región foco.
+- **Mapas:** si lo que se crea lleva mapa (un lugar, un asentamiento o una región a los que les toca por su categoría y su relevancia), tira también su forma y sus zonas en `Mapas`, con las tablas de su clase y `--count` (ver «Variedad» en `crear-entidad/referencias/mapas.md`).
 - **Lo insólito** (`Insolito`) se tira siempre:
   - la **chispa** solo se usa si sale `hay_chispa=Sí` (una de cada tres veces, de media), y entra al mundo según su `grado_de_verdad`: como rumor, exageración, verdad a medias o verdad literal. Si la verdad literal choca con las reglas de la Ficha, vuelve a tirar solo el grado (`--table "Grado de verdad"`);
   - el **contraste** se integra en la entidad;

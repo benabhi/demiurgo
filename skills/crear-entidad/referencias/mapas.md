@@ -40,6 +40,25 @@ Es una viñeta con el número en negrita, no una lista numerada: Obsidian renume
   - Si sale con código 3, la leyenda está llena: no lo fuerces. Anota la pregunta con `add_entries.py --question` (qué zona con mapa propio debería agruparlo).
 - `map_key.py <Nota>` muestra la leyenda, su edición y si toca dibujar la primera edición o una nueva.
 
+## Variedad: las tablas de mapas
+Los modelos repiten patrones: sin azar, todas las mazmorras tendrían la misma planta y todas las ciudades los mismos barrios. Antes de escribir la leyenda, tira en las tablas de mapas (`<expandir-mundo>/assets/Tablas/Mapas.md`, o la versión del mundo en `06_Generacion/Tablas`) con `roll_tables.py`, que da azar real; `--count` da varios resultados distintos entre sí:
+- **interior:**
+  ```bash
+  python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: planta" --table "Interior: tamaño" --table "Interior: niveles" --table "Interior: estado"
+  python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: salas" --count <zonas>
+  python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: rasgo de una sala" --count <3 a 5>
+  python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: conexiones" --count 3
+  ```
+- **urbano:** `Urbano: forma`, `Urbano: hito` y `Urbano: bordes`, y `Urbano: barrios` con `--count <zonas>`;
+- **paraje:** `Paraje: partes` con `--count <zonas>`;
+- **territorio:** `Territorio: dónde vive la gente` y `Territorio: caminos`, y `Territorio: accidentes` con `--count <3 a 5>`.
+
+Las tiradas son una **semilla, no una orden**:
+- Manda lo que cuenta la nota y lo que pidió el usuario: si la nota dice que la cripta tiene cinco cámaras, el tamaño no la cambia. La entrada es siempre la zona 1 y la sala principal la pone el concepto; las tiradas varían el resto.
+- El tamaño se ajusta a la relevancia: con relevancia 2, como mucho mediano.
+- Cada resultado se adapta al mundo, a su género y a su tecnología («establos o hangar»). Si uno choca con el canon, vuelve a tirar solo esa tabla.
+- Anota las tiradas en el informe («Tiradas»).
+
 ## La imagen
 La dibuja `generar-imagen` en modo mapa (ver su `referencias/mapas.md`), después del concept art. Una edición nueva toca cuando hay 3 zonas sin cartografiar o más, o un cuarto de las cartografiadas. Además de la leyenda, la sección `## Mapa` lleva:
 - una línea con la edición, al principio: `*Edición 2 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 12/12 marcadores, sin repetidos*`;
