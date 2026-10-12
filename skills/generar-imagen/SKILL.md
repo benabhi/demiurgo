@@ -18,24 +18,6 @@ Uso: `/generar-imagen <nota> [técnica]`.
 - "Cambia la técnica del mundo a óleo" o "los paisajes, en acuarela" cambian la Guía Visual: la técnica general o la tabla "Técnica por tipo". Solo se tocan esas secciones.
 - `/generar-imagen tecnicas` (o "¿qué técnicas hay?") muestra el índice de `referencias/tecnicas.md` tal cual, con el total, y dice qué técnica usa ahora el mundo y cómo pedir otra. No genera nada.
 
-## Progreso visible
-Quien usa la skill tiene que ver en todo momento por qué paso va y qué estás haciendo, sin abrir tus pensamientos. Es igual en todas las skills de este sistema.
-1. **Lista de etapas.** Al empezar, crea una lista de tareas con la herramienta de tareas de Claude Code (TodoWrite o, en versiones nuevas, TaskCreate y TaskUpdate), con una tarea por etapa de las de abajo. Claude Code la muestra con casillas y anima la etapa en curso. Pon cada etapa en curso al empezarla y complétala al terminarla; nunca hay más de una en curso. Si no tienes esa herramienta, escribe la lista en el chat con `○` (pendiente), `▸` (en curso) y `✓` (hecha).
-2. **Una línea al empezar cada etapa,** en el chat: `**▸ 3/8 · <Etapa>** — <qué haces, en concreto>`. Al cerrar una etapa que produce algo, otra línea: `✓ <resultado>` (la nota creada, la imagen guardada, los errores corregidos). Una o dos líneas, nunca párrafos.
-3. **Herramientas con descripción:** cada llamada lleva una descripción breve, en el idioma de la conversación, de lo que hace para el usuario («Buscar duplicados de “<nombre>”»), no el comando.
-4. **Si otra skill te invoca,** no crees una lista nueva: añade tus etapas a la suya, justo después de la etapa que te invocó, con `↳ ` delante del nombre (`↳ Imagen: armar el prompt`). Esa etapa sigue en curso hasta que termines.
-5. **Esperas:** si te toca esperar algo largo (una generación, al usuario), dilo en una línea antes: `⏳ <qué esperas>`.
-
-Etapas de esta skill (6):
-1. Preparar (Paso 1)
-2. Armar el prompt (Paso 2)
-3. Generar en Gemini (Paso 3)
-4. Descargar y guardar (Paso 3b)
-5. Enlazar en la nota (Paso 4)
-6. Informe (Paso 5)
-
-Si la invoca `crear-entidad`, van con `↳ Imagen: ` delante.
-
 ## Autorización
 El pedido del usuario (invocar esta skill o crear una entidad con `crear-entidad`) es la autorización explícita para generar **esta** imagen: enviar el prompt a Gemini, descargar la imagen y moverla a la bóveda. Por eso:
 - no preguntes antes de generarla;

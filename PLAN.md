@@ -91,7 +91,6 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - una confirmación pendiente (`Confirmar`) bloquea solo su sujeto, el primer enlace de la línea;
   - el motor equilibra completar y crear según los enlaces pendientes por entidad (simulado: se estabiliza en torno a 1,5), con un presupuesto de enlaces nuevos por nota.
 - [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
-- [x] **Progreso visible, igual en todas las skills:** lista de etapas con la herramienta de tareas de Claude Code, una línea `▸` al empezar cada etapa y `✓` al cerrarla, descripciones legibles en cada herramienta; una skill invocada por otra añade sus etapas con `↳` a la lista de la que la invocó.
 - [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
 - [x] **Notas internas** (`tipo: meta`): Preguntas Abiertas y los registros no son entidades, y el validador las salta.
 

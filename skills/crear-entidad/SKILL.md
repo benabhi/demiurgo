@@ -11,26 +11,6 @@ Toda entidad que la nota nombra va enlazada: a su nota, si existe, o como **enla
 
 Uso: `/crear-entidad <tipo> [concepto o atributos]`.
 
-## Progreso visible
-Quien usa la skill tiene que ver en todo momento por qué paso va y qué estás haciendo, sin abrir tus pensamientos. Es igual en todas las skills de este sistema.
-1. **Lista de etapas.** Al empezar, crea una lista de tareas con la herramienta de tareas de Claude Code (TodoWrite o, en versiones nuevas, TaskCreate y TaskUpdate), con una tarea por etapa de las de abajo. Claude Code la muestra con casillas y anima la etapa en curso. Pon cada etapa en curso al empezarla y complétala al terminarla; nunca hay más de una en curso. Si no tienes esa herramienta, escribe la lista en el chat con `○` (pendiente), `▸` (en curso) y `✓` (hecha).
-2. **Una línea al empezar cada etapa,** en el chat: `**▸ 3/8 · <Etapa>** — <qué haces, en concreto>`. Al cerrar una etapa que produce algo, otra línea: `✓ <resultado>` (la nota creada, la imagen guardada, los errores corregidos). Una o dos líneas, nunca párrafos.
-3. **Herramientas con descripción:** cada llamada lleva una descripción breve, en el idioma de la conversación, de lo que hace para el usuario («Buscar duplicados de “<nombre>”»), no el comando.
-4. **Si otra skill te invoca,** no crees una lista nueva: añade tus etapas a la suya, justo después de la etapa que te invocó, con `↳ ` delante del nombre (`↳ Imagen: armar el prompt`). Esa etapa sigue en curso hasta que termines.
-5. **Esperas:** si te toca esperar algo largo (una generación, al usuario), dilo en una línea antes: `⏳ <qué esperas>`.
-
-Etapas de esta skill (8):
-1. Preparar (Paso 0)
-2. Entender el pedido (Paso 1)
-3. Contexto y coherencia (Paso 2)
-4. Crear la nota (Paso 3)
-5. Efectos en la bóveda (Paso 4)
-6. Validar (Paso 5)
-7. Imagen (Paso 6)
-8. Informe (Paso 7)
-
-Con varias entidades en un pedido, repite las etapas 2 a 7 por entidad, con su nombre en la tarea (`Crear la nota: <nombre>`).
-
 ## Leer la bóveda sin gastar tokens
 La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carpetas enteras.** Tampoco leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes ni el índice de entidades, porque crecen con el mundo. Para todo eso hay scripts en `<directorio de esta skill>/scripts/`:
 - **Buscar** si algo ya existe, está pendiente, está en el Glosario o tiene preguntas: `search_vault.py "<texto>"`. No distingue tildes ni mayúsculas, y muestra también los nombres parecidos (posibles duplicados). Por tipo: `search_vault.py --type <tipo> [texto]`.
