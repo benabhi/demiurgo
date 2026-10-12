@@ -112,11 +112,12 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   Así se respeta la autonomía de la Ficha sin detener el flujo.
 
 ## Paso 3: crear la nota
-- **Profundidad según la relevancia.** Decide primero la `relevancia` y ejecuta `python <directorio de esta skill>/scripts/check_note.py --depth <tipo>:<relevancia>`: te dice qué secciones lleva la nota y cuántos enlaces pendientes nuevos puede abrir.
+- **Profundidad según la relevancia.** Decide primero la `relevancia` y ejecuta `python <directorio de esta skill>/scripts/check_note.py --depth <tipo>:<relevancia>` (en un lugar, con su categoría: `--depth lugar:3:mazmorra`): te dice qué secciones lleva la nota, cuántos enlaces pendientes nuevos puede abrir y si le toca mapa.
   - El **frontmatter va siempre completo**, con todas las propiedades de la plantilla, sea cual sea la relevancia.
   - El **núcleo** (las secciones sin relevancia mínima) va siempre. Las secciones de profundidad, solo desde su relevancia. Las que no le tocan se borran de la nota, con su título.
   - **No inventes para llenar.** En lo que la nota lleva, escribe lo que aporta al mundo: una aldea de relevancia 1 necesita su ubicación, su función y sus vínculos, no una historia épica. Un dato de una tabla o una lista que de verdad no aplica se dice en pocas palabras («ninguna conocida»), no se adorna. Si una sección de profundidad tiene algo real que contar aunque la relevancia no la pida, puede ir.
 - Rellena las secciones que lleva siguiendo `tipo.md`. Lo único sin resolver son los enlaces pendientes.
+- **Mapa:** si le toca, escribe la leyenda de su sección Mapa con lo que cuenta la nota, como dice `referencias/mapas.md`: hasta 12 zonas por nivel, con su número, su orientación, lo que se ve y sus conexiones. El dibujo se hace en el Paso 6.
 - **Toda entidad que nombras lleva enlace, cada vez que la nombras** y no solo la primera, también con su nombre corto (`[[Aldric_Voss|Aldric]]`). Solo quedan sin enlace las menciones de la propia entidad, los títulos y la sección Imagen (ver `referencias/huecos.md`):
   - a su nota, si existe;
   - si no, como enlace pendiente con su nombre real, su texto legible y su tipo. El tipo lo da su propiedad de relación (ponla siempre que haya una); si no la hay, asígnalo en el Paso 4.
@@ -140,7 +141,7 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
 2. Si cambia la relevancia, súbela en el frontmatter. Ejecuta `check_note.py --depth <tipo>:<relevancia>`: las secciones que ahora lleva y no tiene son las que hay que escribir.
 3. Añade esas secciones **en el orden de la plantilla**, con el mismo cuidado que una nota nueva y siguiendo `tipo.md`. **Lo que ya está escrito no se contradice ni se reescribe:** se construye sobre ello. Solo se amplía una sección existente si lo nuevo lo exige (un gancho que remite a un hecho de su historia).
 4. Puede abrir enlaces pendientes nuevos: la diferencia entre el rango de su relevancia nueva y el de la anterior.
-5. Sigue con los pasos 4, 5 y 7 (efectos, validar e informe); la imagen ya existe y no se regenera, salvo que se pida.
+5. Sigue con los pasos 4, 5 y 7 (efectos, validar e informe); la imagen ya existe y no se regenera, salvo que se pida. **El mapa sí:** si con la relevancia nueva le toca, escribe su leyenda (es una sección más) y dibuja su primera edición como en el Paso 6.
 
 ## Paso 4: efectos en el resto de la bóveda
 - **Secretos:** solo si el módulo lo decide (en personaje, con una tirada). Crea cada uno como nota del tipo `secreto` en `80_Secretos`.
@@ -152,6 +153,7 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
   - ¿seguiría teniendo sentido si una de las dos desapareciera?
 
   Si no cambia nada en ninguna de las dos, basta con el enlace: no hace falta una fila de relación.
+- **Leyenda del lugar donde está:** si la entidad es un lugar (un lugar, un asentamiento o una región) y el lugar que la contiene tiene leyenda (su `ubicacion`, su `region` o su `region_padre`; `map_key.py <Contenedor>` lo dice), añádela con `map_key.py <Contenedor> --add "[[Nota|Nombre]]" --position <orientación> --desc "<una línea>"` y, si las hay, sus conexiones (`--connects`), sin leer la nota del contenedor. Si ya estaba (como enlace pendiente), el script no hace nada; si la leyenda está llena (código 3), anota la pregunta. Ver `referencias/mapas.md`.
 - **Anclaje:** una entidad creada de la nada (sin un enlace pendiente que la pidiera) no puede quedar huérfana. Si la reciprocidad no la enlaza desde ninguna nota, añade su enlace en al menos una nota existente con la que se relaciona (su asentamiento, su región, su facción), en la propiedad que encaje (`add_relation.py`).
 - **Glosario:** registra el nombre y los términos que inventaste con `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>` (repetible; con la nota vacía, `""`, para un término sin nota).
 - **Enlace pendiente completado:** si llevaba un nombre de rol, reemplázalo por el definitivo en todas las notas con `rename_link.py <Rol_de_Entidad> <Nombre_Real>`. Si llevaba el nombre real, no hay nada que reemplazar.
@@ -170,6 +172,7 @@ El validador comprueba:
 - los enlaces pendientes nuevos dentro del rango del módulo para su relevancia, y todos con tipo;
 - las menciones sin enlace del cuerpo (aviso): nombres propios desconocidos, entidades del Glosario y entidades que la nota ya enlaza en otra parte;
 - que la nota no enlace a secretos y que su imagen exista;
+- en un lugar con mapa, su leyenda (números del 1 al N sin repetir ni saltar, orientaciones, conexiones en los dos sentidos, hasta 12 zonas por nivel) y las imágenes de sus ediciones;
 - en un calendario, sus tablas de meses, estaciones y festividades, y en cualquier nota, que `fecha_exacta` exista en el calendario de referencia y sea del año que precisa;
 - en una era o un evento, que su situación cuadre con el año actual y que su cronología (o su desarrollo) vaya en orden y dentro de sus fechas.
 
@@ -192,6 +195,8 @@ Genera la imagen con la skill `generar-imagen`, pasándole la nota recién cread
 - Solo se omite si el usuario dijo explícitamente que no la quiere ("sin imagen" o "sin retrato"), o si el tipo no lleva imagen (los secretos no la llevan).
 - Si el usuario pidió una técnica para la imagen ("con retrato al óleo", "en acuarela"), pásasela a `generar-imagen`; si no, se usa la de la Guía Visual del mundo.
 - Si `generar-imagen` no está disponible o falla, deja la sección Imagen con la descripción visual y "Prompt: pendiente".
+- **Mapa:** después de la imagen principal, si `map_key.py <Nota>` dice que toca dibujar, pide a `generar-imagen` el mapa (modo mapa). La imagen principal va siempre primero. Si falla, la leyenda queda y el mapa se dibuja más tarde.
+- No dibujes ahora la edición nueva del lugar que la contiene, aunque le toque: la hace el motor (`cartografiar`) o el usuario (`/generar-imagen <Contenedor> mapa`). Dilo en el informe.
 - Al terminar, vuelve a ejecutar `check_note.py` sobre la nota: `generar-imagen` la modificó.
 
 ## Paso 7: informe final
@@ -214,6 +219,7 @@ Muéstralo tal cual y añade debajo solo lo que el script no puede saber, sin re
 - **Tiradas** y su resultado (por ejemplo, "1d4 = 2: sin secreto").
 - **Pilares decididos:** si se resolvió alguno (ver `referencias/pilares.md`), qué se decidió y los cambios en la Ficha, `CLAUDE.md`, Preguntas Abiertas y el Registro de Canon.
 - **Imagen:** la técnica usada y, si falló, por qué y cómo generarla más tarde.
+- **Mapa:** si se dibujó, su edición y su comprobación; las zonas inventadas para la leyenda; en qué leyenda se añadió el lugar (con su número) y si a ese mapa le toca una edición nueva (`/generar-imagen <Contenedor> mapa`).
 - **Plantilla:** si la de `01_Plantillas` difiere de la de la skill.
 - **Siguiente paso posible:** por ejemplo, crear uno de sus enlaces pendientes con `/crear-entidad <tipo> hueco=<Enlace>`.
 
