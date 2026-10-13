@@ -16,7 +16,8 @@ Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caserío
   - el lugar de nacimiento, la residencia o la ubicación actual de un personaje;
   - la capital y los asentamientos de una región;
   - el territorio de un pueblo y los vecinos de otro asentamiento;
-  - la ubicación de un lugar, el escenario de un evento (una ciudad sitiada o saqueada) y la zona que afecta un fenómeno.
+  - la ubicación de un lugar, el escenario de un evento (una ciudad sitiada o saqueada) y la zona que afecta un fenómeno;
+  - la partida, el destino o una parada de una ruta.
 
   Varios módulos de la familia pueden crear el mismo enlace pendiente: lee lo que dicen de él las notas que lo nombran y elige el que encaje. Si describen un edificio o un sitio («su taller», «la atalaya», «el campo de batalla»), es un `lugar`; si describen un territorio, una `region`.
 
@@ -70,7 +71,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `region`: la región que lo contiene; recíproca con sus `asentamientos` (la capital de una región también va en ellos);
   - `vecinos`: los asentamientos cercanos; recíprocos;
-  - `rutas` que pasan por él y `lugares_notables` que contiene (edificios y sitios del módulo `lugar`, que lo tienen en su `ubicacion`);
+  - `rutas` que pasan por él, salen o llegan a él (cada una lo tiene en su `partida`, su `destino` o sus `paradas`) y `lugares_notables` que contiene (edificios y sitios del módulo `lugar`, que lo tienen en su `ubicacion`);
   - `gobierno` (la institución que manda), `gobernante` (la persona) y otras `facciones` presentes (gremios, bandas, órdenes);
   - `figuras`: personajes notables;
   - `pueblos` que viven en él, recíproca con sus `territorios`, y `creencias` que se practican;

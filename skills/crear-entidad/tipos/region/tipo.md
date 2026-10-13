@@ -48,11 +48,11 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Mapa** (regiones físicas y políticas desde relevancia 4): la leyenda numerada del territorio: la capital, los asentamientos y lugares notables y los accidentes con nombre de su geografía, hasta 12, con su orientación, lo que se ve y sus conexiones (solo los caminos que cuenta la nota). La imagen espera a que haya 5 zonas. Si se sabe, la línea dice a cuántas jornadas queda de otra zona. Ver `referencias/mapas.md`.
 - **Poder y fronteras:** quién manda (una facción, un gobierno, nadie), con qué vecinos limita y qué se disputa.
 - **Rutas y viajes:**
-  - las rutas principales;
+  - las rutas principales, enlazadas (tipo `ruta`, en `rutas`), con lo que unen y cuántos días se tarda;
   - **cuánto se tarda** en cruzarla a pie, a caballo o en el medio que corresponda;
   - los pasos difíciles.
 
-  Los tiempos de viaje evitan incoherencias más adelante.
+  Los tiempos de viaje evitan incoherencias más adelante: si ya hay rutas, los suyos mandan (`routes.py <A> <B>`).
 - **Peligros:** naturales (clima, terreno), criaturas y otros (bandidos, fenómenos, guerras).
 - **Historia:**
   - orígenes, en 1 o 2 párrafos;
@@ -72,7 +72,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 ## Frontmatter
 - **Relaciones solo con enlaces** entre comillas, o vacías si se desconocen (el cuerpo lo explica).
 - `clima` y `poblacion` son texto breve (no enlaces): `clima: templado y lluvioso`, `poblacion: unas cuarenta mil almas`.
-- `capital`, `asentamientos` y `lugares_notables` enlazan a entidades de la familia `lugar` (asentamientos y sitios); `rutas`, a caminos, calzadas y pasos (tipo `ruta`, que espera su módulo).
+- `capital`, `asentamientos` y `lugares_notables` enlazan a entidades de la familia `lugar` (asentamientos y sitios); `rutas`, a caminos, calzadas, pasos y portales (tipo `ruta`): cada una la tiene en sus `regiones`.
   - La capital también va en `asentamientos`. Los dos son recíprocos con la `region` del asentamiento.
 - `control`: las facciones o gobiernos que mandan. `vecinos`: regiones limítrofes (la relación es recíproca: la región vecina también te lista).
 - `fenomenos`: los fenómenos extraordinarios que actúan en la región. Es recíproca: el fenómeno la lista en sus `zonas_afectadas`.
@@ -96,7 +96,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una criatura o un fenómeno locales (`criaturas`, `fenomenos`);
 - un pueblo propio de la región (`pueblos`).
 
-Algunos enlaces pendientes apuntan a tipos que aún no tienen módulo (una ruta, un material…). No pasa nada: quedan esperando hasta que exista el módulo.
+Algunos enlaces pendientes apuntan a tipos que aún no tienen módulo (un material…). No pasa nada: quedan esperando hasta que exista el módulo.
 
 ## Secretos
 Igual que en personaje: desde relevancia 3, tirada real con `roll_dice.py 1d4` (con 4, la región guarda un secreto), salvo que el concepto o el usuario lo pidan. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.

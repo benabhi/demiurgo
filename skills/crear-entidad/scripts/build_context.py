@@ -2,7 +2,8 @@
 """Arma el paquete de contexto para crear o completar una entidad sin leer toda la bóveda.
 
 Para un enlace pendiente (hueco): qué dicen de él las notas que lo nombran y qué tipo se espera.
-Para una entidad: su resumen y sus relaciones. En ambos casos añade los datos del mundo (año
+Para una entidad: su resumen y sus relaciones; en un lugar, sus rutas y lo más cercano con los días, y en
+una ruta, cuánto se tarda entre sus extremos sin ella. En ambos casos añade los datos del mundo (año
 actual, calendario, foco y eras en orden), las entidades relacionadas con su resumen de una línea
 (por relevancia), la cadena de regiones, los nombres ya usados cerca y las preguntas abiertas
 relacionadas.
@@ -17,15 +18,18 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (OPEN_QUESTIONS, calendar_summary, describe_expected, find_gaps, first,  # noqa: E402
-                       format_year, index_vault, int_value, link_exists, load_calendars, load_index,
-                       place_types, read_world, reference_calendar, split_note, strip_links)
+from vault_lib import (OPEN_QUESTIONS, ROUTE_TYPE, calendar_summary, describe_expected, find_gaps,  # noqa: E402
+                       first, format_days, format_year, index_vault, int_value, link_exists, link_value,
+                       load_calendars, load_index, nearest_places, place_node, place_types, read_world,
+                       reference_calendar, route_graph, shortest_route, split_note, strip_links)
 from vault_lib import vault_path  # noqa: E402
 
-REGION_PROPS = ("region", "region_padre", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento")
+REGION_PROPS = ("region", "region_padre", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento",
+                "regiones")
 PLACE_TYPES = place_types()
 MAX_NAMES = 120
 MAX_ERAS = 12
+MAX_ROUTES = 6
 
 
 def one_line(entry):
@@ -46,6 +50,47 @@ def region_chain(entry, by_name, seen=None):
                 chain.append(region)
                 chain += region_chain(region, by_name, seen)
     return chain
+
+
+def route_context(vault, index, entry, by_name):
+    """Lo que ya se sabe de cómo se llega a un lugar (sus rutas y lo más cercano, con los días) o, en una
+    ruta, cuánto se tarda entre sus extremos sin ella: lo nuevo respeta esas distancias."""
+    if entry["tipo"] == ROUTE_TYPE:
+        graph, _ = route_graph(vault, index, skip=[entry["name"]])
+        start, end = (link_value(first(entry["props"].get(k)) or "") for k in ("partida", "destino"))
+        if not start or not end:
+            return []
+        a, _ = place_node(start, graph, by_name)
+        b, _ = place_node(end, graph, by_name)
+        found = shortest_route(graph, a, b) if a and b else None
+        if not found:
+            return ["", "## Rutas y distancias", f"- Sin esta ruta, no hay camino conocido entre [[{start}]] y [[{end}]]."]
+        routes = sorted({route for _, _, _, route in found[1]})
+        return ["", "## Rutas y distancias",
+                f"- Sin esta ruta, de [[{start}]] a [[{end}]] se tarda {format_days(found[0])} por "
+                + ", ".join(f"[[{r}]]" for r in routes) + " (routes.py da el detalle)."]
+    graph, points = route_graph(vault, index)
+    node, _ = place_node(entry["name"], graph, by_name)
+
+    def link(key):
+        if key in by_name:
+            return f"[[{by_name[key]['name']}]]"
+        point = points.get(key, {})
+        return f"[[{point['enlace']}]]" if point.get("enlace") else point.get("texto", key)
+
+    if not node:
+        return ["", "## Rutas y distancias", "- Ninguna ruta que se recorra hoy llega aquí, ni al sitio donde está."]
+    lines = ["", "## Rutas y distancias"]
+    if node != entry["name"].lower():
+        lines.append(f"- Se llega por {link(node)}, donde está.")
+    routes = sorted({route for _, _, route in graph.get(node, [])})
+    lines.append("- Rutas: " + ", ".join(f"[[{r}]]" for r in routes[:MAX_ROUTES])
+                 + (f" y {len(routes) - MAX_ROUTES} más" if len(routes) > MAX_ROUTES else ""))
+    nearest = nearest_places(graph, node, MAX_ROUTES)
+    if nearest:
+        lines.append("- Lo más cercano por las rutas: " + " · ".join(
+            f"{link(o)} {format_days(d)}" for o, d in nearest))
+    return lines
 
 
 def mentions(vault, note_path, target):
@@ -180,6 +225,10 @@ def main():
         chain += region_chain(item, by_name, seen_regions)
     for region in chain:
         related.setdefault(region["name"].lower(), region)
+
+    # Rutas y distancias de un lugar o de una ruta: lo que ya se sabe de cómo se llega
+    if entry and entry["tipo"] in PLACE_TYPES:
+        lines += route_context(vault, index, entry, by_name)
 
     # Entidades relacionadas, por relevancia, hasta el tope de palabras
     related.pop(key, None)

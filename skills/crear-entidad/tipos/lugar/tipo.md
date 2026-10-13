@@ -5,7 +5,7 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
 **No es un lugar:**
 - un sitio donde vive una comunidad (`asentamiento`): una aldea o una ciudad contienen lugares;
 - una gran región o un territorio (`region`): un continente, un reino o una comarca contienen asentamientos y lugares;
-- un camino o un paso que une dos sitios (`ruta`, más adelante).
+- un camino, un paso o un portal que une dos sitios (`ruta`): el lugar lo lista en sus `rutas`.
 
 ## Identidad del tipo
 - **Emoji del tipo:** 📍, al inicio del H1: `# 📍 Nombre`.
@@ -21,7 +21,8 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
   - la residencia, la ubicación actual o el lugar de nacimiento de un personaje, cuando las notas describen un sitio («su taller», «la atalaya»), no un pueblo;
   - los lugares notables de una región, de un asentamiento o de otro lugar, y la ubicación de un lugar;
   - el escenario de un evento y la zona que afecta un fenómeno;
-  - la sede de una facción, el centro o los lugares sagrados de una fe, y las `zonas` donde actúa una facción o donde se da una afección, cuando son un sitio (una mina, un pantano, unos muelles).
+  - la sede de una facción, el centro o los lugares sagrados de una fe, y las `zonas` donde actúa una facción o donde se da una afección, cuando son un sitio (una mina, un pantano, unos muelles);
+  - la partida, el destino o una parada de una ruta, cuando es un sitio (una posada del camino, un fuerte, una ruina al final de una senda).
 
   Antes de completar uno, lee lo que dicen de él las notas que lo enlazan: si describen un pueblo, es un `asentamiento`.
 
@@ -52,7 +53,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Actividad:** un día cualquiera (o quién pasa por un sitio abandonado) y quién viene y por qué.
 - **Peligros y defensas:** lo que amenaza a quien entra y lo que lo protege (guardias, trampas, criaturas, el propio terreno).
 - **Tesoros y recursos:** lo que guarda (objetos, saberes, secretos a la vista) y lo que se puede sacar de allí (madera, agua, mineral, información).
-- **Accesos:** las entradas, los pasos ocultos y cómo se llega desde su ubicación. Los pasos ocultos que se conocen (y se sabe dónde están) van también en la leyenda del mapa (`Paso oculto a 7.`), y las trampas conocidas de «Peligros y defensas», en su zona (`Trampa: …`). Lo que nadie conoce es un secreto: ni aquí ni en el mapa.
+- **Accesos:** las entradas, los pasos ocultos y cómo se llega desde su ubicación (por qué ruta, enlazada si es una entidad, y en cuánto tiempo, coherente con `routes.py`). Los pasos ocultos que se conocen (y se sabe dónde están) van también en la leyenda del mapa (`Paso oculto a 7.`), y las trampas conocidas de «Peligros y defensas», en su zona (`Trampa: …`). Lo que nadie conoce es un secreto: ni aquí ni en el mapa.
 - **Historia:** su origen, de 2 a 4 momentos decisivos y el presente.
 - **Relación con el mundo, secretos y rumores, ganchos, citas:** como en todo tipo.
 - **Imagen:**
@@ -64,7 +65,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `ubicacion`: dónde está (un asentamiento, una región u otro lugar); ese sitio lo lista en sus `lugares_notables`;
   - `lugares_notables`: los lugares que contiene (la capilla de una fortaleza); cada uno lo tiene en su `ubicacion`;
-  - `rutas` que pasan por él;
+  - `rutas` que pasan por él, salen o llegan a él: cada una lo tiene en su `partida`, su `destino` o sus `paradas`;
   - `dueno` (una persona) y `facciones` que lo controlan o lo usan;
   - `ocupantes`: quienes viven o trabajan allí;
   - `creencias` que se practican en él y `criaturas` que lo habitan (cada una lo tiene en su `habitat`);

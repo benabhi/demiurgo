@@ -1,0 +1,88 @@
+{
+  "tipo": "ruta",
+  "familia": "lugar",
+  "completa": [
+    "lugares",
+    "lugares_sagrados",
+    "zonas_afectadas",
+    "zonas",
+    "habitat",
+    "dominios"
+  ],
+  "emoji": "🧭",
+  "huecos_propios": {
+    "min": 2,
+    "max": 8
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Quién la recorre": 2,
+    "Atajos y desvíos": 3
+  },
+  "mapa": [
+    {"clase": "itinerario", "categoria": ["camino", "sendero", "paso", "fluvial", "maritima", "subterranea", "aerea", "espacial", "otro"], "desde": 3, "zonas_minimas": 3}
+  ],
+  "carpeta": {
+    "fija": "10_Mundo/Rutas_y_Conexiones"
+  },
+  "fechas": [
+    "apertura",
+    "cierre"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_uso", "en_declive", "cortada"],
+    "pasado": "abandonada",
+    "futuro": "en_construccion"
+  },
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "categoria": ["camino", "sendero", "paso", "fluvial", "maritima", "subterranea", "aerea", "espacial", "portal", "otro"],
+    "trazado": ["lineal", "sin_salida", "circular", "red"],
+    "situacion": ["en_uso", "en_declive", "cortada", "abandonada", "perdida", "en_construccion"],
+    "certeza": ["cierta", "dudosa"],
+    "uso": ["comercio", "peregrinacion", "militar", "correo", "migracion", "trashumancia", "contrabando", "exploracion", "local", "otro"],
+    "transito": ["nulo", "escaso", "moderado", "intenso"]
+  },
+  "solo_si": {
+    "partida": {"trazado": ["lineal", "sin_salida", "circular"]},
+    "destino": {"trazado": ["lineal"]},
+    "ramales": {"trazado": ["red"]}
+  },
+  "reciprocas": {
+    "partida": "rutas",
+    "destino": "rutas",
+    "paradas": "rutas",
+    "regiones": "rutas",
+    "conexiones": "conexiones",
+    "red": "ramales",
+    "ramales": "red",
+    "criaturas": "habitat",
+    "fenomenos": "zonas_afectadas",
+    "eventos": "lugares"
+  },
+  "relaciones": {
+    "partida": "lugar",
+    "destino": "lugar",
+    "paradas": "lugar",
+    "regiones": "region",
+    "conexiones": "ruta",
+    "red": "ruta",
+    "ramales": "ruta",
+    "control": "faccion",
+    "facciones": "faccion",
+    "pueblos": "cultura",
+    "creencias": "creencia",
+    "criaturas": "criatura",
+    "fenomenos": "fenomeno",
+    "eventos": "evento",
+    "sistemas": "sistema",
+    "mercancias": "cualquiera",
+    "era": "era"
+  }
+}

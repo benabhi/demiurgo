@@ -15,7 +15,10 @@
     "sede",
     "zonas",
     "centro",
-    "dominios"
+    "dominios",
+    "partida",
+    "destino",
+    "paradas"
   ],
   "emoji": "🏘️",
   "huecos_propios": {

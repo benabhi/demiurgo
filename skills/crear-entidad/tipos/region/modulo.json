@@ -12,7 +12,9 @@
     "lugares",
     "zonas",
     "dominios",
-    "habitat"
+    "habitat",
+    "partida",
+    "destino"
   ],
   "emoji": "🗺️",
   "huecos_propios": {

@@ -26,6 +26,9 @@ Comprueba:
   - en un calendario, las tablas que leen los scripts (meses, estaciones, festividades);
   - en una costumbre, que solo las festividades lleven `calendario` y `fecha`, y que la fiesta esté en la
     tabla «Festividades» de su calendario con la misma fecha y un mes que existe (avisos);
+  - en una ruta, su Recorrido: días que son números (o «?»), tramos encadenados de la partida al destino
+    (o de vuelta a la partida, en una circular), que suman los días de `dias`, y sus paradas en él y en
+    el mismo orden (avisos);
   - en los tipos con `tiempo` en su módulo (era, evento), su situación frente al año actual (lo
     que sigue en curso no tiene fin, lo pasado no termina en el futuro, lo profetizado no ha
     empezado) y su cronología dentro de sus fechas y en orden (avisos);
@@ -46,8 +49,9 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, SKILL_DIR,  # noqa: E402
-                       VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, display_title, link_value,
+from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, ROUTE_TYPE,  # noqa: E402
+                       SKILL_DIR, VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, days_value,
+                       display_title, format_days, link_value, route_segments,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
                        load_modules, malformed_lines, MAP_ITEM_EMPTY_RE, map_applies, map_key_problems, map_rule,
@@ -189,6 +193,76 @@ def festival_warnings(props, body, calendars):
     return warnings
 
 
+def route_problems(props, body):
+    """(errores, avisos) de una ruta: su Recorrido (cada tramo empieza donde acabó el anterior, el primero
+    en la partida y el último en el destino o de vuelta en la partida; los días son números y suman
+    `dias`) y sus paradas, que están en él y en el mismo orden."""
+    errors, warnings = [], []
+    layout = first(props.get("trazado"))
+    uncertain = first(props.get("situacion")) == "perdida" or first(props.get("certeza")) == "dudosa"
+    raw_total = first(props.get("dias"))
+    total = days_value(raw_total) if raw_total else None
+    if raw_total and total in (None, False):
+        errors.append(f"`dias` debe ser un número de días (`6`, `2.5`) o quedar vacía (encontrado: {raw_total})")
+        total = None
+    elif not raw_total and not uncertain:
+        warnings.append("falta `dias`: sin ella, la ruta no cuenta para las distancias del mundo")
+    segments = route_segments(body)
+    if segments is None:
+        return errors, warnings  # sin la tabla: lo dice la comprobación de secciones o de campos vacíos
+    if not segments:
+        errors.append("el Recorrido no tiene tramos: al menos uno, de la partida al destino (o hasta donde se pierde)")
+        return errors, warnings
+    for i, segment in enumerate(segments, 1):
+        if segment["dias"] is False:
+            errors.append(f"Recorrido, tramo {i}: los días deben ser un número (`2`, `1,5`) o «?» si no se saben "
+                          f"(encontrado: «{segment['dias_texto']}»)")
+        elif segment["dias"] is None and not uncertain:
+            warnings.append(f"Recorrido, tramo {i}: sin días («?»); en una ruta que se recorre, se saben")
+
+    def same(label_a, link_a, label_b, link_b):
+        if link_a or link_b:
+            return bool(link_a and link_b) and link_a.split("/")[-1].lower() == link_b.split("/")[-1].lower()
+        return normalize(label_a) == normalize(label_b)
+
+    start = link_value(first(props.get("partida")) or "")
+    end = link_value(first(props.get("destino")) or "")
+    if layout != "red":
+        for i in range(1, len(segments)):
+            before, now = segments[i - 1], segments[i]
+            if not same(before["hasta"], before["hasta_enlace"], now["desde"], now["desde_enlace"]):
+                warnings.append(f"Recorrido: el tramo {i + 1} empieza en «{now['desde']}», pero el anterior acaba en "
+                                f"«{before['hasta']}» (cada tramo empieza donde acabó el anterior)")
+        first_point, last_point = segments[0], segments[-1]
+        if start and not same(first_point["desde"], first_point["desde_enlace"], start, start):
+            warnings.append(f"Recorrido: empieza en «{first_point['desde']}», pero `partida` es [[{start}]]")
+        goal = end if layout == "lineal" else (start if layout == "circular" else None)
+        if goal and not same(last_point["hasta"], last_point["hasta_enlace"], goal, goal):
+            where = "`destino`" if layout == "lineal" else "su partida (es circular)"
+            warnings.append(f"Recorrido: acaba en «{last_point['hasta']}», pero {where} es [[{goal}]]")
+    known = [s["dias"] for s in segments if s["dias"] not in (None, False)]
+    if total is not None and len(known) == len(segments):
+        added = sum(known)
+        if abs(added - total) > max(0.5, 0.1 * total):
+            warnings.append(f"los días de los tramos del Recorrido suman {format_days(added)}, y `dias` dice "
+                            f"{format_days(total)}")
+    # Las paradas, en el Recorrido y en el mismo orden
+    stops = [link_value(v) for v in props.get("paradas", []) if link_value(v)]
+    order = []
+    for segment in segments:
+        for link in (segment["desde_enlace"], segment["hasta_enlace"]):
+            key = link.split("/")[-1].lower() if link else None
+            if key and key not in order:
+                order.append(key)
+    missing = [s for s in stops if s.lower() not in order]
+    if missing:
+        warnings.append("paradas que no están en el Recorrido: " + ", ".join(f"[[{s}]]" for s in missing))
+    present = [s.lower() for s in stops if s.lower() in order]
+    if present != sorted(present, key=order.index):
+        warnings.append("`paradas` no va en el orden del Recorrido (de la partida al destino)")
+    return errors, warnings
+
+
 def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calendar=None, gaps=None,
           known_terms=None, glossary_entities=None, calendars=None):
     errors, warnings = [], []
@@ -285,6 +359,12 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     # Festividad: su calendario la tiene en su tabla «Festividades», con la misma fecha
     if note_type == "costumbre":
         warnings += festival_warnings(props, body, calendars or [])
+
+    # Ruta: su Recorrido encadenado, con los días que suman los de `dias`, y sus paradas en él
+    if note_type == ROUTE_TYPE:
+        route_errors, route_warnings = route_problems(props, body)
+        errors += route_errors
+        warnings += route_warnings
 
     # Tiempo (era, evento): su situación frente al año actual y su cronología dentro de sus fechas
     if module.get("tiempo"):

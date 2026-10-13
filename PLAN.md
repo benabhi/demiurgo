@@ -129,7 +129,7 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
   | asentamiento: aldea, caserío, campamento, refugio, colonia, estación, otro | plano urbano | relevancia 4 |
   | región | mapa de territorio | relevancia 4, y la imagen cuando hay al menos 5 zonas que situar |
   | el mundo | mapa del mundo | a pedido y en `finalizar-mundo` |
-  | ruta (#21) | mapa de itinerario, en tira | se define con el módulo |
+  | ruta: camino, sendero, paso, fluvial, marítima, subterránea, aérea, espacial (los portales, no) | itinerario: la franja de tierra a lo largo de la ruta | relevancia 3, y la imagen desde 3 puntos |
 
 - **La leyenda** (sección `## Mapa`): `- **N.** **Nombre** · <orientación> — una línea. Conecta con 2 y 5.` (una viñeta con el número en negrita, porque Obsidian renumera las listas numeradas al leerlas).
   - Números estables: solo se añaden al final; nunca se renumeran ni se reutilizan (una zona destruida queda marcada).
@@ -264,11 +264,16 @@ Etapas:
   - **Recíproca** con los pueblos y las creencias (que ganan la propiedad `costumbres`), los mitos, el calendario y sus costumbres relacionadas.
   - **Motor:** tabla `Costumbre.md` (categorías que se combinan) y los paquetes «Fiesta de un pueblo» y «Ley y quien la impone».
   - **Imagen:** la costumbre en plena práctica, en su momento más reconocible, apaisado (`Escenas`, `Costumbre_`).
-- [ ] **21. `ruta` 🧭 — caminos, rutas, pasos y portales** (familia `lugar`).
+- [ ] **21. `ruta` 🧭 — caminos, sendas, pasos, rutas por agua, por aire o bajo tierra, rutas espaciales y portales** (familia `lugar`).
   - **Carpeta:** `Rutas_y_Conexiones`.
-  - **Ficha:** origen, destino, longitud; tramos y paradas; peligros y controles; quién la usa y quién la mantiene.
-  - **Tiempos de viaje como datos** (`dias_a_pie`, `dias_a_caballo`…), para un grafo de distancias.
-  - **Imagen:** vista a lo largo de la ruta, con viajeros, apaisado (`Lugares`).
+  - **Ficha:** qué une o adónde no lleva; el recorrido por tramos, con sus días; cómo se recorre (temporada, peaje, salvoconducto, el rito del portal); quién la recorre y qué lleva; peligros y controles; atajos y desvíos; historia.
+  - **Trazado:** `lineal` (une su partida y su destino), `sin_salida` (los senderos que no llevan a ninguna parte), `circular` y `red` (con sus ramales). **Situación** (en uso, en declive, cortada, abandonada, perdida, en construcción) y **certeza** (cierta o dudosa: la ruta que solo cuenta un texto antiguo, con su fuente).
+  - **Tiempos de viaje como datos:** `dias` y `medio`, y la tabla Recorrido con los días de cada tramo, que valida `check_note.py`. Con ellos, `routes.py` arma el grafo de distancias: las rutas de un lugar, el camino más rápido entre dos y lo que debería estar unido y no lo está. `build_context.py` da a cada lugar sus rutas y lo más cercano, y a cada ruta, cuánto se tardaba sin ella.
+  - **Mapas:** el itinerario de la ruta (la franja de tierra a lo largo del camino) y las rutas en los mapas de las regiones que cruzan.
+  - **Motor:** tabla `Ruta.md`, paquetes y la acción `conectar`, que une lo que debería estar unido.
+  - **Imagen:** vista a lo largo de la ruta, con viajeros, apaisado (`Lugares`, `Ruta_`).
+
+  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [ ] 2. mapas · [ ] 3. motor.
 
 ### Fase 6 — Detalle del mundo
 - [ ] **22. `material` 💎 — minerales, materiales y recursos naturales.** Carpeta `Minerales_y_Materiales_Naturales` o `Recursos_Naturales`; imagen: lámina de espécimen (`Laminas`), técnica sugerida `codice`.

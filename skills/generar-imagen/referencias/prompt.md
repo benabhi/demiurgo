@@ -24,6 +24,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | region | paisaje panorámico | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Paisaje_` |
 | asentamiento | plano general desde el camino de llegada | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Asentamiento_` |
 | lugar | su vista más emblemática, por fuera o por dentro | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Lugar_` |
+| ruta | vista a lo largo de la ruta en su tramo más reconocible, con sus viajeros | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Ruta_` |
 | fenomeno | plano atmosférico del fenómeno sobre el paisaje | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Fenomeno_` |
 | especie | figura de cuerpo entero de un miembro típico | `Vertical 3:4 portrait format` | `Ilustraciones/Seres` | `Especie_` |
 | deidad | figura de cuerpo entero tal como la imaginan sus fieles | `Vertical 3:4 portrait format` | `Ilustraciones/Personajes` | `Deidad_` |
@@ -263,6 +264,30 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 | LUZ | La luz y el ambiente | `blue dusk with a cold drizzle` |
 
 **La vista más emblemática:** la que define el sitio. Una posada o un templo, por fuera; una mazmorra o una cripta, desde su sala principal; un paraje, desde donde mejor se ve. Las figuras, pequeñas: el lugar es el sujeto.
+
+## ruta — a lo largo del camino
+```
+{ESTILO}. Wide view along a route of an invented world, {VISTA}. Route: {SUJETO}. The way itself: {OBRA}. Landscape it crosses: {PAISAJE}. Travelers: {VIAJEROS}. Focal detail: {DETALLE}. Lighting and atmosphere: {LUZ}. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| VISTA | Desde dónde se ve el tramo: a ras de camino, desde un alto, desde la cubierta | `seen from the middle of the road as it winds away toward a distant pass` |
+| SUJETO | Qué es, sin su nombre | `an old paved trade road climbing through hill country` |
+| OBRA | Cómo es el camino: firme, obra, señales | `worn flagstones half sunk in mud, leaning milestones, a narrow stone bridge` |
+| PAISAJE | Lo que cruza, de su Recorrido | `bare moorland, a slow river below, low clouds over the ridges` |
+| VIAJEROS | Quién la recorre hoy, de «Quién la recorre», pequeños; o nadie, si está abandonada | `a small caravan of mule carts and two hooded guards` / `no one: grass grows between the stones` |
+| DETALLE | Lo que llama la atención: un peaje, un mojón, una señal de su peligro | `a toll gate of black timber with a lantern` |
+| LUZ | La luz y el ambiente | `grey morning light, drizzle` |
+
+**El camino es el sujeto:** el plano sigue la ruta, que se aleja hacia el fondo y lleva la vista; las figuras, pequeñas. Según su categoría:
+- **fluvial o marítima:** desde la cubierta o la orilla, con la estela, las boyas, los faros o la costa que la marcan;
+- **subterránea:** el túnel o la galería que se pierde en la oscuridad, con la luz de quien la recorre;
+- **aérea o espacial:** la ruta vista desde la montura o la nave, con las balizas, las torres o los astros que la guían;
+- **paso:** el tramo más duro (el collado, el desfiladero, la pasarela sobre la ciénaga);
+- **portal:** el portal y quien está a punto de cruzarlo, con lo que se ve (o se intuye) al otro lado. Su forma y su efecto, según las reglas de su `sistema`;
+- **sin salida:** el tramo donde se pierde (la senda que se borra en la niebla, el camino que acaba en nada);
+- **perdida o dudosa:** lo que queda de ella (unas losas bajo el musgo, un mojón solitario), o el tramo tal como lo describe su fuente.
 
 ## faccion — emblema o estandarte
 ```

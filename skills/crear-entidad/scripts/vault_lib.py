@@ -3,6 +3,8 @@
 Lee la bóveda como la entiende Obsidian: enlaces, frontmatter, módulos de tipos, la Ficha
 del Mundo y un índice compacto con una entrada por entidad. No tiene línea de comandos."""
 import datetime
+import heapq
+import itertools
 import json
 import math
 import re
@@ -121,7 +123,7 @@ def omitted_sections(module, template_body, relevance, props=None):
 MAP_SECTION = "Mapa"
 # Marcadores que un generador de imágenes dibuja bien en un mismo mapa
 MAX_MARKERS = 12
-MAP_CLASSES = ("interior", "urbano", "paraje", "territorio")
+MAP_CLASSES = ("interior", "urbano", "paraje", "territorio", "itinerario")
 ORIENTATIONS = ("noroeste", "norte", "noreste", "oeste", "centro", "este", "suroeste", "sur", "sureste")
 ORIENTATION_SYNONYMS = {"sudoeste": "suroeste", "sudeste": "sureste"}
 UNCHARTED_MARK = "*Sin cartografiar.*"
@@ -1041,6 +1043,326 @@ def calendar_summary(calendar, world_year=None):
     return lines
 
 
+# --- Rutas -------------------------------------------------------------------
+# Una ruta (tipo `ruta`) une lugares, o sale de uno y se pierde. Su tabla «Recorrido» (Desde, Hasta, Días,
+# Cómo es) da sus tramos en orden, con los días de cada uno por su medio habitual (`medio`). Las rutas
+# ciertas que se pueden recorrer hoy forman el grafo de distancias del mundo: los lugares son sus nodos y
+# los tramos, sus aristas, en los dos sentidos. Un punto sin nota (un vado, el sitio donde se pierde) es un
+# nodo de su propia ruta.
+
+ROUTE_TYPE = "ruta"
+ROUTE_SECTION = "Recorrido"
+# Situaciones en que una ruta se puede recorrer hoy; una ruta con `certeza: dudosa` no cuenta nunca
+ROUTE_USABLE = ("en_uso", "en_declive")
+ROUTE_DAYS_RE = re.compile(r"^~?\s*(\d+(?:[.,]\d+)?)(?![\d.,])")
+UNKNOWN_DAYS = ("?", "¿?")
+# Lo que el motor quiere conectado: asentamientos y lugares, salvo los parajes naturales (se cruzan, no
+# se va a ellos) y lo que nadie sabe dónde está
+CONNECTABLE_TYPES = ("asentamiento", "lugar")
+CROSSED_CATEGORIES = ("montana", "agua", "bosque", "isla", "desierto", "paraje")
+UNREACHABLE_SITUATIONS = ("perdido",)
+# Un lugar sin rutas propias se alcanza por el sitio que lo contiene (la taberna, por su ciudad)
+CONTAINER_PROPS = ("ubicacion",)
+
+
+def days_value(text):
+    """Días de un tramo («3», «2,5», «~4 en verano») como número; None si no se saben («?»); False si no
+    es un número."""
+    text = strip_links(text or "").strip()
+    if text in UNKNOWN_DAYS:
+        return None
+    match = ROUTE_DAYS_RE.match(text)
+    return float(match.group(1).replace(",", ".")) if match else False
+
+
+def format_days(days):
+    """«3 días», «1 día», «2,5 días», «? días»."""
+    if days is None:
+        return "? días"
+    shown = f"{days:g}".replace(".", ",")
+    return f"{shown} día" if days == 1 else f"{shown} días"
+
+
+def route_point(cell):
+    """(nombre legible, destino del enlace o None) de un punto del Recorrido."""
+    link = LINK_RE.search(cell or "")
+    return strip_links(cell or "").strip(), (link.group(1).rstrip("\\").strip() if link else None)
+
+
+def route_segments(body):
+    """Tramos de la tabla «Recorrido» de una ruta, en orden: desde y hasta (nombre legible y destino del
+    enlace, o None si el punto no es una entidad) y los días (número; None si no se saben; False si la
+    celda no es válida). None si la nota no tiene esa tabla."""
+    header, rows, inside = [], [], False
+    for line in body:
+        if line.startswith("## "):
+            if inside:
+                break
+            inside = normalize(line[3:]) == normalize(ROUTE_SECTION)
+            continue
+        stripped = line.strip()
+        if not inside:
+            continue
+        if not stripped.startswith("|"):
+            if header:
+                break  # la tabla terminó
+            continue
+        cells = [cell.strip() for cell in CELL_SPLIT_RE.split(stripped.strip("|"))]
+        if not header:
+            header = [normalize(cell) for cell in cells]
+            continue
+        if not any(cells) or all(SEPARATOR_CELL_RE.match(cell) for cell in cells if cell):
+            continue
+        start, start_link = route_point(table_cell(header, cells, "Desde"))
+        end, end_link = route_point(table_cell(header, cells, "Hasta"))
+        raw = table_cell(header, cells, "Días")
+        rows.append({"desde": start, "desde_enlace": start_link, "hasta": end, "hasta_enlace": end_link,
+                     "dias": days_value(raw), "dias_texto": strip_links(raw).strip()})
+    return rows if header else None
+
+
+def route_usable(props):
+    """Si la ruta se puede recorrer hoy y se sabe por dónde va: solo esas cuentan para las distancias."""
+    return first(props.get("situacion")) in ROUTE_USABLE and first(props.get("certeza")) != "dudosa"
+
+
+def node_key(route, label, link):
+    """Clave de un punto en el grafo: la nota del lugar, en minúsculas, o `<ruta>#<punto>` si no tiene nota."""
+    return link.split("/")[-1].strip().lower() if link else f"{route.lower()}#{normalize(label)}"
+
+
+def route_graph(vault, index, usable_only=True, skip=()):
+    """(grafo, puntos) de las rutas: {nodo: [(otro nodo, días o None, ruta)]} y, de cada nodo, su texto
+    legible y su enlace (`{"texto", "enlace"}`; el enlace es None en un punto sin nota). Por defecto, solo las rutas ciertas que se pueden recorrer hoy; `skip`, rutas que no cuentan
+    (la que se está creando, para ver los caminos que ya había). Una ruta sin tabla de Recorrido cuenta
+    como un tramo de su partida a su destino, con sus `dias`."""
+    graph, points = {}, {}
+    skipped = {name.lower() for name in skip}
+    for entry in index:
+        if entry["tipo"] != ROUTE_TYPE or entry["name"].lower() in skipped or entry["estado"] == "archivado" \
+                or (usable_only and not route_usable(entry["props"])):
+            continue
+        _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
+        segments = route_segments(body) or []
+        if not segments:
+            start, end = (link_value(first(entry["props"].get(k))) for k in ("partida", "destino"))
+            if start and end:
+                total = days_value(first(entry["props"].get("dias")))
+                segments = [{"desde": start.replace("_", " "), "desde_enlace": start, "hasta": end.replace("_", " "),
+                             "hasta_enlace": end, "dias": total}]
+        for segment in segments:
+            if not segment["desde"] or not segment["hasta"]:
+                continue
+            a = node_key(entry["name"], segment["desde"], segment["desde_enlace"])
+            b = node_key(entry["name"], segment["hasta"], segment["hasta_enlace"])
+            if a == b:
+                continue
+            days = None if segment["dias"] is False else segment["dias"]
+            points.setdefault(a, {"texto": segment["desde"], "enlace": segment["desde_enlace"]})
+            points.setdefault(b, {"texto": segment["hasta"], "enlace": segment["hasta_enlace"]})
+            graph.setdefault(a, []).append((b, days, entry["name"]))
+            graph.setdefault(b, []).append((a, days, entry["name"]))
+    return graph, points
+
+
+def shortest_route(graph, start, goal):
+    """(días, tramos) del camino más rápido conocido entre dos nodos; cada tramo es (desde, hasta, días,
+    ruta). None si no hay un camino con todos sus días conocidos."""
+    if start == goal:
+        return 0.0, []
+    order = itertools.count()
+    queue, best = [(0.0, next(order), start, [])], {start: 0.0}
+    while queue:
+        days, _, node, path = heapq.heappop(queue)
+        if node == goal:
+            return days, path
+        if days > best.get(node, math.inf):
+            continue
+        for other, length, route in graph.get(node, []):
+            if length is None:
+                continue
+            total = days + length
+            if total < best.get(other, math.inf) - 1e-9:
+                best[other] = total
+                heapq.heappush(queue, (total, next(order), other, path + [(node, other, length, route)]))
+    return None
+
+
+def nearest_places(graph, start, limit=6):
+    """[(nodo, días)] de los lugares más cercanos a un nodo por las rutas, del más cercano al más lejano
+    (solo los nodos con nota, no los puntos sueltos de una ruta)."""
+    best, queue, order = {start: 0.0}, [(0.0, 0, start)], itertools.count(1)
+    while queue:
+        days, _, node = heapq.heappop(queue)
+        if days > best.get(node, math.inf):
+            continue
+        for other, length, _ in graph.get(node, []):
+            if length is not None and days + length < best.get(other, math.inf) - 1e-9:
+                best[other] = days + length
+                heapq.heappush(queue, (days + length, next(order), other))
+    found = sorted((days, node) for node, days in best.items() if node != start and "#" not in node)
+    return [(node, days) for days, node in found[:limit]]
+
+
+def route_components(graph):
+    """{nodo: componente}: dos lugares están en el mismo si alguna cadena de rutas los une, aunque no se
+    sepa cuánto se tarda."""
+    component, current = {}, 0
+    for start in graph:
+        if start in component:
+            continue
+        current += 1
+        component[start], stack = current, [start]
+        while stack:
+            for other, _, _ in graph[stack.pop()]:
+                if other not in component:
+                    component[other] = current
+                    stack.append(other)
+    return component
+
+
+def place_node(name, graph, by_name, seen=None):
+    """(nodo, lugar por el que se llega) de un lugar en el grafo: el propio lugar si alguna ruta pasa por
+    él; si no, el sitio que lo contiene (su `ubicacion`), subiendo. (None, None) si ninguno tiene rutas."""
+    key = name.lower()
+    if key in graph:
+        return key, name
+    seen = seen if seen is not None else set()
+    entry = by_name.get(key)
+    if not entry or key in seen:
+        return None, None
+    seen.add(key)
+    for prop in CONTAINER_PROPS:
+        for target in entry["relaciones"].get(prop, []):
+            node, via = place_node(target, graph, by_name, seen)
+            if node:
+                return node, via
+    return None, None
+
+
+def place_region(entry, by_name, seen=None):
+    """La región (nota de tipo `region`) donde está un lugar, subiendo por su `region` o su `ubicacion`;
+    None si no se sabe."""
+    seen = seen if seen is not None else set()
+    for prop in ("region", "ubicacion"):
+        for target in entry["relaciones"].get(prop, []):
+            other = by_name.get(target.lower())
+            if not other or other["name"] in seen:
+                continue
+            seen.add(other["name"])
+            if other["tipo"] == "region":
+                return other
+            found = place_region(other, by_name, seen)
+            if found:
+                return found
+    return None
+
+
+def connection_candidates(vault, index):
+    """Lo que debería estar unido por una ruta y no lo está, para que el motor lo conecte:
+      - `vecinos`: dos asentamientos vecinos sin ningún camino entre ellos;
+      - `capital`: un asentamiento importante (relevancia 3 o más) sin camino hasta la capital de su región
+        (o, sin capital, hasta el asentamiento con rutas más importante de la región);
+      - `regiones`: dos regiones vecinas que ninguna ruta une;
+      - `aislado`: un lugar importante al que no llega ninguna ruta, ni al sitio donde está, y que no tiene
+        con quién unirse: la ruta llega a él desde donde diga su contexto (una ruina, un santuario, una torre).
+    Un lugar está unido a lo que está unido el sitio que lo contiene (la taberna, a lo de su ciudad). Cada
+    uno con su partida, su destino (None si lo decide el contexto), sus puntos y sus razones."""
+    graph, _ = route_graph(vault, index)
+    components = route_components(graph)
+    by_name = {e["name"].lower(): e for e in index}
+
+    def wanted(entry, minimum=1):
+        props = entry["props"]
+        if entry["tipo"] not in CONNECTABLE_TYPES or entry["estado"] == "archivado"                 or first(props.get("situacion")) in UNREACHABLE_SITUATIONS:
+            return False
+        if entry["tipo"] == "lugar" and first(props.get("categoria")) in CROSSED_CATEGORIES:
+            return False
+        return (entry["relevancia"] or 0) >= minimum
+
+    def reached(entry):
+        """Componentes del lugar y de los sitios que lo contienen."""
+        found, seen, stack = set(), set(), [entry["name"]]
+        while stack:
+            key = stack.pop().lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            if key in components:
+                found.add(components[key])
+            item = by_name.get(key)
+            for prop in CONTAINER_PROPS:
+                stack += item["relaciones"].get(prop, []) if item else []
+        return found
+
+    def relevance(entry):
+        return entry["relevancia"] or 2
+
+    candidates, seen_pairs, placed = [], set(), set()
+
+    def add(reason, start, end, points, why):
+        pair = tuple(sorted(e["name"].lower() for e in (start, end) if e))
+        if pair in seen_pairs:
+            return
+        seen_pairs.add(pair)
+        placed.update(pair)
+        candidates.append({"motivo": reason, "partida": start["name"], "destino": end["name"] if end else None,
+                           "puntos": points, "razones": why})
+
+    # Vecinos sin camino entre ellos
+    for entry in index:
+        if entry["tipo"] != "asentamiento" or not wanted(entry):
+            continue
+        for target in entry["relaciones"].get("vecinos", []):
+            other = by_name.get(target.lower())
+            if other and other["name"] != entry["name"] and wanted(other) and not reached(entry) & reached(other):
+                add("vecinos", entry, other, 4 + round((relevance(entry) + relevance(other)) / 2),
+                    [f"[[{entry['name']}]] y [[{other['name']}]] son vecinos y ningún camino los une"])
+
+    # Los asentamientos importantes de cada región, unidos a su capital (o al más importante con rutas)
+    members = {}
+    for entry in index:
+        if entry["tipo"] == "asentamiento" and wanted(entry, 3):
+            region = place_region(entry, by_name)
+            if region:
+                members.setdefault(region["name"], []).append(entry)
+    for region_name, places in members.items():
+        region = by_name[region_name.lower()]
+        capital = next((by_name[t.lower()] for t in region["relaciones"].get("capital", []) if t.lower() in by_name),
+                       None)
+        hub = capital or max((p for p in places if reached(p)), key=relevance, default=None)
+        if not hub:
+            continue
+        for place in places:
+            if place["name"] != hub["name"] and not reached(place) & reached(hub):
+                what = "la capital" if hub is capital else "el asentamiento con rutas más importante"
+                add("capital", place, hub, 2 + relevance(place) + (1 if relevance(hub) >= 4 else 0),
+                    [f"[[{place['name']}]] no tiene camino hasta {what} de [[{region['name']}]], [[{hub['name']}]]"])
+
+    # Regiones vecinas que ninguna ruta une
+    touched = {}
+    for entry in index:
+        if entry["tipo"] == ROUTE_TYPE and route_usable(entry["props"]):
+            for target in entry["relaciones"].get("regiones", []):
+                touched.setdefault(target.lower(), set()).add(entry["name"])
+    for entry in index:
+        if entry["tipo"] != "region" or entry["estado"] == "archivado":
+            continue
+        for target in entry["relaciones"].get("vecinos", []):
+            other = by_name.get(target.lower())
+            if other and other["tipo"] == "region"                     and not touched.get(entry["name"].lower(), set()) & touched.get(other["name"].lower(), set()):
+                add("regiones", entry, other, 3 + round((relevance(entry) + relevance(other)) / 2),
+                    [f"[[{entry['name']}]] y [[{other['name']}]] son vecinas y ninguna ruta las une"])
+
+    # Lugares importantes a los que no llega nada
+    for entry in index:
+        if wanted(entry, 3) and not reached(entry) and entry["name"].lower() not in placed:
+            add("aislado", entry, None, 1 + relevance(entry),
+                [f"a [[{entry['name']}]] no llega ninguna ruta, ni al sitio donde está"])
+    candidates.sort(key=lambda c: -c["puntos"])
+    return candidates
+
+
 # --- Menciones sin enlace ----------------------------------------------------
 # Toda entidad va enlazada cada vez que se nombra; solo los términos (rangos, títulos, oficios,
 # expresiones, meses…) van al Glosario sin enlace. Este detector busca en el cuerpo:
@@ -1058,12 +1380,13 @@ SENTENCE_STARTERS = {".", "!", "?", ":", "«", "(", "—", "-", "*", '"', "“",
 ENTITY_KIND_WORDS = {
     "ciudad", "villa", "aldea", "pueblo", "poblado", "barrio", "fortaleza", "castillo", "templo", "ruina",
     "rio", "lago", "mar", "monte", "montana", "cordillera", "sierra", "bosque", "isla", "istmo", "desierto",
-    "valle", "paso", "camino", "ruta", "calzada", "persona", "figura", "heroe", "rey", "reina", "orden",
-    "gremio", "consejo", "compania", "secta", "ejercito", "banda", "alianza", "casa", "dinastia", "clan",
-    "familia", "batalla", "guerra", "catastrofe", "tratado", "religion", "culto", "fe", "dios", "diosa",
-    "espiritu", "demonio", "bestia", "monstruo", "lengua", "dialecto", "escritura", "fiesta", "festividad",
-    "leyenda", "profecia", "cuento", "libro", "cancion", "poema", "enfermedad", "plaga", "mineral", "planta",
-    "astro", "reliquia", "artefacto", "arma", "joya", "magia", "tecnologia", "ley"}
+    "valle", "paso", "camino", "ruta", "calzada", "sendero", "senda", "vado", "tunel", "portal", "persona",
+    "figura", "heroe", "rey", "reina", "orden", "gremio", "consejo", "compania", "secta", "ejercito", "banda",
+    "alianza", "casa", "dinastia", "clan", "familia", "batalla", "guerra", "catastrofe", "tratado",
+    "religion", "culto", "fe", "dios", "diosa", "espiritu", "demonio", "bestia", "monstruo", "lengua",
+    "dialecto", "escritura", "fiesta", "festividad", "leyenda", "profecia", "cuento", "libro", "cancion",
+    "poema", "enfermedad", "plaga", "mineral", "planta", "astro", "reliquia", "artefacto", "arma", "joya",
+    "magia", "tecnologia", "ley"}
 
 
 def comparable(text):

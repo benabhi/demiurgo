@@ -20,6 +20,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
 - **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
 - **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, y `--add` le añade una zona (ver `referencias/mapas.md`).
+- **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
 
 Lee entera solo la nota que vas a escribir; de las demás, solo lo que el contexto no resuma bien. De una nota larga, lee solo la sección que necesites: búscala con `grep -n "^## <Sección>" <nota>` y lee ese tramo de líneas.
@@ -34,7 +35,7 @@ Cada carpeta de `tipos/` es un módulo con tres archivos:
   - `emoji`;
   - `huecos_propios`: cuántos enlaces pendientes nuevos puede abrir cada nota (los que solo nombra ella) con relevancia 4 o 5; con menos relevancia, el rango se reduce (ver «Profundidad»);
   - `profundidad`: la relevancia mínima desde la que va cada sección que no es del núcleo (`"Citas": 3`); las que no figuran van siempre;
-  - `mapa` (opcional, en los lugares): qué categorías llevan mapa, de qué clase (`interior`, `urbano`, `paraje` o `territorio`), desde qué relevancia y, si hace falta, con cuántas zonas como mínimo para dibujarlo (`zonas_minimas`). Ver `referencias/mapas.md`;
+  - `mapa` (opcional, en los lugares): qué categorías llevan mapa, de qué clase (`interior`, `urbano`, `paraje`, `territorio` o `itinerario`), desde qué relevancia y, si hace falta, con cuántas zonas como mínimo para dibujarlo (`zonas_minimas`). Ver `referencias/mapas.md`;
   - `carpeta` (fija, o según una propiedad como el rol o la categoría);
   - `crear_desde_cero` (opcional): `false` si el motor no debe inventar entidades de ese tipo, solo crear las que ya nombra el canon (las especies, por ejemplo);
   - `escalas` y `valores` (opcionales): propiedades numéricas con su rango (`peligrosidad` del 1 al 5) y propiedades con valores permitidos (`naturaleza`, `situacion_vital`), que valida `check_note.py`;
@@ -49,6 +50,7 @@ Módulos disponibles:
 - `region` 🗺️ — grandes regiones, territorios políticos y planos (familia `lugar`).
 - `asentamiento` 🏘️ — metrópolis, ciudades, villas, aldeas, campamentos, refugios, colonias y estaciones (familia `lugar`): cómo se ve, quién manda, de qué vive, quién vive allí y qué problemas tiene. Completa los lugares de nacimiento y residencia de los personajes y la capital y los pueblos de una región.
 - `lugar` 📍 — sitios concretos (familia `lugar`): edificios (templos, fortalezas, posadas, talleres, torres…), ruinas y zonas peligrosas (mazmorras, pecios, yermos) y parajes naturales (montañas, ríos, bosques, cuevas, islas). Completa las tabernas, templos, faros y escenarios que nombran los asentamientos, las regiones y los eventos.
+- `ruta` 🧭 — caminos, sendas, pasos, rutas por río, por mar, por el aire o bajo tierra, rutas entre astros y portales (familia `lugar`): qué une o adónde no lleva (lineal, sin salida, circular o red), por dónde va y cuánto se tarda (su tabla Recorrido, con los días de cada tramo, alimenta el grafo de distancias de `routes.py`), cómo se recorre, quién la recorre y qué lleva, sus peligros y controles, sus atajos y su historia. Puede estar perdida o ser dudosa (la cuenta solo un texto antiguo). Recíproca con sus extremos, sus paradas y sus regiones (`rutas`), y con las rutas que conecta.
 - `faccion` 🛡️ — gobiernos, consejos, gremios, órdenes, sectas, compañías, ejércitos, bandas, sociedades secretas, movimientos, alianzas e instituciones: qué quieren de verdad, cómo se organizan, con qué cuentan y con quién chocan. Lleva `objetivo`, `recursos` (1 a 5) y `rivales` para el motor.
 - `linaje` 🌳 — dinastías, casas nobles, clanes, familias notables y estirpes: de dónde vienen, qué se hereda con el apellido, quién manda y quién heredará (con su disputa), con qué cuentan, sus alianzas y enemistades, y si suben o se hunden. Sus miembros con nota lo llevan en su `linaje`.
 - `objeto` 🗝️ — artefactos, reliquias, armas, armaduras, herramientas, vehículos, prendas, joyas, sustancias y monedas, como pieza única o como tipo de objeto: cómo es, para qué sirve, qué tiene de especial (con sus límites y su precio), quién lo hizo, de quién fue y dónde está.
@@ -68,7 +70,7 @@ Módulos disponibles:
 - `calendario` 📅 — cómo se cuenta el tiempo: el año 0, cómo se escriben los años, meses, semana, estaciones y festividades. El de referencia es el eje de la Ficha y da los nombres de las fechas de todas las notas; cada pueblo puede tener el suyo.
 - `secreto` 🔒 — verdades ocultas. También se crean como parte de otras entidades.
 
-Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que ya nombran las relaciones de otros módulos (`pending_links.py` los acepta; hoy, `costumbre`, `ruta`, `material` y `obra`) pueden quedar como enlaces pendientes con su tipo hasta que llegue su módulo.
+Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que ya nombran las relaciones de otros módulos (`pending_links.py` los acepta; hoy, `material` y `obra`) pueden quedar como enlaces pendientes con su tipo hasta que llegue su módulo.
 
 ## Paso 0: preparar
 1. Localiza la bóveda (por defecto `World_Building/`). `CLAUDE.md` y la Ficha del Mundo son la fuente de verdad.
@@ -98,10 +100,12 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Los tipos previstos que y
   - lo que dicen de ella las notas que la nombran;
   - las entidades relacionadas, con su resumen y ordenadas por relevancia;
   - la cadena de regiones;
+  - en un lugar, sus rutas y lo más cercano, con los días (en una ruta, cuánto se tarda entre sus extremos sin ella);
   - los nombres ya usados;
   - las preguntas abiertas relacionadas.
 
   Úsalo en lugar de recorrer la bóveda, y lee entera solo la nota que necesites en detalle.
+- **Distancias:** lo que pongas a una distancia (a dos jornadas de la capital, al otro lado del paso) cuadra con lo que ya dicen las rutas: para dos lugares cualesquiera, `routes.py <A> <B>`.
 - **Duplicados:** busca el nombre y el concepto con `search_vault.py`, que mira a la vez las entidades, los enlaces pendientes y el Glosario, también por nombres parecidos.
 - Comprueba los pilares de la Ficha y las reglas de contenido de `CLAUDE.md`: especies, tecnología, poderes, tono, crudeza y vetos. Si el pedido los contradice, avisa antes de seguir.
 - **Pilares por definir:** si lo que vas a crear necesita uno (el año 0 y el presente, en un calendario), no lo decidas tú: sigue `referencias/pilares.md`.

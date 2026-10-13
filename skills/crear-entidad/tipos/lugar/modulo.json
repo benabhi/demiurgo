@@ -13,7 +13,10 @@
     "centro",
     "lugares_sagrados",
     "zonas",
-    "habitat"
+    "habitat",
+    "partida",
+    "destino",
+    "paradas"
   ],
   "emoji": "📍",
   "huecos_propios": {
