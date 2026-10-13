@@ -1,6 +1,7 @@
 {
   "tipo": "ruta",
   "familia": "lugar",
+  "contenedor": false,
   "completa": [
     "lugares",
     "lugares_sagrados",

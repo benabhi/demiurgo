@@ -21,6 +21,7 @@ control: []
 creencias: []
 criaturas: []
 flora: []
+ecosistemas: []
 recursos: []
 fenomenos: []
 clima: ""

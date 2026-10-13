@@ -61,7 +61,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - `categoria`: `fauna`, `bestia` (un animal peligroso, aunque natural), `monstruo` (fuera de lo natural, o de lo que se conoce), `aberracion` (deformada por un fenómeno, un poder o una afección), `no_muerto`, `espiritu` (sin culto: un aparecido, un genio de un lugar), `constructo` u `otro`.
 - `situacion`, `peligrosidad`, `aparicion` y `extincion`: ver arriba.
 - Relaciones, solo con enlaces:
-  - `habitat`: las regiones y los lugares donde vive; cada uno la tiene en sus `criaturas`;
+  - `habitat`: las regiones, los lugares o los ecosistemas donde vive; cada uno la tiene en sus `criaturas`;
   - `fenomenos` que la crearon o la transforman: cada uno la tiene en sus `criaturas`;
   - `afecciones` que transmite o sufre: cada una la tiene en sus `criaturas`;
   - `parientes`: criaturas emparentadas (la variante de otro hábitat, la forma antigua); recíprocas;

@@ -22,6 +22,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 |---|---|---|---|---|
 | personaje | retrato de cabeza y hombros | `Square 1:1 format` | `Ilustraciones/Personajes` | `Retrato_` |
 | region | paisaje panorámico | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Paisaje_` |
+| ecosistema | paisaje del bioma, con su vida | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Ecosistema_` |
 | asentamiento | plano general desde el camino de llegada | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Asentamiento_` |
 | lugar | su vista más emblemática, por fuera o por dentro | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Lugar_` |
 | ruta | vista a lo largo de la ruta en su tramo más reconocible, con sus viajeros | `Wide 16:9 landscape format` | `Ilustraciones/Lugares` | `Ruta_` |
@@ -104,6 +105,23 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 - **`fisica`:** el paisaje natural es el protagonista.
 - **`politica`:** su paisaje característico más una señal del poder (`a fortified border wall`, `banners flying over watchtowers`).
 - **`plano`:** la dimensión como paisaje, aunque sea imposible (`an otherworldly realm of floating stone islands over a starless void`).
+
+## ecosistema — paisaje del bioma
+```
+{ESTILO}. Wide landscape of a biome of an invented world, {PUNTO_DE_VISTA}. Biome: {SUJETO}. Terrain and water: {TERRENO}. Plant life: {FLORA}. Animal life: {FAUNA}. Sign of its balance or its change: {SENAL}. Lighting and atmosphere: {LUZ}. No people in the foreground. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| PUNTO_DE_VISTA | Desde dónde se ve mejor, de «Cómo es» | `seen from the edge of a peat bank at water level` |
+| SUJETO | Qué clase de bioma es, sin su nombre | `a red peat marsh under low fog` |
+| TERRENO | El terreno y el agua | `dark pools between tussocks of rust-red moss, standing water reflecting the sky` |
+| FLORA | Sus plantas, de «La vida» | `stunted black alders, pale reeds, clusters of bulbous fungi` |
+| FAUNA | Una o dos de sus criaturas, pequeñas | `a flock of long-legged wading birds, a half-hidden shape in the water` |
+| SENAL | Lo que lo sostiene o lo que lo amenaza, de «Equilibrio y cambios» | `a band of dead grey trees where the water turned bitter` |
+| LUZ | La luz y el tiempo | `diffuse grey morning light, drifting fog` |
+
+**La vida es el sujeto:** a diferencia del paisaje de una región, aquí importa lo que vive: las plantas y las criaturas se ven, aunque pequeñas, y el plano se acerca lo justo para mostrarlas. Un ecosistema artificial (unos campos, una ciudad, el jardín de una nave), con su gente trabajando a lo lejos; uno sobrenatural, con lo que tiene de extraordinario a la vista.
 
 ## fenomeno — plano atmosférico
 ```

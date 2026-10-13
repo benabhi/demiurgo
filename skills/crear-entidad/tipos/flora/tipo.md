@@ -62,7 +62,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 ## Frontmatter
 - `categoria`, `naturaleza`, `uso`, `situacion`, `peligrosidad` y `tamano`: ver arriba.
 - Relaciones, solo con enlaces:
-  - `habitat`: dónde crece (regiones, lugares); cada uno la tiene en su `flora`;
+  - `habitat`: dónde crece (regiones, lugares o ecosistemas); cada uno la tiene en su `flora`;
   - `materiales` que se sacan de ella (su madera, su resina, su fibra): cada uno la tiene en sus `plantas`;
   - `afecciones` que cura o que causa (el texto dice cuál);
   - `criaturas` que la comen, la polinizan o viven en ella;

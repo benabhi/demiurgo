@@ -307,3 +307,21 @@ Peso: 1
 - obra: 1 (una pintura, un mural o una talla sagrados)
 - lugar: 1 (el templo o el santuario donde está)
 - creencia: 1 (la fe que lo venera)
+
+## Tierra viva
+Peso: 1
+- ecosistema: 1 (un ecosistema de la región foco)
+- flora: 1 (su pieza clave, o la planta que solo crece allí)
+- criatura: 1 (lo que vive de ella)
+
+## El equilibrio roto
+Peso: 1
+- ecosistema: 1 (un ecosistema que está cambiando)
+- fenomeno: 1 (lo que lo cambia)
+- personaje: 1 (quien se da cuenta)
+
+## Los que viven de la tierra
+Peso: 1
+- ecosistema: 1 (un ecosistema duro)
+- asentamiento: 1 (quienes viven en él)
+- material: 1 (lo que les da)

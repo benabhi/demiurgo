@@ -227,7 +227,7 @@ def main():
         related.setdefault(region["name"].lower(), region)
 
     # Rutas y distancias de un lugar o de una ruta: lo que ya se sabe de cómo se llega
-    if entry and entry["tipo"] in PLACE_TYPES:
+    if entry and (entry["tipo"] in PLACE_TYPES or entry["tipo"] == ROUTE_TYPE):
         lines += route_context(vault, index, entry, by_name)
 
     # Entidades relacionadas, por relevancia, hasta el tope de palabras

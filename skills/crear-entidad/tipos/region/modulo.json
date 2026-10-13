@@ -50,6 +50,7 @@
     "capital": "region",
     "criaturas": "habitat",
     "flora": "habitat",
+    "ecosistemas": "zonas",
     "recursos": "yacimientos"
   },
   "relaciones": {
@@ -65,6 +66,7 @@
     "creencias": "creencia",
     "criaturas": "criatura",
     "flora": "flora",
+    "ecosistemas": "ecosistema",
     "recursos": "material",
     "fenomenos": "fenomeno",
     "era": "era"

@@ -484,9 +484,12 @@ def date_keys(module):
 
 
 def place_types(modules=None):
-    """Tipos de la familia `lugar` (región, asentamiento…): los que pueden contener a otros."""
+    """Tipos de la familia `lugar` que pueden contener a otros (región, asentamiento, lugar): no los que el
+    módulo marca con `contenedor: false`, como la ruta o el ecosistema, que no son el foco ni la región de
+    nadie."""
     modules = modules if modules is not None else load_modules()
-    return {tipo for tipo, module in modules.items() if module.get("familia") == "lugar"}
+    return {tipo for tipo, module in modules.items()
+            if module.get("familia") == "lugar" and module.get("contenedor", True)}
 
 
 def candidate_modules(expected, modules, properties=None):

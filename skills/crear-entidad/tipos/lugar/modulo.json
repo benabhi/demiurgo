@@ -84,6 +84,7 @@
     "eventos": "lugares",
     "criaturas": "habitat",
     "flora": "habitat",
+    "ecosistemas": "zonas",
     "recursos": "yacimientos"
   },
   "relaciones": {
@@ -96,6 +97,7 @@
     "creencias": "creencia",
     "criaturas": "criatura",
     "flora": "flora",
+    "ecosistemas": "ecosistema",
     "objetos": "objeto",
     "recursos": "material",
     "fenomenos": "fenomeno",

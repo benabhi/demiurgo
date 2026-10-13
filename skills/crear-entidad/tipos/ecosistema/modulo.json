@@ -1,0 +1,56 @@
+{
+  "tipo": "ecosistema",
+  "familia": "lugar",
+  "contenedor": false,
+  "completa": [
+    "habitat",
+    "zonas_afectadas",
+    "zonas",
+    "yacimientos"
+  ],
+  "emoji": "🌲",
+  "huecos_propios": {
+    "min": 2,
+    "max": 7
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Cómo se vive en él": 2,
+    "Equilibrio y cambios": 3
+  },
+  "carpeta": {
+    "fija": "50_Naturaleza/Ecosistemas"
+  },
+  "fechas": [],
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "categoria": ["bosque", "selva", "pradera", "desierto", "tundra", "montana", "humedal", "agua_dulce", "marino", "costero", "subterraneo", "artificial", "otro"],
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "alcance": ["local", "regional", "continental", "mundial"],
+    "situacion": ["estable", "en_expansion", "en_retroceso", "amenazado", "devastado", "desaparecido"]
+  },
+  "reciprocas": {
+    "zonas": "ecosistemas",
+    "flora": "habitat",
+    "criaturas": "habitat",
+    "recursos": "yacimientos",
+    "fenomenos": "zonas_afectadas",
+    "relacionados": "relacionados"
+  },
+  "relaciones": {
+    "zonas": "lugar",
+    "flora": "flora",
+    "criaturas": "criatura",
+    "recursos": "material",
+    "pueblos": "cultura",
+    "fenomenos": "fenomeno",
+    "afecciones": "afeccion",
+    "relacionados": "ecosistema",
+    "era": "era"
+  }
+}

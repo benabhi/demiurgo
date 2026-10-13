@@ -85,7 +85,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 ## Frontmatter
 - `categoria`, `naturaleza`, `rareza`, `situacion`, `peligrosidad`, `valor`, `descubrimiento` y `agotamiento`: ver arriba.
 - Relaciones, solo con enlaces:
-  - `yacimientos`: donde se encuentra o se saca (regiones, asentamientos, lugares como una mina o una cantera); cada uno lo tiene en sus `recursos`;
+  - `yacimientos`: donde se encuentra o se saca (regiones, asentamientos, lugares como una mina o una cantera, ecosistemas); cada uno lo tiene en sus `recursos`;
   - `criaturas` de las que se obtiene: cada una lo tiene en sus `materiales`;
   - `plantas` de las que se obtiene: cada una lo tiene en sus `materiales`;
   - `objetos` que se hacen con él: cada uno lo tiene en sus `materiales`;

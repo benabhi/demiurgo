@@ -57,6 +57,7 @@ from pathlib import Path
 # La lógica común vive en los scripts de crear-entidad
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
 from build_context import region_chain  # noqa: E402
+from vault_lib import place_types as containing_types  # noqa: E402
 from vault_lib import (ROUTE_TYPE, SKILL_DIR, WORLD_SHEET, blocked_links, connection_candidates,  # noqa: E402
                        describe_expected, find_gaps,
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
@@ -264,8 +265,9 @@ def main():
     by_path = {e["path"]: e for e in index}
     modules = load_modules()
     world = read_world(vault)
-    # El foco es un lugar donde se genera lo demás (una región, una ciudad); una ruta no contiene nada
-    place_types = sorted(t for t, module in modules.items() if module.get("familia") == "lugar" and t != ROUTE_TYPE)
+    # El foco es un lugar donde se genera lo demás (una región, una ciudad); una ruta o un ecosistema no
+    # contienen nada (`contenedor: false`)
+    place_types = sorted(containing_types(modules))
     focus = find_focus(world, index, place_types)
 
     def finish(result, code=0, types=()):

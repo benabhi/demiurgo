@@ -160,6 +160,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [ ] `material` (#22): un material de relevancia 3 con su yacimiento (una mina, que lleva mapa interior) y la reciprocidad con la región y los objetos.
 - [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
 - [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
+- [ ] `ecosistema` (#25): un ecosistema de relevancia 3 con su pieza clave, su flora y sus criaturas, y la reciprocidad con sus zonas.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -302,7 +303,13 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - **Conexiones:** recíproca con sus autores (el personaje gana `obras`), sus creencias (la creencia gana `textos`) y sus mitos, idiomas y sistemas (`obras`, que ya existían); `trata_de` de cualquier tipo. Es la fuente natural de las rutas, los materiales y las plantas legendarios.
   - **Motor:** tabla `Obra.md`, cuatro paquetes (el libro prohibido, cantar de gesta, crónicas enfrentadas, el mural del templo) y la ruta del texto antiguo con su texto.
   - **Imagen:** la obra misma (el mural, la estatua, el mapa) o su interpretación (la canción cantada, el libro abierto), apaisado (`Escenas`, `Obra_`).
-- [ ] **25. `ecosistema` 🌲 — biomas y ecosistemas** (familia `lugar`). Carpeta `Ecosistemas`; imagen: paisaje del bioma, apaisado (`Lugares`).
+- [x] **25. `ecosistema` 🌲 — biomas y ecosistemas** (familia `lugar`, `contenedor: false`).
+  - **Carpeta:** `50_Naturaleza/Ecosistemas`. No es un sitio concreto (eso es un lugar), sino el sistema vivo que se da en uno o en varios.
+  - **Ficha:** cómo es; la vida, con **quién come a quién** y **su pieza clave**; cómo se vive en él; peligros; equilibrio y cambios (lo que lo amenaza, si cae su pieza clave); historia. `naturaleza`, `alcance`, `situacion` (de estable a desaparecido) y `peligrosidad`.
+  - **Conexiones:** recíproco con sus zonas (región y lugar ganan `ecosistemas`), su flora y sus criaturas (`habitat`), sus recursos (`yacimientos`) y sus fenómenos (`zonas_afectadas`). Completa hábitats, zonas y yacimientos que describen un tipo de tierra.
+  - **`contenedor: false`** (nuevo en `modulo.json`, también en la ruta): un tipo de la familia `lugar` que no contiene a otros no es el foco del mundo ni la región de nadie.
+  - **Motor:** tabla `Ecosistema.md` y tres paquetes (tierra viva, el equilibrio roto, los que viven de la tierra).
+  - **Imagen:** paisaje del bioma, con su vida, apaisado (`Lugares`, `Ecosistema_`).
 - [ ] **26. `astro` 🌙 — cuerpos celestes y fenómenos del cielo.** Carpeta `Cosmos_y_Astros`; imagen: el astro sobre un paisaje nocturno, apaisado (`Escenas`).
 
 ### Hechos desde el principio
