@@ -1,6 +1,6 @@
 # Tipo: lugar
 
-Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercados, posadas, talleres, casas, torres, monumentos), ruinas y zonas peligrosas (mazmorras, pecios, yermos, zonas malditas) y parajes naturales (montañas, ríos y lagos, bosques, cuevas, islas, desiertos). La ficha dice dónde está, quién lo controla y quién lo ocupa, cómo es por fuera y por dentro, qué pasa allí, qué peligros y qué tesoros guarda y cómo se entra.
+Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercados, posadas, talleres, casas, torres, monumentos), explotaciones (minas, canteras, salinas, pozos), ruinas y zonas peligrosas (mazmorras, pecios, yermos, zonas malditas) y parajes naturales (montañas, ríos y lagos, bosques, cuevas, islas, desiertos). La ficha dice dónde está, quién lo controla y quién lo ocupa, cómo es por fuera y por dentro, qué pasa allí, qué peligros y qué tesoros guarda y cómo se entra.
 
 **No es un lugar:**
 - un sitio donde vive una comunidad (`asentamiento`): una aldea o una ciudad contienen lugares;
@@ -9,9 +9,9 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
 
 ## Identidad del tipo
 - **Emoji del tipo:** 📍, al inicio del H1: `# 📍 Nombre`.
-- **Emoji propio:** en la propiedad `emoji`, según su carácter (🍺 posada, ⛪ templo, 🏰 fortaleza, 🗼 torre, ⚒️ taller, 🏚️ ruina, 🕳️ mazmorra, ⛰️ montaña, 🌊 agua, 🌲 bosque, 🏝️ isla…).
+- **Emoji propio:** en la propiedad `emoji`, según su carácter (🍺 posada, ⛪ templo, 🏰 fortaleza, 🗼 torre, ⚒️ taller, ⛏️ mina o cantera, 🏚️ ruina, 🕳️ mazmorra, ⛰️ montaña, 🌊 agua, 🌲 bosque, 🏝️ isla…).
 - **Carpeta:** según la `categoria`:
-  - edificios y estructuras en uso (`edificio`, `templo`, `fortaleza`, `puerto`, `mercado`, `posada`, `taller`, `residencia`, `torre`, `monumento`) van en `10_Mundo/Lugares_y_Estructuras`;
+  - edificios y estructuras en uso (`edificio`, `templo`, `fortaleza`, `puerto`, `mercado`, `posada`, `taller`, `residencia`, `torre`, `monumento`) y las explotaciones (`explotacion`: minas, canteras, salinas, pozos) van en `10_Mundo/Lugares_y_Estructuras`;
   - lo abandonado o peligroso (`ruina`, `mazmorra`, `pecio`, `zona_peligrosa`) va en `10_Mundo/Ruinas_y_Zonas_Peligrosas`;
   - lo natural (`montana`, `agua`, `bosque`, `cueva`, `isla`, `desierto`, `paraje`) va en `10_Mundo/Geografia_y_Clima`.
 
@@ -22,7 +22,8 @@ Los sitios concretos del mundo: edificios (templos, fortalezas, puertos, mercado
   - los lugares notables de una región, de un asentamiento o de otro lugar, y la ubicación de un lugar;
   - el escenario de un evento y la zona que afecta un fenómeno;
   - la sede de una facción, el centro o los lugares sagrados de una fe, y las `zonas` donde actúa una facción o donde se da una afección, cuando son un sitio (una mina, un pantano, unos muelles);
-  - la partida, el destino o una parada de una ruta, cuando es un sitio (una posada del camino, un fuerte, una ruina al final de una senda).
+  - la partida, el destino o una parada de una ruta, cuando es un sitio (una posada del camino, un fuerte, una ruina al final de una senda);
+  - el yacimiento de un material: una mina, una cantera, una salina (`explotacion`), o el paraje donde se encuentra.
 
   Antes de completar uno, lee lo que dicen de él las notas que lo enlazan: si describen un pueblo, es un `asentamiento`.
 
@@ -49,10 +50,10 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Datos clave:** la tabla completa. «Origen» dice cuándo y por quién se construyó (o cómo se formó, si es natural); «Tamaño», a escala humana (una sala, tres pisos, media legua de bosque).
 - **Exterior:** lo que se ve al acercarse, lo que se ve, se oye y se huele, y su forma y sus materiales (o la forma del terreno).
 - **Recorrido:** de 3 a 6 zonas en el orden en que se recorren: las salas de un edificio, los niveles de una mazmorra, las partes de un bosque. Cada una con cómo es y qué hay. Si el lugar tiene mapa, nombra cada zona con su número de la leyenda («de la escalera (1) a la antecámara (2)»).
-- **Mapa** (solo si le toca por su categoría y su relevancia; `check_note.py --depth lugar:<relevancia>:<categoría>`): la leyenda numerada de sus salas o partes, hasta 12 por nivel, con su orientación, lo que se ve y sus conexiones. Ruinas, mazmorras, cuevas, pecios, fortalezas, templos, torres y zonas peligrosas lo llevan desde relevancia 2; los demás edificios, desde 3; los parajes naturales, desde 4; los monumentos, nunca. Ver `referencias/mapas.md`.
+- **Mapa** (solo si le toca por su categoría y su relevancia; `check_note.py --depth lugar:<relevancia>:<categoría>`): la leyenda numerada de sus salas o partes, hasta 12 por nivel, con su orientación, lo que se ve y sus conexiones. Ruinas, mazmorras, cuevas, pecios, fortalezas, templos, torres, zonas peligrosas y explotaciones (sus galerías, sus pozos, sus niveles) lo llevan desde relevancia 2; los demás edificios, desde 3; los parajes naturales, desde 4; los monumentos, nunca. Ver `referencias/mapas.md`.
 - **Actividad:** un día cualquiera (o quién pasa por un sitio abandonado) y quién viene y por qué.
 - **Peligros y defensas:** lo que amenaza a quien entra y lo que lo protege (guardias, trampas, criaturas, el propio terreno).
-- **Tesoros y recursos:** lo que guarda (objetos, saberes, secretos a la vista) y lo que se puede sacar de allí (madera, agua, mineral, información).
+- **Tesoros y recursos:** lo que guarda (objetos, saberes, secretos a la vista) y lo que se puede sacar de allí (madera, agua, mineral, información). Los materiales que tienen nota, enlazados y en `recursos`.
 - **Accesos:** las entradas, los pasos ocultos y cómo se llega desde su ubicación (por qué ruta, enlazada si es una entidad, y en cuánto tiempo, coherente con `routes.py`). Los pasos ocultos que se conocen (y se sabe dónde están) van también en la leyenda del mapa (`Paso oculto a 7.`), y las trampas conocidas de «Peligros y defensas», en su zona (`Trampa: …`). Lo que nadie conoce es un secreto: ni aquí ni en el mapa.
 - **Historia:** su origen, de 2 a 4 momentos decisivos y el presente.
 - **Relación con el mundo, secretos y rumores, ganchos, citas:** como en todo tipo.
@@ -70,6 +71,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `ocupantes`: quienes viven o trabajan allí;
   - `creencias` que se practican en él y `criaturas` que lo habitan (cada una lo tiene en su `habitat`);
   - `objetos` que guarda;
+  - `recursos`: los materiales que se sacan de allí (el metal de una mina, la sal de una salina); cada uno lo tiene en sus `yacimientos`;
   - `fenomenos` que lo afectan, recíproca con sus `zonas_afectadas`;
   - `eventos` que ocurrieron en él: cada evento lo tiene en sus `lugares`;
   - `era` en que se construyó o se formó.

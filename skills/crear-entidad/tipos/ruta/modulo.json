@@ -64,7 +64,8 @@
     "ramales": "red",
     "criaturas": "habitat",
     "fenomenos": "zonas_afectadas",
-    "eventos": "lugares"
+    "eventos": "lugares",
+    "mercancias": "rutas"
   },
   "relaciones": {
     "partida": "lugar",

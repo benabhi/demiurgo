@@ -24,6 +24,7 @@ facciones: []
 figuras: []
 pueblos: []
 creencias: []
+recursos: []
 fenomenos: []
 era: ""
 imagen: ""

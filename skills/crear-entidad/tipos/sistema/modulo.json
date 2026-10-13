@@ -47,7 +47,8 @@
     "creencias": "sistemas",
     "sistema_padre": "ramas",
     "ramas": "sistema_padre",
-    "opuestos": "opuestos"
+    "opuestos": "opuestos",
+    "materiales": "sistemas"
   },
   "relaciones": {
     "practicantes": "personaje",

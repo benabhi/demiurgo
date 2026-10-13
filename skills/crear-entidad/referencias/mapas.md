@@ -4,7 +4,7 @@ Además de su imagen principal (el concept art, que sigue siendo obligatorio y l
 
 ## Qué lugares la llevan
 La regla `mapa` del `modulo.json` de cada tipo dice qué categorías llevan mapa, de qué clase y desde qué relevancia. `check_note.py --depth <tipo>:<relevancia>:<categoría>` dice si a una nota le toca. Hay cinco clases:
-- **interior:** el plano de un edificio, unas ruinas o una mazmorra, por niveles;
+- **interior:** el plano de un edificio, unas ruinas, una mazmorra o una mina, por niveles;
 - **urbano:** el plano de un asentamiento;
 - **paraje:** el mapa de una isla, un bosque, una montaña o un paraje;
 - **territorio:** el mapa de una región. La leyenda se escribe desde que le toca, pero la imagen espera a que tenga las zonas mínimas de su regla (`zonas_minimas`): un territorio con dos lugares sería un mapa pobre;
@@ -71,6 +71,7 @@ Los modelos repiten patrones: sin azar, todas las mazmorras tendrían la misma p
   python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: rasgo de una sala" --count <3 a 5>
   python <expandir-mundo>/scripts/roll_tables.py --file Mapas --table "Interior: conexiones" --count 3
   ```
+  En una explotación (una mina, una cantera, una salina), sus salas salen de `Interior: labores de una explotación`, con `--count`.
 - **urbano:** `Urbano: forma`, `Urbano: hito` y `Urbano: bordes`, y `Urbano: barrios` con `--count <zonas>`;
 - **paraje:** `Paraje: partes` con `--count <zonas>`;
 - **territorio:** `Territorio: dónde vive la gente` y `Territorio: caminos`, y `Territorio: accidentes` con `--count <3 a 5>`;

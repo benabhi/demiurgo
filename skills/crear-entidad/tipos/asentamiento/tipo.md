@@ -52,7 +52,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Aspecto y ambiente:** lo que se ve al llegar por el camino (es lo que muestra la imagen), lo que se ve, se oye y se huele dentro, la arquitectura y los materiales, y cómo es de noche.
 - **Barrios y zonas:** de 2 filas (una aldea) a 5 (una ciudad), con quién vive en cada una. Se nombran por lo que son («el barrio del puerto», «la ladera de los curtidores»); un barrio con nombre propio es un lugar y va enlazado (como enlace pendiente de tipo `lugar`).
 - **Gobierno y ley:** quién manda, cómo se decide y las leyes o los castigos que llaman la atención.
-- **Economía:** de qué vive, sus mercados y oficios, y lo que le falta y tiene que traer de fuera.
+- **Economía:** de qué vive, sus mercados y oficios, y lo que le falta y tiene que traer de fuera. Los materiales de los que vive, enlazados y en `recursos`.
 - **Defensas:** murallas, guardia o escondites, y de qué tiene que defenderse.
 - **Gente:** los pueblos que viven allí y cómo conviven, las clases y sus tensiones, y cómo se trata a los forasteros.
 - **Lugares notables:** de 3 a 6, cada uno con su enlace (los que no existen quedan como enlaces pendientes para el módulo `lugar`) y una línea que lo defina.
@@ -71,6 +71,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `region`: la región que lo contiene; recíproca con sus `asentamientos` (la capital de una región también va en ellos);
   - `vecinos`: los asentamientos cercanos; recíprocos;
+  - `recursos`: los materiales que se sacan en él o a su alrededor y de los que vive; cada uno lo tiene en sus `yacimientos`;
   - `rutas` que pasan por él, salen o llegan a él (cada una lo tiene en su `partida`, su `destino` o sus `paradas`) y `lugares_notables` que contiene (edificios y sitios del módulo `lugar`, que lo tienen en su `ubicacion`);
   - `gobierno` (la institución que manda), `gobernante` (la persona) y otras `facciones` presentes (gremios, bandas, órdenes);
   - `figuras`: personajes notables;

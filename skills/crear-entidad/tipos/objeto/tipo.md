@@ -7,7 +7,7 @@ Las cosas del mundo: artefactos y reliquias, armas y armaduras, herramientas e i
 - **Tipo de objeto** (`unico: false`): una moneda, una poción, un modelo de barca, el arco de los cazadores de una región. Se fabrica o se usa en muchos sitios: «Poseedores» dice quiénes lo usan, y «Dónde está hoy», dónde se hace y dónde se encuentra.
 
 **No es un objeto:**
-- una materia prima en bruto (`material`, más adelante): el mineral es un material; el lingote o la tela, un objeto;
+- una materia prima en bruto (`material`): el mineral es un material; el lingote o la tela, un objeto, que enlaza su material en `materiales`;
 - un texto o una obra (`obra`, más adelante): el libro como obra es una obra; un ejemplar con historia propia puede ser también un objeto;
 - un edificio o un sitio (`lugar`).
 
@@ -70,6 +70,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `facciones` que lo fabrican, lo guardan o lo buscan: cada una lo lista en sus `objetos`;
   - `culturas` que lo hacen o lo usan, y `creencias` para las que es sagrado;
   - `sistemas` con los que funciona (el poder que lo anima, la técnica que lo hizo posible): cada uno lo tiene en sus `objetos`;
+  - `materiales`: los materiales con nota de los que está hecho (los corrientes, como el hierro o el cuero, quedan en el texto de `material`); cada uno lo tiene en sus `objetos`;
   - `eventos` en que tuvo un papel;
   - `variante_de` y `variantes`: de qué objeto es una versión y qué versiones tiene; recíprocas;
   - `era` en que se hizo.

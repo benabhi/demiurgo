@@ -16,7 +16,8 @@
     "habitat",
     "partida",
     "destino",
-    "paradas"
+    "paradas",
+    "yacimientos"
   ],
   "emoji": "📍",
   "huecos_propios": {
@@ -33,7 +34,7 @@
     "Accesos": 2
   },
   "mapa": [
-    {"clase": "interior", "categoria": ["ruina", "mazmorra", "cueva", "pecio", "fortaleza", "templo", "torre", "zona_peligrosa"], "desde": 2},
+    {"clase": "interior", "categoria": ["ruina", "mazmorra", "cueva", "pecio", "fortaleza", "templo", "torre", "zona_peligrosa", "explotacion"], "desde": 2},
     {"clase": "interior", "categoria": ["edificio", "posada", "mercado", "puerto", "taller", "residencia"], "desde": 3},
     {"clase": "paraje", "categoria": ["isla", "bosque", "montana", "desierto", "agua", "paraje"], "desde": 4}
   ],
@@ -50,6 +51,7 @@
       "residencia": "10_Mundo/Lugares_y_Estructuras",
       "torre": "10_Mundo/Lugares_y_Estructuras",
       "monumento": "10_Mundo/Lugares_y_Estructuras",
+      "explotacion": "10_Mundo/Lugares_y_Estructuras",
       "ruina": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
       "mazmorra": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
       "pecio": "10_Mundo/Ruinas_y_Zonas_Peligrosas",
@@ -80,7 +82,8 @@
     "lugares_notables": "ubicacion",
     "fenomenos": "zonas_afectadas",
     "eventos": "lugares",
-    "criaturas": "habitat"
+    "criaturas": "habitat",
+    "recursos": "yacimientos"
   },
   "relaciones": {
     "ubicacion": "lugar",
@@ -92,6 +95,7 @@
     "creencias": "creencia",
     "criaturas": "criatura",
     "objetos": "objeto",
+    "recursos": "material",
     "fenomenos": "fenomeno",
     "eventos": "evento",
     "era": "era"

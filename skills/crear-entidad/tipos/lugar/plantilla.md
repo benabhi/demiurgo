@@ -21,6 +21,7 @@ ocupantes: []
 creencias: []
 criaturas: []
 objetos: []
+recursos: []
 fenomenos: []
 eventos: []
 era: ""

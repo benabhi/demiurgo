@@ -78,6 +78,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - `fenomenos`: los fenómenos extraordinarios que actúan en la región. Es recíproca: el fenómeno la lista en sus `zonas_afectadas`.
 - `especies`: las especies inteligentes que viven en la región. Es recíproca: la especie la lista en sus `regiones`.
 - `pueblos`: las culturas que viven en la región. Es recíproca: la cultura la lista en sus `territorios`.
+- `recursos`: los materiales y recursos de la región (sus metales, su sal, su agua). Es recíproca: el material la lista en sus `yacimientos`.
 - `criaturas`: las criaturas que viven en la región. Es recíproca: la criatura la lista en su `habitat`.
 - `relevancia`: de 1 a 5 según la Guía de Organización. Una gran región o la región foco suele ser 4 o 5; una comarca, 3.
 - `ultima_revision` sin comillas.
@@ -96,7 +97,7 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - una criatura o un fenómeno locales (`criaturas`, `fenomenos`);
 - un pueblo propio de la región (`pueblos`).
 
-Algunos enlaces pendientes apuntan a tipos que aún no tienen módulo (un material…). No pasa nada: quedan esperando hasta que exista el módulo.
+Algunos enlaces pendientes apuntan a tipos que aún no tienen módulo (una obra…). No pasa nada: quedan esperando hasta que exista el módulo.
 
 ## Secretos
 Igual que en personaje: desde relevancia 3, tirada real con `roll_dice.py 1d4` (con 4, la región guarda un secreto), salvo que el concepto o el usuario lo pidan. El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.

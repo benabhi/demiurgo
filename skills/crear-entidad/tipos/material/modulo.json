@@ -1,0 +1,78 @@
+{
+  "tipo": "material",
+  "familia": "material",
+  "emoji": "💎",
+  "huecos_propios": {
+    "min": 1,
+    "max": 6
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Comercio": 2,
+    "Lo que se cree": 3,
+    "Propiedades extraordinarias": 0
+  },
+  "carpeta": {
+    "propiedad": "categoria",
+    "valores": {
+      "metal": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "piedra": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "gema": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "cristal": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "madera": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "organico": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "sustancia": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "exotico": "50_Naturaleza/Minerales_y_Materiales_Naturales",
+      "agua": "50_Naturaleza/Recursos_Naturales",
+      "suelo": "50_Naturaleza/Recursos_Naturales",
+      "energia": "50_Naturaleza/Recursos_Naturales",
+      "alimento": "50_Naturaleza/Recursos_Naturales"
+    }
+  },
+  "fechas": [
+    "descubrimiento",
+    "agotamiento"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["en_explotacion", "sin_explotar", "agotandose", "prohibido"],
+    "pasado": "agotado"
+  },
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "rareza": ["comun", "escaso", "raro", "unico", "legendario"],
+    "situacion": ["en_explotacion", "sin_explotar", "agotandose", "agotado", "perdido", "prohibido"]
+  },
+  "solo_si": {
+    "agotamiento": {"situacion": ["agotado"]}
+  },
+  "reciprocas": {
+    "yacimientos": "recursos",
+    "criaturas": "materiales",
+    "objetos": "materiales",
+    "sistemas": "materiales",
+    "rutas": "mercancias",
+    "relacionados": "relacionados"
+  },
+  "relaciones": {
+    "yacimientos": "lugar",
+    "criaturas": "criatura",
+    "plantas": "flora",
+    "objetos": "objeto",
+    "sistemas": "sistema",
+    "facciones": "faccion",
+    "pueblos": "cultura",
+    "rutas": "ruta",
+    "afecciones": "afeccion",
+    "fenomenos": "fenomeno",
+    "relacionados": "material",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

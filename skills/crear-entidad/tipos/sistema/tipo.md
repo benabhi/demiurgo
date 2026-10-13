@@ -124,7 +124,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `deidades` que lo conceden o a las que se asocia;
   - `fenomenos` de los que sale su poder, que lo alteran o contra los que sirve;
   - `afecciones` que deja su uso o que lo provocan;
-  - `materiales` que necesita o que lo frenan;
+  - `materiales` que necesita o que lo frenan: cada uno lo tiene en sus `sistemas`;
   - `lugares` donde se enseña, donde es más fuerte o donde no funciona;
   - `obras` que lo enseñan o lo cuentan;
   - `eventos` que lo marcaron (su descubrimiento, una prohibición, una catástrofe);

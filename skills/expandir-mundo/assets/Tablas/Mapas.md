@@ -67,6 +67,21 @@ Cada clase de mapa usa las suyas: las de **Interior** (edificios, ruinas, mazmor
 | 1 | Un paso natural: una grieta, una cueva o un túnel sin labrar |
 | 1 | Una sala cuyo uso nadie entiende |
 
+## Interior: labores de una explotación
+| Peso | Resultado |
+|---|---|
+| 3 | Una galería de extracción, con el filón a la vista |
+| 2 | Un pozo vertical con su torno o su escala |
+| 2 | Una cámara grande, vaciada de tanto sacar |
+| 2 | Un frente de trabajo, con andamios y herramientas |
+| 1 | Una galería inundada o a medio hundir |
+| 1 | Un depósito del material, a la espera de salir |
+| 1 | Una sala de lavado, de cribado o de cocción |
+| 1 | Un refugio de los trabajadores, con su altar o su amuleto |
+| 1 | Un tramo apuntalado que nadie se atreve a cruzar |
+| 1 | Una galería vieja, cegada a propósito |
+| 1 | Rareza: una galería que nadie recuerda haber excavado |
+
 ## Interior: rasgo de una sala
 | Peso | Resultado |
 |---|---|

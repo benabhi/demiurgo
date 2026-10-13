@@ -67,7 +67,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `parientes`: criaturas emparentadas (la variante de otro hábitat, la forma antigua); recíprocas;
   - `deidades` a las que sirve o con las que se la asocia: cada una la tiene en sus `criaturas`;
   - `creencias` que la veneran, la temen o la usan en sus ritos;
-  - `materiales` que se obtienen de ella (su piel, su veneno, su hueso);
+  - `materiales` que se obtienen de ella (su piel, su veneno, su hueso): cada uno la tiene en sus `criaturas`;
   - `cazadores`: quienes la cazan o la estudian, personas o facciones; su tipo va en el registro de enlaces pendientes;
   - `eventos`: ataques o avistamientos con nota propia;
   - `era` en que apareció.

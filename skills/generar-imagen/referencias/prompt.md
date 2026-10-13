@@ -35,6 +35,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | faccion | su emblema o su estandarte | `Square 1:1 format` | `Iconos` | `Emblema_` |
 | linaje | su blasón o su marca de familia | `Square 1:1 format` | `Iconos` | `Blason_` |
 | afeccion | lámina de estudio de sus señales, sin nada gráfico | `Square 1:1 format` | `Laminas` | `Afeccion_` |
+| material | lámina de espécimen: el material en bruto y trabajado | `Square 1:1 format` | `Laminas` | `Material_` |
 | criatura | cuerpo entero en su hábitat, en su pose característica | `Wide 16:9 landscape format` | `Ilustraciones/Seres` | `Criatura_` |
 | sistema | el poder, la técnica o la ley en uso, con su efecto y su precio | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Sistema_` |
 | mito | la escena clave del relato, tal como la imaginan quienes lo cuentan | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Mito_` |
@@ -382,6 +383,22 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 | TONO | Cómo se siente | `quiet and clinical, faintly unsettling` |
 
 **Una lámina, no una escena:** el sujeto aislado y centrado, como en un tratado de su época, sin pacientes sufriendo ni heridas. La afección se reconoce por sus señales. **Técnica sugerida:** `codice` (lámina de naturalista); si el usuario la quiere para todas sus afecciones, va en la tabla "Técnica por tipo" de su Guía Visual.
+
+## material — lámina de espécimen
+```
+{ESTILO}. Specimen plate from an invented world's treatise on materials, centered study composition. Subject of the plate: {SUJETO}. Raw form: {BRUTO}. Worked form: {TRABAJADO}. Color, texture and luster: {TEXTURA}. Around it: {ELEMENTOS}. Mood: {TONO}. Only invented symbols: no letters, numbers or words from any real alphabet. {ACABADO}. {RESTRICCIONES}. Square 1:1 format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| SUJETO | Qué es, sin su nombre | `a dark metallic ore with reddish veins` |
+| BRUTO | Cómo se encuentra, de «Dónde se encuentra» | `a rough chunk still embedded in grey bog rock` |
+| TRABAJADO | Cómo queda trabajado, de «Cómo se obtiene y se trabaja» (si no se trabaja, una muestra cortada o pulida) | `beside it, a small polished ingot and a filed bar` |
+| TEXTURA | Su color, su textura y su brillo, de «Cómo es» | `matte black surface with rust-red streaks and a faint oily sheen` |
+| ELEMENTOS | Lo que lo acompaña: la herramienta que lo saca, la roca o el ser de donde sale, un corte que muestra su interior | `a miner's pick, a cut cross-section showing the vein, a few loose grains` |
+| TONO | Cómo se siente | `quiet and studious, with a hint of danger` |
+
+**Una lámina, no una escena:** el material aislado y centrado, en bruto y trabajado, como en un tratado de su época. Lo que sale de un ser vivo, junto a una silueta pequeña del ser o de la planta, sin nada gráfico. Un recurso (el agua, el suelo, una fuente de energía), por su muestra y su fuente: un frasco junto al pozo dibujado, un corte de la tierra con sus capas. Si tiene propiedades extraordinarias, se notan en la muestra (una luz, una escarcha, un temblor del aire), según su sistema. **Técnica sugerida:** `codice` (lámina de naturalista); si el usuario la quiere para todos sus materiales, va en la tabla "Técnica por tipo" de su Guía Visual.
 
 ## criatura — en su hábitat
 ```

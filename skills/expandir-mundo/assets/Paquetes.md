@@ -229,3 +229,33 @@ Peso: 1
 Peso: 1
 - ruta: 1 (la ruta que recorre)
 - personaje: 2 (quien la guía y alguien que viaja con ella por sus propias razones)
+
+## Mina y su gente
+Peso: 2
+- material: 1 (lo que se saca)
+- lugar: 1 (la explotación: una mina, una cantera, una salina)
+- personaje: 1 (quien manda allí, o quien baja cada día)
+
+## Fiebre del metal
+Peso: 1
+- material: 1 (un hallazgo reciente que vale mucho)
+- asentamiento: 1 (el campamento o la villa que nació de él)
+- faccion: 1 (quien quiere quedárselo)
+
+## Materia prohibida
+Peso: 1
+- material: 1 (un material que alguien prohíbe sacar, vender o usar)
+- faccion: 1 (quien lo prohíbe o quien lo trafica)
+- secreto: 1 (por qué está prohibido de verdad)
+
+## Lo que vale una bestia
+Peso: 1
+- criatura: 1 (la bestia)
+- material: 1 (lo que se saca de ella)
+- personaje: 1 (quien la caza)
+
+## El agua de todos
+Peso: 1
+- material: 1 (un recurso del que dependen muchos: agua, suelo fértil, pesca)
+- faccion: 1 (quien controla el acceso)
+- asentamiento: 1 (quien depende de él)

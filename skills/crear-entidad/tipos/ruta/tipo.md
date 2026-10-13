@@ -109,7 +109,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `pueblos` que la abrieron o la recorren, y `creencias` que peregrinan por ella o la tienen por sagrada;
   - `criaturas` que la acechan (cada una la tiene en su `habitat`), `fenomenos` que la afectan (la tienen en sus `zonas_afectadas`) y `eventos` que ocurrieron en ella (la tienen en sus `lugares`);
   - `sistemas`: el poder o la técnica que la hace posible (el de un portal, el de una ruta aérea);
-  - `mercancias`: lo que lleva, de cualquier tipo (sin propiedad que les dé tipo, cada enlace pendiente lo recibe con `pending_links.py --set`);
+  - `mercancias`: lo que lleva, de cualquier tipo (sin propiedad que les dé tipo, cada enlace pendiente lo recibe con `pending_links.py --set`); un material la tiene en sus `rutas`;
   - `era` en que se abrió.
 - `fuentes`: los textos, mapas o relatos de donde se sabe (imprescindible en una ruta dudosa).
 - `relevancia`: 5 la ruta que vertebra el mundo o su foco (la única salida, la gran ruta de la que todo depende); 4 la que une regiones o grandes ciudades; 3 la conocida en su comarca; 2 un camino local; 1 un sendero que pocos conocen.

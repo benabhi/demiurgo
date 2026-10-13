@@ -14,6 +14,7 @@ rareza: comun
 situacion: en_uso
 valor: ""
 material: ""
+materiales: []
 tamano: ""
 creacion: ""
 destruccion: ""

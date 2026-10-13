@@ -123,7 +123,7 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
 
   | Entidad | Mapa | Desde |
   |---|---|---|
-  | lugar: ruina, mazmorra, cueva, pecio, fortaleza, templo, torre, zona peligrosa | plano de interior, por niveles | relevancia 2 |
+  | lugar: ruina, mazmorra, cueva, pecio, fortaleza, templo, torre, zona peligrosa, explotación (mina, cantera) | plano de interior, por niveles | relevancia 2 |
   | lugar: edificio, posada, mercado, puerto, taller, residencia | plano de interior | relevancia 3 |
   | lugar: isla, bosque, montaña, desierto, agua, paraje | mapa de paraje | relevancia 4 |
   | asentamiento: metrópoli, ciudad, villa | plano urbano | relevancia 3 |
@@ -153,6 +153,11 @@ Etapas:
 - [ ] 5. Las rutas (con el módulo #21: el itinerario y las rutas en los mapas que cruzan; hecho, se tilda con su prueba); más adelante, el mapa del mundo (con `finalizar-mundo`) y, quizá, un «mapa del director» en el secreto que cambia la planta de un lugar (la sala que nadie conoce).
 
 ## Entidades por orden de prioridad
+Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
+
+**Pruebas pendientes:**
+- [ ] `ruta` (#21): una región y una ruta entre dos de sus asentamientos (el itinerario y el bloque «Rutas» de la leyenda de la región), y la acción `conectar` en una tanda del motor.
+- [ ] `material` (#22): un material de relevancia 3 con su yacimiento (una mina, que lleva mapa interior) y la reciprocidad con la región y los objetos.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -265,7 +270,7 @@ Etapas:
   - **Recíproca** con los pueblos y las creencias (que ganan la propiedad `costumbres`), los mitos, el calendario y sus costumbres relacionadas.
   - **Motor:** tabla `Costumbre.md` (categorías que se combinan) y los paquetes «Fiesta de un pueblo» y «Ley y quien la impone».
   - **Imagen:** la costumbre en plena práctica, en su momento más reconocible, apaisado (`Escenas`, `Costumbre_`).
-- [ ] **21. `ruta` 🧭 — caminos, sendas, pasos, rutas por agua, por aire o bajo tierra, rutas espaciales y portales** (familia `lugar`).
+- [x] **21. `ruta` 🧭 — caminos, sendas, pasos, rutas por agua, por aire o bajo tierra, rutas espaciales y portales** (familia `lugar`).
   - **Carpeta:** `Rutas_y_Conexiones`.
   - **Ficha:** qué une o adónde no lleva; el recorrido por tramos, con sus días; cómo se recorre (temporada, peaje, salvoconducto, el rito del portal); quién la recorre y qué lleva; peligros y controles; atajos y desvíos; historia.
   - **Trazado:** `lineal` (une su partida y su destino), `sin_salida` (los senderos que no llevan a ninguna parte), `circular` y `red` (con sus ramales). **Situación** (en uso, en declive, cortada, abandonada, perdida, en construcción) y **certeza** (cierta o dudosa: la ruta que solo cuenta un texto antiguo, con su fuente).
@@ -274,10 +279,15 @@ Etapas:
   - **Motor:** tabla `Ruta.md`, paquetes y la acción `conectar`, que une lo que debería estar unido.
   - **Imagen:** vista a lo largo de la ruta, con viajeros, apaisado (`Lugares`, `Ruta_`).
 
-  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (itinerario y bloque «Rutas» en las leyendas) · [x] 3. motor (tabla `Ruta.md`, ocho paquetes y la acción `conectar`). Falta la prueba del usuario.
+  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (itinerario y bloque «Rutas» en las leyendas) · [x] 3. motor (tabla `Ruta.md`, ocho paquetes y la acción `conectar`). Su prueba, en «Pruebas pendientes».
 
 ### Fase 6 — Detalle del mundo
-- [ ] **22. `material` 💎 — minerales, materiales y recursos naturales.** Carpeta `Minerales_y_Materiales_Naturales` o `Recursos_Naturales`; imagen: lámina de espécimen (`Laminas`), técnica sugerida `codice`.
+- [x] **22. `material` 💎 — metales, piedras, gemas, cristales, maderas, materias de seres vivos, sustancias, compuestos exóticos y recursos de la tierra.**
+  - **Carpeta:** `Minerales_y_Materiales_Naturales` (las materias) o `Recursos_Naturales` (agua, suelo, energía, alimento), en `50_Naturaleza`, según la categoría. Lo procesado (el lingote, la tela) es un objeto.
+  - **Ficha:** cómo es y cómo se reconoce; dónde se encuentra; cómo se saca y se trabaja; usos; propiedades extraordinarias (solo si las tiene, según su sistema); riesgos; comercio (valor, quién compra y vende, por dónde viaja, falsificaciones); lo que se cree; historia. `naturaleza`, `rareza` (hasta `legendario`, con sus fuentes), `situacion` (de en explotación a agotado o prohibido) y `peligrosidad`.
+  - **Conexiones:** recíproco con sus yacimientos (región, asentamiento y lugar ganan `recursos`), sus criaturas y sus sistemas (`materiales`, que ya existían), sus objetos (el objeto gana `materiales`) y sus rutas (`mercancias`). El lugar gana la categoría `explotacion` (minas, canteras, salinas), con mapa interior desde relevancia 2 y su tabla de labores.
+  - **Motor:** tabla `Material.md` y cinco paquetes (mina y su gente, fiebre del metal, materia prohibida, lo que vale una bestia, el agua de todos).
+  - **Imagen:** lámina de espécimen, en bruto y trabajado (`Laminas`, `Material_`); técnica sugerida `codice`.
 - [ ] **23. `flora` 🌿 — plantas y hongos.** Carpeta `Flora`; imagen: lámina botánica (`Laminas`), técnica sugerida `codice`.
 - [ ] **24. `obra` 🎨 — obras, canciones, textos y documentos del mundo.** Carpeta `Arte_y_Expresion`; imagen: la obra o su interpretación (`Escenas`).
 - [ ] **25. `ecosistema` 🌲 — biomas y ecosistemas** (familia `lugar`). Carpeta `Ecosistemas`; imagen: paisaje del bioma, apaisado (`Lugares`).

@@ -54,7 +54,8 @@
     "facciones": "objetos",
     "variante_de": "variantes",
     "variantes": "variante_de",
-    "sistemas": "objetos"
+    "sistemas": "objetos",
+    "materiales": "objetos"
   },
   "relaciones": {
     "creador": "personaje",
@@ -65,6 +66,7 @@
     "culturas": "cultura",
     "creencias": "creencia",
     "sistemas": "sistema",
+    "materiales": "material",
     "eventos": "evento",
     "variante_de": "objeto",
     "variantes": "objeto",

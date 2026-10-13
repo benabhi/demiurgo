@@ -14,7 +14,8 @@
     "dominios",
     "habitat",
     "partida",
-    "destino"
+    "destino",
+    "yacimientos"
   ],
   "emoji": "🗺️",
   "huecos_propios": {
@@ -47,7 +48,8 @@
     "pueblos": "territorios",
     "asentamientos": "region",
     "capital": "region",
-    "criaturas": "habitat"
+    "criaturas": "habitat",
+    "recursos": "yacimientos"
   },
   "relaciones": {
     "region_padre": "region",

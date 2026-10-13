@@ -53,7 +53,8 @@
     "fenomenos": "criaturas",
     "afecciones": "criaturas",
     "deidades": "criaturas",
-    "parientes": "parientes"
+    "parientes": "parientes",
+    "materiales": "criaturas"
   },
   "relaciones": {
     "habitat": "lugar",
