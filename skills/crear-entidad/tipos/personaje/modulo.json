@@ -39,7 +39,8 @@
     "padres": "hijos",
     "hijos": "padres",
     "hermanos": "hermanos",
-    "pareja": "pareja"
+    "pareja": "pareja",
+    "obras": "autores"
   },
   "relaciones": {
     "especie": "especie",
@@ -59,6 +60,7 @@
     "posesiones": "objeto",
     "afecciones": "afeccion",
     "sistemas": "sistema",
+    "obras": "obra",
     "era": "era"
   }
 }

@@ -54,7 +54,8 @@
     "deidades": "creencias",
     "sistemas": "creencias",
     "mitos": "creencias",
-    "costumbres": "creencias"
+    "costumbres": "creencias",
+    "textos": "creencias"
   },
   "relaciones": {
     "deidades": "deidad",
@@ -71,6 +72,7 @@
     "mitos": "mito",
     "costumbres": "costumbre",
     "idiomas": "idioma",
+    "textos": "obra",
     "creencia_madre": "creencia",
     "ramas": "creencia",
     "rivales": "creencia",

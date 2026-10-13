@@ -41,6 +41,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | sistema | el poder, la técnica o la ley en uso, con su efecto y su precio | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Sistema_` |
 | mito | la escena clave del relato, tal como la imaginan quienes lo cuentan | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Mito_` |
 | costumbre | la costumbre en plena práctica, en su momento más reconocible | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Costumbre_` |
+| obra | la obra misma o su interpretación (el mural, la estatua; la canción cantada, el libro abierto) | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Obra_` |
 | creencia | su símbolo sagrado | `Square 1:1 format` | `Iconos` | `Simbolo_` |
 | era | escena alegórica de la era | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Era_` |
 | evento | escena dramática del momento clave | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Evento_` |
@@ -232,6 +233,27 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 | LUZ | La luz y el ánimo | `firelight against a cold violet sky, solemn and joyful at once` |
 
 **Su momento más reconocible:** la fiesta en su punto álgido, el rito en su gesto central, la ley al cumplirse o al castigarse, el tabú en la señal que lo recuerda (la puerta que nadie cruza, el plato que nadie toca). Las figuras, sin protagonismo individual: la costumbre es el sujeto. Nada gráfico, aunque haya castigo o sacrificio: se sugiere.
+
+## obra — la obra o su interpretación
+```
+{ESTILO}. {VISTA}. The work: {SUJETO}. What it shows: {CONTENIDO}. Setting: {ENTORNO}. Focal detail: {DETALLE}. Lighting and atmosphere: {LUZ}. Only invented symbols: no letters, numbers or words from any real alphabet. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| VISTA | La vista según su categoría (abajo) | `A wide view of a vast faded mural on the wall of a ruined chapel of an invented world` |
+| SUJETO | Qué es, sin su título | `a mural of drowned figures rising toward a pale sun` |
+| CONTENIDO | Lo que muestra o cuenta, de «Lo que dice», como imagen | `rows of figures with closed eyes, water lines painted across their chests, a single open hand at the center` |
+| ENTORNO | Dónde está o dónde se canta, se lee o se representa | `cracked plaster, candle soot, a few pilgrims kneeling` |
+| DETALLE | Lo que llama la atención | `a fresh scrape where someone tried to erase a face` |
+| LUZ | La luz y el ambiente | `dim candlelight with a cold shaft from a broken window` |
+
+**Vista por categoría:**
+- **pintura, escultura o mapa:** la obra misma, como es y donde está: `A wide view of {la obra} of an invented world`. Un mapa, como un objeto antiguo sobre una mesa, con sus dibujos y sin letras.
+- **texto, documento o poema:** el ejemplar abierto en su sitio, con sus ilustraciones o sus sellos, y sin letras legibles (`pages filled with invented script`), o el momento en que alguien lo lee en voz alta.
+- **canción o representación:** el momento en que se canta o se representa, con quien la canta y quien escucha: `A scene of a song being performed in an invented world`.
+
+La obra es el sujeto: lo que muestra o lo que se canta se entiende sin palabras. Si es un relato, se elige su escena más reconocible, como en un mito.
 
 ## asentamiento — llegada por el camino
 ```

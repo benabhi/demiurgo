@@ -70,6 +70,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `mitos` que cuenta como sagrados o que condena: cada uno la tiene en sus `creencias`;
   - `costumbres` que manda, bendice o condena (sus ritos, sus fiestas, sus tabúes): cada una la tiene en sus `creencias`;
   - `idiomas`: su lengua sagrada;
+  - `textos`: sus textos sagrados o los que condena (tipo `obra`): cada uno la tiene en sus `creencias`;
   - `creencia_madre` y `ramas`: de qué fe nació y qué ramas o herejías salieron de ella; recíprocas;
   - `rivales`: las fes con que choca, vistas desde esta; no se espeja sola: si la rivalidad es mutua, va también en la otra, y si es de un solo lado, solo en esta (ver «Relaciones» en `SKILL.md`);
   - `eventos` que la marcaron (su fundación, un cisma, una persecución);

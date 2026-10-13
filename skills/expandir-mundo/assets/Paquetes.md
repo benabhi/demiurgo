@@ -210,6 +210,7 @@ Peso: 1
 ## La ruta del texto antiguo
 Peso: 1
 - ruta: 1 (una ruta perdida o dudosa, que solo cuenta un texto antiguo)
+- obra: 1 (el texto, el mapa o el cantar que la cuenta)
 - lugar: 1 (adonde llevaría: un lugar perdido)
 - personaje: 1 (quien la busca)
 
@@ -283,3 +284,26 @@ Peso: 1
 - lugar: 1 (un bosque, una selva o una ciénaga)
 - flora: 1 (lo que crece allí y en ninguna otra parte)
 - criatura: 1 (lo que vive de ella)
+
+## El libro prohibido
+Peso: 1
+- obra: 1 (un texto que alguien persigue)
+- faccion: 1 (quien lo persigue, o quien lo guarda)
+- secreto: 1 (lo que dice de verdad)
+
+## Cantar de gesta
+Peso: 1
+- obra: 1 (un cantar o un poema que cuenta un hecho)
+- evento: 1 (el hecho que cuenta, a su manera)
+- personaje: 1 (su héroe, o quien lo compuso)
+
+## Crónicas enfrentadas
+Peso: 1
+- evento: 1 (un hecho que se cuenta de dos maneras)
+- obra: 2 (dos crónicas que lo cuentan distinto)
+
+## El mural del templo
+Peso: 1
+- obra: 1 (una pintura, un mural o una talla sagrados)
+- lugar: 1 (el templo o el santuario donde está)
+- creencia: 1 (la fe que lo venera)

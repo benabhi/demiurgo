@@ -6,7 +6,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 
 ## Qué hace
 - **Una entrevista inicial** sobre los pilares del mundo (premisa, género, tono, poderes, tecnología, dioses, especies, calendario…), que crea la bóveda: carpetas con su README, guías de convenciones, índices, la **Ficha del Mundo** y un `CLAUDE.md` con las reglas que salen de tus respuestas.
-- **25 tipos de entidad**, cada uno con su ficha, sus reglas y su validación: personajes, regiones, asentamientos, lugares, rutas (caminos, pasos, rutas por mar o por aire, portales), facciones, linajes, objetos, creencias, deidades, especies, culturas, idiomas, calendarios, eras, eventos, fenómenos, afecciones, criaturas, sistemas (poderes, tecnología, leyes del universo), mitos, costumbres (leyes, fiestas, ritos y tabúes), materiales y recursos, flora y secretos.
+- **26 tipos de entidad**, cada uno con su ficha, sus reglas y su validación: personajes, regiones, asentamientos, lugares, rutas (caminos, pasos, rutas por mar o por aire, portales), facciones, linajes, objetos, creencias, deidades, especies, culturas, idiomas, calendarios, eras, eventos, fenómenos, afecciones, criaturas, sistemas (poderes, tecnología, leyes del universo), mitos, costumbres (leyes, fiestas, ritos y tabúes), materiales y recursos, flora, obras (textos, canciones, pinturas, mapas antiguos) y secretos.
 - **Un mundo entrelazado:** toda entidad que una nota nombra va enlazada. Las que todavía no existen quedan como **enlaces pendientes** con su tipo, y el mundo crece completándolos. Las relaciones no son espejos: si alguien teme a un dragón, el dragón no tiene por qué temerle.
 - **Rutas y distancias:** las rutas unen los lugares con sus tiempos de viaje, tramo a tramo, y con ellas un grafo de distancias dice cuánto se tarda de un sitio a otro y por dónde, para que el mundo no se contradiga. También hay senderos que no llevan a ninguna parte, rutas circulares, redes, portales y rutas perdidas que solo cuenta un texto antiguo.
 - **Profundidad según la relevancia:** un antagonista central tiene una ficha extensa y un campesino, lo esencial; nada se inventa para llenar una plantilla. Cuando una entidad gana peso en el mundo, el motor la profundiza.
@@ -81,7 +81,7 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 
 ## Estado
 En desarrollo:
-- faltan los tipos obra, ecosistema y astro;
+- faltan los tipos ecosistema y astro;
 - falta la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
 
 El plan está en [PLAN.md](PLAN.md).

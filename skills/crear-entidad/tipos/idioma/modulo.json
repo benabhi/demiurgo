@@ -33,7 +33,8 @@
     "culturas": "idiomas",
     "especies": "idiomas",
     "lengua_madre": "derivadas",
-    "derivadas": "lengua_madre"
+    "derivadas": "lengua_madre",
+    "obras": "idiomas"
   },
   "relaciones": {
     "culturas": "cultura",

@@ -30,6 +30,7 @@ sistemas: []
 mitos: []
 costumbres: []
 idiomas: []
+textos: []
 creencia_madre: ""
 ramas: []
 rivales: []

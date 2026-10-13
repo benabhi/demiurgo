@@ -126,7 +126,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `afecciones` que deja su uso o que lo provocan;
   - `materiales` que necesita o que lo frenan: cada uno lo tiene en sus `sistemas`;
   - `lugares` donde se enseña, donde es más fuerte o donde no funciona;
-  - `obras` que lo enseñan o lo cuentan;
+  - `obras` que lo enseñan o lo cuentan: cada una lo tiene en sus `sistemas`;
   - `eventos` que lo marcaron (su descubrimiento, una prohibición, una catástrofe);
   - `era` en que apareció.
 - `relevancia`: 5 la raíz de los poderes o de la técnica del mundo, una ley del universo o un concepto que lo define; 4 un sistema regional o una rama mayor; 3 una tradición o un saber de una comarca; 2 una técnica menor; 1 un truco de unos pocos.

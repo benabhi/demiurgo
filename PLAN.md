@@ -159,6 +159,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [ ] `ruta` (#21): una región y una ruta entre dos de sus asentamientos (el itinerario y el bloque «Rutas» de la leyenda de la región), y la acción `conectar` en una tanda del motor.
 - [ ] `material` (#22): un material de relevancia 3 con su yacimiento (una mina, que lleva mapa interior) y la reciprocidad con la región y los objetos.
 - [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
+- [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -295,7 +296,12 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - **Conexiones:** recíproca con su hábitat (región y lugar ganan `flora`), sus materiales (`plantas`) y sus parientes.
   - **Motor:** tabla `Flora.md` y cuatro paquetes (remedio del monte, la cosecha, veneno de la casa, bosque vivo).
   - **Imagen:** lámina botánica, la planta entera y sus partes (`Laminas`, `Flora_`); técnica sugerida `codice`.
-- [ ] **24. `obra` 🎨 — obras, canciones, textos y documentos del mundo.** Carpeta `Arte_y_Expresion`; imagen: la obra o su interpretación (`Escenas`).
+- [x] **24. `obra` 🎨 — textos, documentos, poemas, canciones, representaciones, pinturas, esculturas y mapas del mundo.**
+  - **Carpeta:** `30_Sociedad_y_Cultura/Arte_y_Expresion`. La obra es lo que dice o muestra; un ejemplar que importa como cosa es un objeto.
+  - **Ficha:** qué es; lo que dice, con **un fragmento** con su voz; quién la hizo y por qué; cómo se recibe (lecturas enfrentadas, quién la persigue); ejemplares y versiones; historia. Cuenta su versión de los hechos, no la verdad. `autoria` (conocida, atribuida, anónima, colectiva), `difusion` y `situacion` (de viva a perdida o destruida).
+  - **Conexiones:** recíproca con sus autores (el personaje gana `obras`), sus creencias (la creencia gana `textos`) y sus mitos, idiomas y sistemas (`obras`, que ya existían); `trata_de` de cualquier tipo. Es la fuente natural de las rutas, los materiales y las plantas legendarios.
+  - **Motor:** tabla `Obra.md`, cuatro paquetes (el libro prohibido, cantar de gesta, crónicas enfrentadas, el mural del templo) y la ruta del texto antiguo con su texto.
+  - **Imagen:** la obra misma (el mural, la estatua, el mapa) o su interpretación (la canción cantada, el libro abierto), apaisado (`Escenas`, `Obra_`).
 - [ ] **25. `ecosistema` 🌲 — biomas y ecosistemas** (familia `lugar`). Carpeta `Ecosistemas`; imagen: paisaje del bioma, apaisado (`Lugares`).
 - [ ] **26. `astro` 🌙 — cuerpos celestes y fenómenos del cielo.** Carpeta `Cosmos_y_Astros`; imagen: el astro sobre un paisaje nocturno, apaisado (`Escenas`).
 

@@ -55,7 +55,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `culturas` y `especies` que la hablan; recíprocas con sus `idiomas`;
   - `regiones` donde se habla;
   - `lengua_madre` y `derivadas` (lenguas y dialectos que nacieron de ella); recíprocas;
-  - `obras` escritas en ella.
+  - `obras` escritas en ella: cada una la tiene en sus `idiomas`.
 - `relevancia`: 4 o 5 la lengua común o franca del foco; 3 la lengua de un pueblo; 2 un dialecto o una jerga.
 - `ultima_revision` sin comillas.
 

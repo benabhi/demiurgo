@@ -48,7 +48,8 @@
     "sistema_padre": "ramas",
     "ramas": "sistema_padre",
     "opuestos": "opuestos",
-    "materiales": "sistemas"
+    "materiales": "sistemas",
+    "obras": "sistemas"
   },
   "relaciones": {
     "practicantes": "personaje",

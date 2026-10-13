@@ -1,0 +1,61 @@
+{
+  "tipo": "obra",
+  "familia": "obra",
+  "emoji": "🎨",
+  "huecos_propios": {
+    "min": 1,
+    "max": 6
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Cómo se recibe": 2,
+    "Ejemplares y versiones": 3
+  },
+  "carpeta": {
+    "fija": "30_Sociedad_y_Cultura/Arte_y_Expresion"
+  },
+  "fechas": [
+    "creacion",
+    "destruccion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["viva", "conservada", "fragmentaria", "prohibida"],
+    "pasado": "destruida"
+  },
+  "valores": {
+    "categoria": ["texto", "documento", "poema", "cancion", "representacion", "pintura", "escultura", "mapa", "otro"],
+    "autoria": ["conocida", "atribuida", "anonima", "colectiva"],
+    "difusion": ["unica", "rara", "conocida", "universal"],
+    "situacion": ["viva", "conservada", "fragmentaria", "perdida", "prohibida", "destruida"]
+  },
+  "solo_si": {
+    "destruccion": {"situacion": ["perdida", "destruida"]}
+  },
+  "reciprocas": {
+    "autores": "obras",
+    "creencias": "textos",
+    "mitos": "obras",
+    "idiomas": "obras",
+    "sistemas": "obras",
+    "relacionadas": "relacionadas"
+  },
+  "relaciones": {
+    "autores": "personaje",
+    "pueblos": "cultura",
+    "facciones": "faccion",
+    "creencias": "creencia",
+    "idiomas": "idioma",
+    "mitos": "mito",
+    "sistemas": "sistema",
+    "eventos": "evento",
+    "costumbres": "costumbre",
+    "trata_de": "cualquiera",
+    "ubicacion": "lugar",
+    "relacionadas": "obra",
+    "era": "era"
+  }
+}

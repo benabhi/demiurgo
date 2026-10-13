@@ -33,6 +33,7 @@ vinculos: []
 posesiones: []
 afecciones: []
 sistemas: []
+obras: []
 imagen: ""
 era: ""
 fuentes: []

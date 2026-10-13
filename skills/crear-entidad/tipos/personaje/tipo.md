@@ -94,6 +94,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - `especie` y `pueblo` enlazan a su especie y su cultura. Respeta la regla de especies de la Ficha: no crees especies nuevas si no está permitido.
 - `vinculos`: personajes con los que tiene una relación fuera de la familia. Los lugares y objetos significativos van en la tabla Relaciones y en su propiedad (`residencia`, `posesiones`…).
 - `sistemas`: los sistemas que usa o domina (una magia, un don, un pacto, una técnica fuera de lo común). Si es uno de sus practicantes notables y el sistema ya existe, añádelo también a sus `practicantes`.
+- `obras`: lo que escribió, compuso, pintó o talló (o se le atribuye): cada obra lo tiene en sus `autores`.
 - `imagen`: vacío hasta que `generar-imagen` lo complete.
 
 ## Enlaces pendientes

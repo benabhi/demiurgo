@@ -88,7 +88,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `criaturas`, `lugares` y `objetos` que aparecen en él (el monstruo, la cueva, la espada);
   - `eventos`: los hechos reales que lo inspiraron o, en una profecía, el que la cumplió;
   - `fenomenos` y `sistemas` cuyo origen o funcionamiento explica a su manera;
-  - `costumbres` que lo recuerdan o que justifica: cada una lo tiene en sus `mitos`; y `obras` que lo cuentan;
+  - `costumbres` que lo recuerdan o que justifica: cada una lo tiene en sus `mitos`; y `obras` que lo cuentan o lo fijan: cada una lo tiene en sus `mitos`;
   - `relacionados`: otros mitos con los que se cruza (el principio y el final de una misma historia, dos versiones enemigas); recíproca;
   - `epoca`: la era en que ocurre lo que cuenta (a menudo, una era legendaria o profetizada);
   - `era`: la era en que empezó a contarse.
