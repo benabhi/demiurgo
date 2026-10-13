@@ -274,7 +274,7 @@ def world_sheet(world, questionnaire, results, today):
 
 def setup_graph(vault, warnings):
     """El grafo de Obsidian, con el script de crear-entidad: un color por tipo de entidad, un filtro sin las
-    notas del sistema, flechas, los nombres visibles desde más lejos y los marcadores «Grafo completo» y
+    notas del sistema, los nombres visibles desde más lejos y los marcadores «Grafo completo» y
     «Grafo sin secretos». Devuelve las líneas del resumen; si crear-entidad no está, avisa."""
     scripts = Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"
     if not (scripts / "graph_colors.py").is_file():

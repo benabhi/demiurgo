@@ -7,15 +7,16 @@
   - Un filtro que deja fuera 00_Sistema (los MOC, la Ficha, el Glosario, los registros, la Bitácora y las
     plantillas), los README de las carpetas y los MOC de las secciones: son índices que enlazan con todo y
     enredan el grafo. Si el usuario ya tiene un filtro propio, no se toca (con --filter, se reemplaza).
-  - Flechas en los enlaces (de la nota que nombra a la nombrada) y los nombres visibles desde más lejos al
-    alejar el zoom. Los adjuntos (las imágenes) y las etiquetas no salen como nodos. Los enlaces pendientes
-    sí: son los nodos grises, las entidades que el mundo ya nombra y aún no existen.
+  - Los nombres visibles desde más lejos al alejar el zoom. Los adjuntos (las imágenes) y las etiquetas no
+    salen como nodos. Los enlaces pendientes sí: son los nodos grises, las entidades que el mundo ya nombra y
+    aún no existen.
   - Dos marcadores de grafo (`.obsidian/bookmarks.json`, en el panel Marcadores): «Grafo sin secretos», que
     oculta los secretos (su carpeta y su etiqueta) para enseñar el mundo sin destripar nada, y «Grafo
-    completo», que vuelve a mostrarlo todo. Abrir uno deja el grafo con su configuración. Los demás
-    marcadores no se tocan.
-Lo demás (las fuerzas, el zoom) se queda como esté. Es idempotente: se puede volver a ejecutar cuando llegan
-tipos nuevos (los marcadores se rehacen con la configuración que tenga el grafo en ese momento).
+    completo», que vuelve a mostrarlo todo. Abrir uno cambia el filtro, los colores y lo que se muestra.
+    Los demás marcadores no se tocan.
+Lo demás se queda como esté: las fuerzas, el zoom y las flechas (ensucian el grafo; se activan a mano, en
+Mostrar → Flechas). Es idempotente: se puede volver a ejecutar cuando llegan tipos nuevos (los marcadores se
+rehacen con la configuración que tenga el grafo en ese momento).
 Con Obsidian abierto: recarga solo el grafo y los marcadores cuando cambian sus archivos, salvo que haya un
 grafo abierto en una pestaña, que vuelve a guardar el suyo a los pocos segundos (y al cerrarse) y pisa el
 nuevo. Ciérralo antes o, si ya pasó, abre el marcador «Grafo completo», que aplica la configuración entera
@@ -46,10 +47,10 @@ SAFE_VIEW = "Grafo sin secretos"
 TYPE_GROUP_RE = re.compile(r"^tag:#([\w-]+)$")
 COLOR_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
 # Lo que se muestra: ni los adjuntos ni las etiquetas como nodos; sí los enlaces pendientes y las notas sueltas.
-# Flechas, para ver quién nombra a quién. Los nombres se borran al alejar el zoom: con el valor de Obsidian
-# (textFadeMultiplier 0), al bajar de la mitad; con -1, al bajar de un cuarto.
+# Los nombres se borran al alejar el zoom: con el valor de Obsidian (textFadeMultiplier 0), al bajar de la
+# mitad; con -1, al bajar de un cuarto. Las flechas no se tocan: ensucian el grafo y se activan a mano.
 DISPLAY = {"showAttachments": False, "showTags": False, "hideUnresolved": False, "showOrphans": True,
-           "showArrow": True, "textFadeMultiplier": -1}
+           "textFadeMultiplier": -1}
 
 
 def fallback_color(name):
@@ -99,8 +100,9 @@ def bookmarks_enabled(vault):
 
 
 def configure_bookmarks(vault, settings, secrets):
-    """Los marcadores del grafo en `.obsidian/bookmarks.json`: «Grafo completo» y «Grafo sin secretos», con la
-    configuración del grafo (el segundo, sin los secretos). Si ya estaban, se rehacen en su sitio; los demás
+    """Los marcadores del grafo en `.obsidian/bookmarks.json`: «Grafo completo» y «Grafo sin secretos», con el
+    filtro, los colores y lo que se muestra del grafo (el segundo, sin los secretos). Las flechas, las fuerzas
+    y el zoom no van, así que abrir uno los deja como estén. Si ya estaban, se rehacen en su sitio; los demás
     marcadores se quedan como estén. Devuelve las líneas del resumen."""
     if not secrets:
         return ["Marcadores: no hay módulo de secretos, así que no hace falta una vista sin ellos."]
@@ -113,7 +115,8 @@ def configure_bookmarks(vault, settings, secrets):
         return [f"AVISO: {BOOKMARKS_FILE} no es JSON válido; no lo toco y el grafo queda sin sus marcadores."]
     base = strip_terms(settings.get("search") or "", secrets)
     now = int(time.time() * 1000)
-    fresh = {title: {"type": "graph", "ctime": now, "title": title, "options": dict(settings, search=search)}
+    view = {key: settings[key] for key in ("colorGroups", *DISPLAY) if key in settings}
+    fresh = {title: {"type": "graph", "ctime": now, "title": title, "options": dict(view, search=search)}
              for title, search in ((FULL_VIEW, base), (SAFE_VIEW, " ".join([base] + secrets).strip()))}
     items, placed = [], set()
     for item in data.get("items") or []:
@@ -165,8 +168,8 @@ def configure_graph(vault, modules=None, replace_filter=False):
     settings.update(DISPLAY)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
-    lines.append("Con flechas (de la nota que nombra a la nombrada) y los nombres visibles desde más lejos; sin "
-                 "adjuntos ni etiquetas como nodos; los enlaces pendientes, en gris.")
+    lines.append("Con los nombres visibles desde más lejos, sin adjuntos ni etiquetas como nodos y con los enlaces "
+                 "pendientes en gris (las flechas, a mano: Mostrar → Flechas).")
     return lines + configure_bookmarks(vault, settings, secrets)
 
 

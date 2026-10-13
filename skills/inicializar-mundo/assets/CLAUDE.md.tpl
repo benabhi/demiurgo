@@ -15,7 +15,7 @@ La identidad y los pilares del mundo están en la Ficha, que se carga a continua
 - Convenciones: `{{BOVEDA}}/00_Sistema/04_Convenciones/` (Organización, Nombres, Canon, Estilo y Tono, Glosario, Registro de Canon).
 - Cada nota vive en una sola carpeta, según qué es; las relaciones se expresan con enlaces.
 - No crees, renombres ni muevas carpetas sin que se pida. Las skills que añadan estructura la registran en la Guía de Organización.
-- Grafo de Obsidian: un color por tipo de entidad (por la etiqueta del tipo en `tags`), flechas, los nombres visibles desde lejos y sin las notas del sistema; en Marcadores, «Grafo sin secretos» (para enseñar el mundo sin spoilers) y «Grafo completo», que además repone la configuración si se pierde. Lo aplica `graph_colors.py` de `crear-entidad`: vuelve a ejecutarlo si llega un tipo nuevo, sin un grafo abierto en Obsidian (uno abierto guarda el suyo encima).
+- Grafo de Obsidian: un color por tipo de entidad (por la etiqueta del tipo en `tags`), los nombres visibles desde lejos y sin las notas del sistema (las flechas, a mano: ensucian); en Marcadores, «Grafo sin secretos» (para enseñar el mundo sin spoilers) y «Grafo completo», que además repone la configuración si se pierde. Lo aplica `graph_colors.py` de `crear-entidad`: vuelve a ejecutarlo si llega un tipo nuevo, sin un grafo abierto en Obsidian (uno abierto guarda el suyo encima).
 
 ## Consultar la bóveda sin leerla entera
 La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas enteros el Glosario, Preguntas Abiertas, el registro de enlaces pendientes ni la Bitácora. Usa los scripts de la skill `crear-entidad`:
