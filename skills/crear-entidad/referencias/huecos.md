@@ -79,7 +79,7 @@ python <skill>/scripts/pending_links.py --list                    # solo el resu
 3. Añade en la nueva entidad el vínculo inverso con las notas que la nombran, en su propiedad si la hay.
 4. Regenera el registro con `pending_links.py`.
 
-Un **secreto** también puede nombrar entidades por crear. Al crearlas, lo que diga el secreto es verdad oculta: la nota de lore cuenta solo lo que se sabe o se cree.
+Un **secreto** también puede nombrar entidades por crear. Al crearlas, lo que diga el secreto es verdad oculta: la nota de lore cuenta solo lo que se sabe o se cree. `build_context.py` y `find_gaps.py` lo marcan con 🔒 y lo ponen aparte: úsalo para no contradecirlo, y como mucho deja en la nota alguna señal o rumor que no lo delate.
 
 ## Huecos de dato
 Un campo que no se puede rellenar porque depende de un pilar por definir (por ejemplo, el año de nacimiento sin calendario) se escribe "Por definir". Si es importante, se anota en `Preguntas_Abiertas`.

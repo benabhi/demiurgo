@@ -24,7 +24,8 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
   - mejores preguntas, con una ronda para lo que el usuario ya tiene con nombre propio (especies, pueblos, lugares, facciones, dioses);
   - identificar las entidades de sus respuestas y confirmarle el tipo de cada una;
   - una Ficha que nazca con esas entidades enlazadas como enlaces pendientes con su tipo, para que el motor empiece por ellas;
-  - revisar la estructura y el `CLAUDE.md` que genera.
+  - revisar la estructura y el `CLAUDE.md` que genera;
+  - **el alcance del mundo** (la Escala de la Ficha: una sola región, un continente, un mundo entero, varios planos) hecho estructura: la geografía de arriba (el mundo, sus continentes o la región única) como primeros enlaces pendientes, para que cada región cuelgue de algo, el foco se sitúe en ella y el mapa del mundo tenga qué dibujar. Por decidir con el usuario.
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
@@ -131,7 +132,6 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
   | asentamiento: aldea, caserío, campamento, refugio, colonia, estación, otro | plano urbano | relevancia 4 |
   | región | mapa de territorio | relevancia 4, y la imagen cuando hay al menos 5 zonas que situar |
   | el mundo | mapa del mundo | a pedido y en `finalizar-mundo` |
-  | ruta: camino, sendero, paso, fluvial, marítima, subterránea, aérea, espacial (los portales, no) | itinerario: la franja de tierra a lo largo de la ruta | relevancia 3, y la imagen desde 3 puntos |
 
 - **La leyenda** (sección `## Mapa`): `- **N.** **Nombre** · <orientación> — una línea. Conecta con 2 y 5.` (una viñeta con el número en negrita, porque Obsidian renumera las listas numeradas al leerlas).
   - Números estables: solo se añaden al final; nunca se renumeran ni se reutilizan (una zona destruida queda marcada).
@@ -144,26 +144,29 @@ Además del concept art (que sigue siendo obligatorio y la primera imagen de la 
 - **Lo escondido:** los pasos ocultos (`Paso oculto a 7.`, en las dos zonas) y las trampas (`Trampa: …`) que la nota conoce van en la leyenda y en el mapa, con los símbolos de la Guía Visual (línea de puntos, triángulo); lo que nadie conoce es un secreto y no va en el mapa. Las trampas se tiran combinando mecanismo, disparador, efecto y quién la puso y para qué (unas 9.000 combinaciones), para que no se repitan.
 - **Caminos:** dentro de un mapa, las conexiones de la leyenda; entre lugares, las rutas con nota. El bloque «Rutas» de cada leyenda lo deriva de las notas de las rutas `map_key.py --sync-routes` (la zona por la que pasa cada una, en orden, «sigue» donde sale del mapa y «se pierde» donde acaba en nada), conecta sus zonas y cuenta para la edición siguiente; cada ruta se dibuja con el estilo de su categoría. No todo tiene que estar conectado.
 - **Estilo:** la Guía Visual del mundo, con una técnica de mapas fija (la general si es sobre papel; si no, se elige una vez entre las de papel). Marcadores: círculo negro con fondo blanco, exactamente los números de la leyenda, una vez cada uno, y ningún otro texto. Formato A4: vertical 3:4 u horizontal 4:3, según la forma del lugar.
-- **Comprobación de cada imagen:** la IA la mira (en un mapa, cuenta los marcadores y busca repetidos y faltantes, el texto de más y lo característico de cada zona); si falla, pide la corrección en el mismo chat, hasta dos veces, y anota lo que quede mal.
+- **Comprobación de cada imagen:** la IA la mira toda, no solo los mapas: los elementos de su descripción visual uno por uno, sin texto ni marco, la técnica y el formato (en un mapa, además, cuenta los marcadores y busca repetidos y faltantes, el texto de más y lo característico de cada zona); si falla, pide la corrección en el mismo chat, hasta dos veces. El resultado queda en la nota: en la línea del prompt del concept art y en la de la edición del mapa.
+- **Lo anterior, archivado:** al aceptar una imagen, `fetch_download.py keep` la deja con el nombre de siempre y mueve a `02_Activos/Anteriores` la que había (`_ed1` en un mapa, `_v1` en un concept art regenerado) y los intentos descartados (`_descartada`). La nota enlaza lo anterior («Ediciones anteriores» en su sección Mapa, «Versiones anteriores» en su sección Imagen), para volver si lo nuevo no gusta.
 
 Etapas:
 - [x] 1. Datos: regla `mapa`, sección `## Mapa`, validación en `check_note` y `check_modules`, `map_key.py`.
 - [x] 2. `generar-imagen`: modo mapa (técnica de mapas, plantillas, A4) y comprobación con corrección (también del concept art).
 - [x] 3. `crear-entidad`: la leyenda al crear, el mapa tras el concept art y la entrada en la leyenda del lugar donde está.
 - [ ] 4. Motor: acción `cartografiar`. Hecha; se tilda cuando se pruebe en una tanda del motor.
-- [ ] 5. Las rutas (con el módulo #21: el itinerario y las rutas en los mapas que cruzan; hecho, se tilda con su prueba); más adelante, el mapa del mundo (con `finalizar-mundo`) y, quizá, un «mapa del director» en el secreto que cambia la planta de un lugar (la sala que nadie conoce).
+- [ ] 5. Las rutas en los mapas que cruzan (con el módulo #21; el bloque «Rutas» ya se probó, falta ver una edición nueva que las dibuje); las rutas no tienen mapa propio; más adelante, el mapa del mundo (con `finalizar-mundo`) y, quizá, un «mapa del director» en el secreto que cambia la planta de un lugar (la sala que nadie conoce).
 
 ## Entidades por orden de prioridad
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
-- [ ] `ruta` (#21): una región y una ruta entre dos de sus asentamientos (el itinerario y el bloque «Rutas» de la leyenda de la región), y la acción `conectar` en una tanda del motor.
-- [ ] `material` (#22): un recurso que la región ya nombra, de relevancia 3, y después su mina (categoría `explotacion`, con mapa interior); la reciprocidad con la región.
-- [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
-- [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
-- [ ] `ecosistema` (#25): un ecosistema de relevancia 3 donde crece la planta de la prueba de flora, con su pieza clave y la reciprocidad con sus zonas y su flora.
-- [ ] `astro` (#26): un cometa de relevancia 3 que los pueblos tienen por presagio (`situacion: por_venir`), sin tocar el calendario mientras sea un pilar por definir.
-- [ ] El grafo de Obsidian con sus colores, en un mundo con entidades de varios tipos; los nombres desde lejos y los marcadores «Grafo sin secretos» y «Grafo completo».
+- [x] `ruta` (#21): una región y una ruta entre su capital y otro asentamiento, con el bloque «Rutas» en la leyenda de la región. Tras la prueba, la ruta dejó de tener mapa propio (el itinerario sobraba): se ve en los mapas de lo que cruza, y sus puntos con peso entran en la leyenda de su región.
+- [x] `material` (#22): un recurso que la región ya nombra y su mina (categoría `explotacion`, con mapa interior).
+- [x] `flora` (#23): una planta que calma una afección y se confunde con una gemela venenosa, con su hábitat y su secreto.
+- [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada. No llegó a probarse.
+- [x] `ecosistema` (#25): con la planta de la prueba de flora, su pieza clave y la reciprocidad con sus zonas, su flora y sus recursos.
+- [x] `astro` (#26): un cometa por venir, sin tocar el calendario.
+- [ ] El grafo de Obsidian: los marcadores «Grafo sin secretos» y «Grafo completo» (los colores por tipo y los nombres de lejos ya se vieron; las flechas se quitaron porque ensucian).
+- [ ] Una tanda del motor en modo prueba (`/expandir-mundo prueba 3`, con `--connect-chance 0.8` y `--map-chance 0.5`): las acciones `conectar` y `cartografiar`.
+- [ ] Lo arreglado tras la prueba de las entidades 21-26, en la próxima ocasión: que los puntos con peso de una ruta entren en la leyenda de su región; que una edición nueva de un mapa (o una imagen regenerada) archive la anterior y la enlace en la nota (`fetch_download.py keep`); la comprobación anotada en toda imagen; que el contexto de una entidad que nombra un secreto lo marque aparte (🔒); y que el chat no muestre `[[...]]`.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -281,11 +284,11 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - **Ficha:** qué une o adónde no lleva; el recorrido por tramos, con sus días; cómo se recorre (temporada, peaje, salvoconducto, el rito del portal); quién la recorre y qué lleva; peligros y controles; atajos y desvíos; historia.
   - **Trazado:** `lineal` (une su partida y su destino), `sin_salida` (los senderos que no llevan a ninguna parte), `circular` y `red` (con sus ramales). **Situación** (en uso, en declive, cortada, abandonada, perdida, en construcción) y **certeza** (cierta o dudosa: la ruta que solo cuenta un texto antiguo, con su fuente).
   - **Tiempos de viaje como datos:** `dias` y `medio`, y la tabla Recorrido con los días de cada tramo, que valida `check_note.py`. Con ellos, `routes.py` arma el grafo de distancias: las rutas de un lugar, el camino más rápido entre dos y lo que debería estar unido y no lo está. `build_context.py` da a cada lugar sus rutas y lo más cercano, y a cada ruta, cuánto se tardaba sin ella.
-  - **Mapas:** el itinerario de la ruta (la franja de tierra a lo largo del camino) y las rutas en los mapas de las regiones que cruzan.
+  - **Mapas:** sin mapa propio (el itinerario se quitó tras la prueba: sobraba). La ruta se ve en los mapas de las regiones que cruza (bloque «Rutas»), y sus puntos con peso (la ciudad de su destino) entran en la leyenda de su región.
   - **Motor:** tabla `Ruta.md`, paquetes y la acción `conectar`, que une lo que debería estar unido.
   - **Imagen:** vista a lo largo de la ruta, con viajeros, apaisado (`Lugares`, `Ruta_`).
 
-  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (itinerario y bloque «Rutas» en las leyendas) · [x] 3. motor (tabla `Ruta.md`, ocho paquetes y la acción `conectar`). Su prueba, en «Pruebas pendientes».
+  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (el bloque «Rutas» en las leyendas) · [x] 3. motor (tabla `Ruta.md`, ocho paquetes y la acción `conectar`). Su prueba, en «Pruebas pendientes».
 
 ### Fase 6 — Detalle del mundo
 - [x] **22. `material` 💎 — metales, piedras, gemas, cristales, maderas, materias de seres vivos, sustancias, compuestos exóticos y recursos de la tierra.**

@@ -75,7 +75,7 @@ En modo mapa, el prompt es el de «La plantilla del prompt» de `mapas.md`, uno 
    5. Si aun así no se ve pero el icono de descarga está, intenta descargarla igualmente: la descarga suele funcionar aunque la vista previa falle.
    6. Si en 3 minutos no aparece ni la imagen ni el icono, ve a "Si algo falla".
 7. **Si Gemini rechaza la petición o responde solo con texto,** suaviza el prompt (más sugerido, menos explícito) y reintenta una vez en el mismo chat.
-8. **Acepta la primera imagen que pase la comprobación** (Paso 3c). Si el usuario quiere otra, la pedirá después (se guardará como `_v2`).
+8. **Acepta la primera imagen que pase la comprobación** (Paso 3c). Si el usuario quiere otra, la pedirá después (la de ahora se archivará y quedará enlazada en la nota).
 
 ## Paso 3b: descargar y guardar
 1. Ejecuta `python <directorio de la skill>/scripts/fetch_download.py mark` y guarda la marca que imprime.
@@ -84,23 +84,34 @@ En modo mapa, el prompt es el de «La plantilla del prompt» de `mapas.md`, uno 
    ```bash
    python <directorio de la skill>/scripts/fetch_download.py fetch --since <marca> --dest "<bóveda>/00_Sistema/02_Activos/<Carpeta>" --name <Prefijo><Nombre_de_la_nota>
    ```
-   El script imprime el nombre final, el tamaño y el nombre original de la descarga. Si ya existía un archivo con ese nombre, usa `_v2`, `_v3`…
+   El script imprime el nombre del archivo, el tamaño y el nombre original de la descarga. Si ya existía un archivo con ese nombre, usa `_v2`, `_v3`…; al aceptar una, `keep` le pone el nombre de siempre (Paso 4).
 4. Si el script no encuentra la imagen (la descarga no arrancó), pulsa de nuevo el botón y repite el paso 3.
 5. Si Chrome abre un diálogo para elegir dónde guardar, la extensión no puede manejarlo. Pide al usuario que guarde en su carpeta de Descargas, o que desactive en Chrome "Preguntar dónde se guardará cada archivo", y repite el paso 3.
 
 ## Paso 3c: comprobar la imagen
-Mira la imagen guardada (léela con la herramienta de lectura de archivos) y compárala con lo que se pidió:
-- **Toda imagen:** el sujeto y los rasgos que lo definen (los de su descripción visual: «sin ojos», «la corona partida en dos»); en un retrato, una sola figura; ningún texto, marco ni firma (la marca de agua de Gemini no cuenta); la técnica y la paleta de la Guía; el formato pedido.
+Toda imagen se comprueba, no solo los mapas. Mira la imagen guardada (léela con la herramienta de lectura de archivos) y compárala con lo que se pidió:
+- **Toda imagen:** repasa uno por uno los elementos de su «Descripción visual» (el sujeto y los rasgos que lo definen: «sin ojos», «la corona partida en dos», «el viejo y el niño en el tejado»); en un retrato, una sola figura; ningún texto, marco ni firma (tampoco un recuadro dibujado alrededor; la marca de agua de Gemini no cuenta); nada que rompa los pilares de la Ficha (una técnica o una época que no tocan); la técnica y la paleta de la Guía; el formato pedido.
 - **Un mapa,** además, lo que dice «Comprobación» en `mapas.md`. Lo primero son los marcadores: todos, una vez cada uno.
 
-Si algo falla, pide la corrección **en el mismo chat de Gemini**, nombrando el problema exacto y pidiendo que no cambie nada más. Descarga y guarda la imagen corregida (Paso 3b) y vuelve a comprobar. Como mucho dos correcciones: después, quédate con la mejor, enlázala y anota lo que quedó mal en las incidencias (en un mapa, también en la línea de su edición). Las versiones descartadas se conservan, como toda imagen.
+Si algo falla, pide la corrección **en el mismo chat de Gemini**, nombrando el problema exacto y pidiendo que no cambie nada más. Descarga y guarda la imagen corregida (Paso 3b) y vuelve a comprobar. Como mucho dos correcciones: después, quédate con la mejor, enlázala y anota lo que quedó mal en las incidencias. Los intentos descartados no se borran: los archiva `keep` (Paso 4).
 
 Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle pequeño menos logrado no es un fallo.
 
+**El resultado queda en la nota:** en la línea del prompt de la imagen, ` · comprobada: <lo que se comprobó, en pocas palabras>` o, si algo quedó mal tras las correcciones, ` · comprobada, con fallos: <lo que quedó mal>`; en un mapa, en la línea de su edición (`comprobado: 12/12 marcadores, sin repetidos`).
+
 ## Paso 4: enlazar en la nota
+- **Primero, deja la aceptada con su nombre** y archiva lo demás, sin borrar nada:
+  ```bash
+  python <directorio de la skill>/scripts/fetch_download.py keep --dest "<bóveda>/00_Sistema/02_Activos/<Carpeta>" --name <Prefijo><Nombre_de_la_nota> --new <archivo aceptado> [--label <etiqueta>]
+  ```
+  - La aceptada queda como `<Prefijo><Nota>.<ext>` (la línea «Vigente»): es el **nombre final**, así que la nota no cambia de enlace, salvo la extensión si cambió.
+  - Lo que había con ese nombre va a `02_Activos/Anteriores` con su `--label`: `ed<n>` si era la edición n de un mapa; `descartada` si era un intento de esta misma vez (la primera vez que se dibuja, cuando hubo que corregir); sin `--label` en una imagen regenerada, que queda como `_v1`, `_v2`…
+  - Los intentos `_v2`, `_v3`… de esta vez que no se aceptaron quedan como `_descartada`.
+  - Si el script crea la carpeta `Anteriores`, regístrala en «Carpetas añadidas por skills» de la Guía de Organización: `| 00_Sistema/02_Activos/Anteriores | Imágenes reemplazadas: ediciones anteriores de los mapas (_ed<n>), versiones anteriores (_v<n>) e intentos descartados (_descartada) | generar-imagen |`.
+- **Lo anterior, enlazado:** si `keep` archivó una imagen que no era un descarte, la nota la enlaza para poder volver a ella: en la sección Imagen, `- **Versiones anteriores:** [[Retrato_X_v1.jpg|versión 1]]` (cada una se añade a la lista); en un mapa, en su sección Mapa (ver «Guardar y enlazar» en `mapas.md`). Para volver a una anterior, muévela de `Anteriores` a su carpeta con un nombre `_v<n>` y pásala a `keep` como aceptada: la vigente se archiva a su vez.
 - Propiedad `imagen: "[[<nombre final>]]"`, con su extensión real.
 - Embed justo debajo del resumen en cita: `![[<nombre final>|300]]` para retratos y otras imágenes cuadradas, `![[<nombre final>|600]]` para las apaisadas. Sustituye al anterior si regeneras.
-- En la sección Imagen, `**Prompt:**` con la fecha de generación, la técnica y el modelo (`2026-10-10 · técnica: Boceto en acuarela (acuarela) · modelo: Gemini (navegador)`) y, debajo, el prompt en un bloque de código, tal cual se generó pero **sin** la orden `Generate an image:`, que es para Gemini. Así se puede reutilizar.
+- En la sección Imagen, `**Prompt:**` con la fecha de generación, la técnica, el modelo y la comprobación (`2026-10-10 · técnica: Boceto en acuarela (acuarela) · modelo: Gemini (navegador) · comprobada: el cometa con su cola de velo, el valle con lámparas, el viejo y el niño en el tejado`) y, debajo, el prompt en un bloque de código, tal cual se generó pero **sin** la orden `Generate an image:`, que es para Gemini. Así se puede reutilizar.
 - Actualiza `ultima_revision` (sin comillas).
 - **Un mapa** se enlaza como dice «Guardar y enlazar» en `mapas.md`: la propiedad `mapa`, el mapa embebido y la línea de la edición en la sección Mapa, el prompt del mapa en la sección Imagen y, al final, `map_key.py <Nota> --charted`.
 
@@ -114,7 +125,8 @@ Para un mapa, `--title "Mapa: <Nombre>" --line "**Edición <n> del mapa** de [[<
 - **Técnica:** cuál y por qué: pedida para esta imagen, la del tipo, la general o sorteada (con la tirada).
 - **Nota actualizada:** enlace a la nota y lo que cambió en ella: la propiedad `imagen`, el embed y el prompt en la sección Imagen.
 - **Prompt usado**, en un bloque de código.
-- **Versión:** si es una regeneración, qué versión es (`_v2`, `_v3`…) y que la anterior se conserva.
+- **Comprobación:** qué se comprobó y si algo quedó mal.
+- **Versión:** si es una regeneración o una edición nueva, dónde quedó la anterior (archivada en `Anteriores` y enlazada en la nota) y los intentos descartados.
 - **Mapa** (si se dibujó): la edición, los niveles dibujados, la comprobación de los marcadores (`12/12, sin repetidos`), si se editó la edición anterior o se redibujó, y los detalles inventados para la leyenda (las salas menores de una mazmorra).
 - **Comprobación e incidencias**, si las hubo: inicio de sesión, refrescos por el recuadro gris, reintentos, prompt suavizado y las correcciones que se pidieron en la comprobación, con lo que quedó mal.
 - **Marca de agua:** la primera vez en el mundo, avisa de que las imágenes de Gemini llevan una marca de agua visible y SynthID.
@@ -131,6 +143,6 @@ Si falla un mapa, la leyenda se queda como estaba y no se ejecuta `map_key.py --
 Nunca dejes la nota a medias.
 
 ## Reglas
-- No borres imágenes anteriores: una regeneración se guarda como `_v2`, `_v3`…
+- No borres imágenes: la que se reemplaza y los intentos descartados se archivan en `02_Activos/Anteriores` (`keep`), y lo anterior queda enlazado en la nota.
 - **Credenciales:** el inicio de sesión en Google lo hace siempre el usuario en su navegador; nunca introduzcas credenciales ni aceptes acuerdos en su nombre.
 - La skill es genérica: el estilo de cada mundo vive en su Guía Visual, nunca aquí. El catálogo de técnicas sí es de la skill: una técnica nueva se añade a `tecnicas.md` con su sección (bloques, Color, 📄 si es sobre papel) y en el índice, actualizando los totales del índice y el de la introducción de esta skill.

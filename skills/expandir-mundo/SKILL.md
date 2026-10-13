@@ -97,7 +97,7 @@ python <directorio de esta skill>/scripts/roll_tables.py --file <Tipo> --file Or
 ```
 - **`--file <Tipo>`:** la tabla del tipo que vas a crear, si existe (`--list` muestra cuáles hay). Si el mundo tiene tablas propias en `06_Generacion/Tablas` que encajan con lo que se crea, añádelas con otro `--file`.
 - **`--derive`:** la primera nota de `nombrado_por` (la más relevante de las que nombran el enlace pendiente) o, si no hay ninguna, la región foco. Así los ingredientes salen de lo que ya existe allí. En `crear_foco` no hay de dónde derivar: omítelo. En `crear_canon`, deriva de la región foco.
-- **Mapas:** si lo que se crea lleva mapa (un lugar, un asentamiento, una región o una ruta a los que les toca por su categoría y su relevancia), tira también su forma y sus zonas en `Mapas`, con las tablas de su clase y `--count` (ver «Variedad» en `crear-entidad/referencias/mapas.md`).
+- **Mapas:** si lo que se crea lleva mapa (un lugar, un asentamiento o una región a los que les toca por su categoría y su relevancia), tira también su forma y sus zonas en `Mapas`, con las tablas de su clase y `--count` (ver «Variedad» en `crear-entidad/referencias/mapas.md`).
 - **Rutas:** de `Ruta`, tira primero `Categoría` y `Trazado` (si no los fijan la geografía o el contexto) y después solo las tablas que tocan: `Sin salida: dónde se pierde`, `Circular: por qué vuelve`, `Portal: cómo se cruza` y, en una ruta perdida o dudosa, las dos de `Ruta perdida`.
 - **Lo insólito** (`Insolito`) se tira siempre:
   - la **chispa** solo se usa si sale `hay_chispa=Sí` (una de cada tres veces, de media), y entra al mundo según su `grado_de_verdad`: como rumor, exageración, verdad a medias o verdad literal. Si la verdad literal choca con las reglas de la Ficha, vuelve a tirar solo el grado (`--table "Grado de verdad"`);
@@ -183,7 +183,7 @@ El usuario tiene que ver con claridad qué se generó.
    - decisiones pendientes (`Confirmar`), preguntas nuevas y términos del Glosario;
    - los commits de los ciclos, que se deshacen por separado;
    - el estado del mundo: auditor, borradores pendientes, enlaces pendientes que ya se pueden crear (y cuántos por entidad) y los que no tienen tipo.
-2. Muéstralo tal cual. Encima, resume la tanda en pocas líneas:
+2. Muéstralo tal cual. Encima, resume la tanda en pocas líneas (las notas, con enlaces Markdown a su archivo, como hace el script; en el chat, `[[...]]` no se abre):
    - ciclos hechos y la acción de cada uno (completar un enlace pendiente, paquete, nueva entidad, profundizar, cartografiar o conectar), con el motivo del selector;
    - cómo quedó el equilibrio: densidad y presupuesto al empezar y al terminar;
    - los ingredientes o giros de las tablas que más marcaron lo creado;

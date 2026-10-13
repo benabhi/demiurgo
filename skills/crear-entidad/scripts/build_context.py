@@ -18,10 +18,11 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (OPEN_QUESTIONS, ROUTE_TYPE, calendar_summary, describe_expected, find_gaps,  # noqa: E402
-                       first, format_days, format_year, index_vault, int_value, link_exists, link_value,
-                       load_calendars, load_index, nearest_places, place_node, place_types, read_world,
-                       reference_calendar, route_graph, shortest_route, split_note, strip_links)
+from vault_lib import (OPEN_QUESTIONS, ROUTE_TYPE, SECRET_TYPE, SECRET_WARNING, calendar_summary,  # noqa: E402
+                       describe_expected, find_gaps, first, format_days, format_year, index_vault, int_value,
+                       is_secret_note, link_exists, link_value, load_calendars, load_index, nearest_places,
+                       place_node, place_types, read_world, reference_calendar, route_graph, shortest_route,
+                       split_note, strip_links)
 from vault_lib import vault_path  # noqa: E402
 
 REGION_PROPS = ("region", "region_padre", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento",
@@ -35,6 +36,8 @@ MAX_ROUTES = 6
 def one_line(entry):
     relevance = entry["relevancia"] if entry["relevancia"] is not None else "?"
     summary = entry["resumen"] or "(sin resumen)"
+    if entry["tipo"] == SECRET_TYPE:
+        return f"- 🔒 [[{entry['name']}]] · {entry['tipo']} · relevancia {relevance} ({SECRET_WARNING}) — {summary}"
     return f"- [[{entry['name']}]] · {entry['tipo']} · relevancia {relevance} — {summary}"
 
 
@@ -170,12 +173,18 @@ def main():
         if not gap:
             sys.exit(f"Error: '{target}' no es una entidad ni un enlace pendiente de la bóveda.")
         lines += ["## Enlace pendiente", f"Tipo esperado: {describe_expected(gap)}", "", "Lo que dicen las notas que lo nombran:"]
+        # Lo que cuentan los secretos va aparte y marcado: es verdad oculta, no lo que se sabe
+        lore, secret = [], []
         for occurrence in gap["occurrences"]:
             if occurrence["property"]:
-                lines.append(f"- {occurrence['note']} — propiedad `{occurrence['property']}`")
+                (secret if is_secret_note(occurrence["note"]) else lore).append(
+                    f"- {occurrence['note']} — propiedad `{occurrence['property']}`")
         for note in sorted({o["note"] for o in gap["occurrences"]}):
             for mention in mentions(vault, note, target):
-                lines.append(f"- {note}: «{mention}»")
+                (secret if is_secret_note(note) else lore).append(f"- {note}: «{mention}»")
+        lines += lore or ["- Ninguna nota de lore todavía."]
+        if secret:
+            lines += ["", f"🔒 Lo que dicen los secretos ({SECRET_WARNING}):"] + secret
         for other in backlinks.get(key, []):
             related[other["name"].lower()] = other
             for link in other["enlaces"]:

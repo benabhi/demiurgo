@@ -14,7 +14,7 @@ Lo que une lugares, o lo que sale de uno y no lleva a ninguno: caminos, calzadas
 - **Emoji propio:** en la propiedad `emoji`, según lo que es (🛤️ camino, 🥾 sendero, ⛰️ paso, 🛶 ruta fluvial, ⛵ ruta marítima, 🕳️ ruta subterránea, 🦅 ruta aérea, 🌌 ruta espacial, 🌀 portal, 🐪 ruta de caravanas…).
 - **Carpeta:** fija, `10_Mundo/Rutas_y_Conexiones`.
 - **Plantilla:** `plantilla.md`, que se instala como `Plantilla_Ruta.md`.
-- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, escalas, valores permitidos, `solo_si`, mapa, recíprocas y relaciones). Es de la familia `lugar`, y su `completa` dice qué enlaces pendientes de otras fichas puede crear: el escenario de un evento, de un mito o de una costumbre (`lugares`), el lugar sagrado de una fe, la zona que afecta un fenómeno o donde actúa una facción o una afección, el hábitat de una criatura y el dominio de un linaje, cuando las notas que lo nombran describen un camino, un paso o un portal. Los enlaces pendientes de `rutas` y `conexiones` los completa siempre una ruta.
+- **Módulo:** `modulo.json` (emoji, rango de enlaces pendientes, carpeta, fechas, tiempo, escalas, valores permitidos, `solo_si`, recíprocas y relaciones). Es de la familia `lugar`, y su `completa` dice qué enlaces pendientes de otras fichas puede crear: el escenario de un evento, de un mito o de una costumbre (`lugares`), el lugar sagrado de una fe, la zona que afecta un fenómeno o donde actúa una facción o una afección, el hábitat de una criatura y el dominio de un linaje, cuando las notas que lo nombran describen un camino, un paso o un portal. Los enlaces pendientes de `rutas` y `conexiones` los completa siempre una ruta.
 
 **Hechos importantes:** una senda, un camino entre dos aldeas o un paso de pastores son detalles que Claude puede inventar según la autonomía de la Ficha. Son importantes, y van como `Confirmar: …` en Preguntas Abiertas con la ruta como primer enlace de la línea:
 - la gran ruta que vertebra una región o une reinos;
@@ -86,7 +86,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Resumen:** qué une (o adónde no lleva), por dónde va y por qué importa.
 - **Datos clave:** la tabla completa. «De dónde a dónde»: sus extremos («de X a Y por Z»; «de X a ninguna parte»; «de X a X, por las aldeas del valle»; «red de cuatro rutas entre…»). «Longitud», en la medida del mundo («unas cuarenta leguas»). «Tiempo de viaje», con los días y el medio. «Situación», con su certeza si es dudosa y de dónde se sabe.
 - **Recorrido:** la tabla de tramos (ver «Tiempos de viaje»): de 2 a 6 con relevancia 3 o más; con menos, 1 o 2. «Cómo es» dice el terreno, la obra (empedrado, tablones sobre el barro, escalones en la roca, boyas), lo que se ve y lo que hay al llegar.
-- **Mapa** (solo si le toca: desde relevancia 3, salvo los portales; `check_note.py --depth ruta:<relevancia>:<categoría>`): el itinerario, la leyenda de sus puntos en orden (la partida es la 1), hasta 12, con su orientación, lo que se ve y sus conexiones (cada punto con el siguiente; en una circular, el último con la 1). Los atajos y desvíos conocidos van como conexiones o como pasos ocultos (la senda de los contrabandistas), y las emboscadas conocidas, como trampas. Con más de 12 puntos, la leyenda lleva los principales y el Recorrido, todos. Ver `referencias/mapas.md`.
+- **Sin mapa propio:** la ruta no lleva sección Mapa. Se dibuja en los mapas de lo que cruza (ver «Los mapas de lo que une»), y sus puntos, en orden, son su Recorrido. Sus peligros, atajos y desvíos se cuentan en sus secciones.
 - **Cómo se recorre:** el medio y el ritmo (y los otros medios); cuándo se puede (las estaciones, las mareas, las horas, la noche en que se abre el portal); lo que hace falta (un guía, un salvoconducto, un peaje, una llave, un rito); lo que cuesta (dinero, tiempo, el precio que pide el poder del portal).
 - **Quién la recorre:** los viajeros (quiénes y cuántos); lo que lleva (sus mercancías, en `mercancias` las que son entidades); las costumbres del camino (dejar una piedra en el mojón, no silbar en el desfiladero), enlazadas si son entidades.
 - **Peligros y controles:** los peligros (el terreno, el clima, las criaturas, los bandidos, el conflicto central, perderse); los controles y peajes (quién cobra, quién vigila y qué pide); quién la mantiene, y cómo está (cuidada, comida por la maleza, a medio hundir).
@@ -120,7 +120,11 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **La Ficha:** la tecnología y los poderes deciden cómo se viaja; el conflicto central se nota en el camino (qué lo amenaza, qué ya no se puede cruzar).
 - **Lo que ya existe:** las notas que ya la nombran (como enlace pendiente) y las de sus extremos cuentan cosas de ella. Léelas (`build_context.py`) y no las contradigas: si su ciudad dice que la caravana sale en primavera, sale en primavera.
 - **Reciprocidad:** su partida, su destino y sus paradas la listan en `rutas`; sus regiones, también; las rutas que conecta, en `conexiones`; su red, en `ramales`; sus criaturas, fenómenos y eventos, en su propiedad inversa.
-- **Los mapas de lo que une:** la ruta aparece en los mapas de las regiones, los parajes y las ciudades que cruza, si tienen leyenda: al crearla, `map_key.py --sync-routes` la pone en su bloque «Rutas» y conecta las zonas que une (ver «Las rutas en los mapas» en `referencias/mapas.md`). Los portales y las rutas por el aire o el espacio no se dibujan en ellos, ni las perdidas o dudosas.
+- **Los mapas de lo que une:** la ruta no tiene mapa propio: se ve en los mapas de las regiones, los parajes y las ciudades que cruza, si tienen leyenda. Al crearla:
+  - Si su partida, su destino o una parada con nombre es un asentamiento o un lugar de una de sus regiones y no está en la leyenda de esa región (la ciudad que nace como enlace pendiente en su destino, por ejemplo), añádelo con `map_key.py <Región> --add "[[Nota|Nombre]]" --position <orientación> --desc "<una línea>"`, con la orientación que cuenta la ruta («al pie de los montes del norte»: norte). Así la región sabe que existe y la edición siguiente de su mapa lo dibuja, con el camino. Solo lo que pesa a la escala de la región (sus asentamientos y sus lugares notables), no cada vado o cada venta.
+  - Después, `map_key.py --sync-routes` la pone en el bloque «Rutas» de cada leyenda y conecta las zonas que une (ver «Las rutas en los mapas» en `referencias/mapas.md`).
+
+  Los portales y las rutas por el aire o el espacio no se dibujan en ellos, ni las perdidas o dudosas.
 - **Glosario:** registra su nombre (como ruta), sus otros nombres y los términos que nacen de ella (el nombre de un peaje, de un oficio del camino).
 
 ## Enlaces pendientes
@@ -142,6 +146,6 @@ Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, la ruta guarda un
 - [ ] Un portal o una ruta aérea o espacial respetan los pilares y las reglas de su sistema.
 - [ ] Una ruta dudosa cuenta lo que dicen sus fuentes, sin afirmar que exista.
 - [ ] Si no es un detalle y no la pidió el usuario, quedó como `Confirmar: …`.
-- [ ] Su partida, su destino, sus paradas, sus regiones y sus conexiones que ya existen la listan; los mapas que cruza la muestran (`--sync-routes`).
+- [ ] Su partida, su destino, sus paradas, sus regiones y sus conexiones que ya existen la listan; sus puntos con peso están en la leyenda de su región (`--add`), y los mapas que cruza la muestran (`--sync-routes`).
 - [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.
 - [ ] Las relaciones contienen solo enlaces (o están vacías) y `ultima_revision` va sin comillas.

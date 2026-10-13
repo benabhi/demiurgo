@@ -37,9 +37,6 @@ sistemas: []
 mercancias: []
 era: ""
 imagen: ""
-mapa: []
-mapa_edicion: ""
-mapa_zonas: ""
 fuentes: []
 ---
 
@@ -64,9 +61,6 @@ fuentes: []
 | Desde | Hasta | Días | Cómo es |
 |---|---|---|---|
 | | | | |
-
-## Mapa
-- **1.**
 
 ## Cómo se recorre
 - **Medio y ritmo:**

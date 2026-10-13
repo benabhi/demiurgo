@@ -24,9 +24,6 @@
     "Quién la recorre": 2,
     "Atajos y desvíos": 3
   },
-  "mapa": [
-    {"clase": "itinerario", "categoria": ["camino", "sendero", "paso", "fluvial", "maritima", "subterranea", "aerea", "espacial", "otro"], "desde": 3, "zonas_minimas": 3}
-  ],
   "carpeta": {
     "fija": "10_Mundo/Rutas_y_Conexiones"
   },

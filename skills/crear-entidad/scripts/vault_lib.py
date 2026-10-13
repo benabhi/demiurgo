@@ -41,6 +41,10 @@ CHRONICLE = "00_Sistema/Bitacora.md"
 CHRONICLE_MARKER = "<!-- Las entradas nuevas se añaden debajo de esta línea -->"
 CHRONICLE_HOME_LINE = "- [[Bitacora|Bitácora]] — cómo ha ido creciendo el mundo: qué se creó y cuándo."
 HOME_MOC = "00_Sistema/MOC_Inicio.md"
+# Los secretos: la verdad oculta, en su carpeta. Lo que cuentan no va nunca en una nota de lore
+SECRET_TYPE = "secreto"
+SECRETS_FOLDER = "80_Secretos"
+SECRET_WARNING = "verdad oculta: la nota de lore no la cuenta; como mucho, señales o rumores que no la delaten"
 # Ni el registro de pendientes ni la Bitácora cuentan como notas que nombran entidades: un enlace que
 # solo quedara en ellas no debe seguir pendiente
 DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", "00_Sistema/03_Archivados", PENDING_NOTE, CHRONICLE)
@@ -123,7 +127,7 @@ def omitted_sections(module, template_body, relevance, props=None):
 MAP_SECTION = "Mapa"
 # Marcadores que un generador de imágenes dibuja bien en un mismo mapa
 MAX_MARKERS = 12
-MAP_CLASSES = ("interior", "urbano", "paraje", "territorio", "itinerario")
+MAP_CLASSES = ("interior", "urbano", "paraje", "territorio")
 ORIENTATIONS = ("noroeste", "norte", "noreste", "oeste", "centro", "este", "suroeste", "sur", "sureste")
 ORIENTATION_SYNONYMS = {"sudoeste": "suroeste", "sudeste": "sureste"}
 UNCHARTED_MARK = "*Sin cartografiar.*"
@@ -623,6 +627,11 @@ def blocked_links(vault):
             if subject:
                 blocked.add(subject.group(1).strip().lower())
     return blocked
+
+
+def is_secret_note(relative):
+    """Si una nota (su ruta relativa a la bóveda) es un secreto: los secretos viven en su carpeta."""
+    return relative.replace("\\", "/").lower().startswith(SECRETS_FOLDER.lower() + "/")
 
 
 def strip_links(text):

@@ -2,7 +2,8 @@
 """Lista los enlaces pendientes (huecos) de la bóveda: enlaces a notas que todavía no existen,
 es decir, entidades que el mundo ya nombra y que aún no tienen nota.
 
-Para cada uno indica las notas que lo contienen, si aparece en una propiedad o en una sección,
+Para cada uno indica las notas que lo contienen (marcando los secretos, que cuentan la verdad oculta),
+si aparece en una propiedad o en una sección,
 el tipo de entidad esperado y de dónde sale (la propiedad de relación, según los modulo.json de
 crear-entidad, o el registro Enlaces_Pendientes) y los módulos que pueden crearlo. Primero van
 los que no tienen tipo, que hay que asignar con pending_links.py --set.
@@ -15,7 +16,7 @@ from pathlib import Path
 
 # La lógica vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import DEFAULT_EXCLUDED, describe_expected, find_gaps  # noqa: E402
+from vault_lib import DEFAULT_EXCLUDED, SECRET_WARNING, describe_expected, find_gaps, is_secret_note  # noqa: E402
 from vault_lib import vault_path  # noqa: E402
 
 TYPED_BY = {"propiedad": "por su propiedad", "registro": "por el registro"}
@@ -64,7 +65,10 @@ def main():
             print(f"\n[[{gap['link']}]] → tipo esperado: {describe_expected(gap)}{origin}")
             for o in gap["occurrences"]:
                 where = f"propiedad `{o['property']}`" if o["property"] else f"sección «{o['section']}»"
-                print(f"   · {o['note']} — {where}")
+                hidden = " · 🔒 secreto: verdad oculta" if is_secret_note(o["note"]) else ""
+                print(f"   · {o['note']} — {where}{hidden}")
+    if any(is_secret_note(o["note"]) for g in gaps for o in g["occurrences"]):
+        print(f"\n🔒 Lo que cuenta un secreto es {SECRET_WARNING}.")
     for item in malformed:
         print(f"\nAVISO: enlace mal formado en {item['note']}: {item['line']}")
 

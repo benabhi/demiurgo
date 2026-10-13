@@ -1,6 +1,6 @@
 # Mapas
 
-Los lugares que lo merecen (ruinas, mazmorras, edificios, asentamientos, parajes, regiones y rutas, según la regla `mapa` de su módulo) tienen, **además** de su imagen principal, un mapa. El mapa es la **leyenda numerada** de la sección `## Mapa` de la nota (ver `crear-entidad/referencias/mapas.md`); la imagen que dibuja esta skill es una **edición** de esa leyenda. El concept art sigue siendo obligatorio y la primera imagen de la nota: el mapa va después y en su propia sección.
+Los lugares que lo merecen (ruinas, mazmorras, edificios, asentamientos, parajes y regiones, según la regla `mapa` de su módulo; las rutas no tienen mapa propio: se dibujan en los mapas de lo que cruzan) tienen, **además** de su imagen principal, un mapa. El mapa es la **leyenda numerada** de la sección `## Mapa` de la nota (ver `crear-entidad/referencias/mapas.md`); la imagen que dibuja esta skill es una **edición** de esa leyenda. El concept art sigue siendo obligatorio y la primera imagen de la nota: el mapa va después y en su propia sección.
 
 ## Qué edición toca
 `python <crear-entidad>/scripts/map_key.py <Nota> --json` dice la clase del mapa, la edición, las zonas, las que faltan por cartografiar y si toca dibujar (`toca`):
@@ -57,11 +57,6 @@ Se escribe en inglés y se arma con la leyenda y lo que la nota cuenta del lugar
 - **urbano:** `An overhead top-down 2D map of {asentamiento}, a hand-drawn town plan seen from directly above, with streets, blocks of buildings, walls, gates and open spaces`. Los barrios, como manzanas de tejados con su carácter (ricos y ordenados, pobres y apiñados); los lugares notables, con su forma propia.
 - **paraje:** `A top-down 2D map of {paraje}, the terrain seen from directly above, with hand-drawn relief, vegetation, paths and water`.
 - **territorio:** `A top-down 2D hand-drawn regional map of {región}, with mountain ranges as inked ridges, forests as clusters of small trees, rivers, coasts, marshes and roads`. Los asentamientos, como pequeños grupos de edificios a su escala; las distancias, coherentes con lo que cuenta la nota y con los días de sus rutas (lo que está a dos jornadas, más lejos que lo que está a una).
-- **itinerario:** `A top-down 2D hand-drawn itinerary map of {ruta}, in the manner of an old road map: only a narrow band of land along the route is drawn, and the rest of the sheet is left as bare {soporte}`. La ruta recorre la hoja de su partida (la 1) a su destino, con lo que hay a sus lados: los ríos que cruza, los puentes, los bosques, las cuestas, las posadas. Su forma sale de su descripción (serpentea por un valle, zigzaguea por una ladera, bordea la costa) y su estilo, de su categoría (ver «Las rutas»: una ruta marítima es la franja de mar con su costa; una subterránea, la sucesión de túneles y salas vista desde arriba). Según su trazado:
-  - **sin salida:** se desvanece al final: `the path fades out and vanishes into {lo que la borra}`;
-  - **circular:** cierra el lazo y vuelve a la 1;
-  - **red:** sus vías y sus cruces, cada una de un extremo a otro de la hoja;
-  - **perdida o dudosa:** es una reconstrucción: `the route drawn as a reconstruction from an old account, with faint, half-erased stretches where its course is uncertain`.
 
 ### Los marcadores
 Es lo que más falla: Gemini a veces repite o salta números. La regla va siempre, entera:
@@ -97,7 +92,7 @@ Sigue la comprobación de `SKILL.md` (Paso 3c). En un mapa, además:
 - **Texto:** ni títulos, ni nombres, ni letras sueltas, ni cuadrícula, ni marco.
 - **Lo oculto:** la línea de puntos entre las zonas con paso oculto y el triángulo en las que tienen trampa; ninguno de más (sobre todo, ninguna puerta dibujada donde va un paso oculto).
 - **Zonas:** lo característico de cada una (el trono, el pozo, las rejas) y su sitio aproximado según su orientación, con el norte arriba.
-- **Rutas:** cada una del bloque «Rutas», con su estilo, entre sus zonas y saliendo por el borde donde «sigue»; ningún camino de más. En un itinerario, los marcadores en el orden de la ruta, de la 1 al final.
+- **Rutas:** cada una del bloque «Rutas», con su estilo, entre sus zonas y saliendo por el borde donde «sigue»; ningún camino de más.
 - **Estilo:** el de la técnica de mapas, y que case con el concept art del mundo.
 - **Formato:** vertical u horizontal, el pedido.
 
@@ -108,9 +103,10 @@ Correcciones, en el mismo chat y nombrando el problema exacto:
 
 ## Guardar y enlazar
 - **Carpeta:** `00_Sistema/02_Activos/Mapas`, que viene con la estructura inicial de la bóveda: no se registra. Solo si no existe (una bóveda anterior), créala con su `README.md` y regístrala en la tabla «Carpetas añadidas por skills» de la Guía de Organización: `| 00_Sistema/02_Activos/Mapas | Mapas de los lugares (Mapa_<Nota>.<ext>, Mapa_<Nota>_Nivel_<n>.<ext>) | generar-imagen |`.
-- **Nombre:** `Mapa_<Nota>`, y en un lugar de varios niveles, `Mapa_<Nota>_Nivel_<n>` desde el nivel 2. Una edición nueva no sobrescribe: `fetch_download.py` le pone `_v2`, `_v3`…, y las anteriores se conservan.
+- **Nombre:** `Mapa_<Nota>`, y en un lugar de varios niveles, `Mapa_<Nota>_Nivel_<n>` desde el nivel 2. La imagen vigente conserva siempre ese nombre: al aceptar una, `fetch_download.py keep` (Paso 4 de `SKILL.md`) se lo pone y archiva la anterior en `02_Activos/Anteriores`. En una edición nueva, con `--label ed<n>`, donde n es la edición que tenía la nota (`mapa_edicion`): la edición 1 queda como `Mapa_<Nota>_ed1`. La primera vez que se dibuja, si hubo que corregir, con `--label descartada`.
 - **En la nota:**
-  - `mapa`: la lista de imágenes de la edición vigente, una por nivel y en orden (`- "[[Mapa_Cripta_Honda.jpg]]"`). En una edición nueva, cambia solo las de los niveles redibujados.
-  - En la sección `## Mapa`: al principio, la línea de la edición (`*Edición 1 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 9/9 marcadores, sin repetidos*`) y, encima de las zonas, el mapa embebido (`![[Mapa_Cripta_Honda.jpg|600]]`). Con varios niveles, cada nivel lleva su título (`**Nivel 2**`), su mapa y debajo sus zonas. Sustituyen a los de la edición anterior.
+  - `mapa`: la lista de imágenes de la edición vigente, una por nivel y en orden (`- "[[Mapa_Cripta_Honda.jpg]]"`). Como el nombre no cambia, solo se toca si cambió la extensión.
+  - En la sección `## Mapa`: al principio, la línea de la edición (`*Edición 1 · 2026-10-12 · técnica: Boceto en acuarela · comprobado: 9/9 marcadores, sin repetidos*`) y, encima de las zonas, el mapa embebido (`![[Mapa_Cripta_Honda.jpg|600]]`). Con varios niveles, cada nivel lleva su título (`**Nivel 2**`), su mapa y debajo sus zonas. La línea de la edición sustituye a la anterior.
+  - **Ediciones anteriores:** desde la segunda, debajo de la línea de la edición, `*Ediciones anteriores: [[Mapa_Cripta_Honda_ed1.jpg|edición 1]]*`, que crece con cada edición (con varios niveles, `[[Mapa_Cripta_Honda_Nivel_2_ed1.jpg|edición 1, nivel 2]]`). Así se puede volver a un dibujo anterior si el nuevo no gusta.
   - En la sección Imagen, después del prompt del concept art: `**Prompt del mapa:**` con la fecha, la técnica y la edición (y el nivel), y el prompt en un bloque de código, tal cual se generó (sin la orden `Generate an image:`). Sustituye al de la edición anterior.
   - Al final, `python <crear-entidad>/scripts/map_key.py <Nota> --charted`: suma la edición, pone `mapa_zonas` en el último número y quita las marcas «sin cartografiar».
