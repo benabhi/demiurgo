@@ -61,7 +61,8 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `lugares_sagrados` donde se la venera o donde se manifestó;
   - `manifestaciones`: eventos en que se dice que intervino;
   - `fenomenos` que se le atribuyen, `objetos` sagrados y `criaturas` que la sirven (cada una la tiene en sus `deidades`);
-  - `mitos` en que aparece: cada uno la tiene en sus `deidades`.
+  - `mitos` en que aparece: cada uno la tiene en sus `deidades`;
+  - `astros` que encarna o en los que vive (el sol, una luna, una estrella): cada uno la tiene en sus `deidades`.
 - `relevancia`: 5 una deidad que explica el mundo o el conflicto central; 4 la deidad principal de una fe importante; 3 una deidad de una fe local; 2 un espíritu menor; 1 una figura casi olvidada.
 - `ultima_revision` sin comillas.
 

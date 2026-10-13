@@ -49,7 +49,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - **Semana:** una fila por día. Si no hay semana, sustituye la tabla por un párrafo que diga cómo se agrupan los días (por decenas, por fases de la luna, por días de mercado).
   - **Estaciones:** `Desde` y `Hasta` son nombres de meses de la tabla de meses. Si el mundo no tiene estaciones, un párrafo que explique por qué.
   - **Festividades:** de 3 a 6. `Fecha` es «15 de <Mes>» (el script la valida) o una regla si es movible («la primera luna llena de <Mes>»). Cada festividad es una entidad: va enlazada en la tabla y en `festividades`, a su nota o como enlace pendiente de tipo `costumbre`.
-- **El día y la noche:** las partes del día, cómo se mide la hora y el astro o el fenómeno que guía el calendario. Respeta la tecnología de la Ficha: sin relojes mecánicos si no los hay (velas marcadas, campanas, relojes de agua o de sol).
+- **El día y la noche:** las partes del día, cómo se mide la hora y el astro o el fenómeno que guía el calendario (el astro, enlazado y en `astros`). Respeta la tecnología de la Ficha: sin relojes mecánicos si no los hay (velas marcadas, campanas, relojes de agua o de sol).
 - **Historia:** orígenes, de 2 a 5 momentos decisivos (reformas, días perdidos, disputas) y el presente.
 - **Uso social:** quién lo usa y para qué (las cosechas, los ritos, los impuestos), quién lo guarda o lo corrige, y los calendarios rivales.
 - **Relación con el mundo, secretos y rumores, ganchos, citas:** como en todo tipo.
@@ -67,6 +67,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `culturas` que lo usan (recíproca con su `calendario`) y `regiones` donde rige;
   - `evento_cero`: el hecho que marca su año 0;
   - `eras` que cuenta o que lo marcaron, y `festividades` con nota propia (cada una lo tiene en su `calendario`, con la misma fecha que en la tabla);
+  - `astros` que lo marcan (el sol, las lunas, la estrella que guía): cada uno lo tiene en sus `calendarios`;
   - `guardianes`: quienes lo guardan o lo corrigen (una orden, un templo, un gremio);
   - `calendario_base` y `derivados`: de qué calendario nació y cuáles nacieron de él; recíprocas.
 - `relevancia`: 5 el de referencia; 3 el de un pueblo o una fe; 2 uno marginal o en desuso.

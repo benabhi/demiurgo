@@ -27,7 +27,8 @@
     "parientes": "parientes",
     "aliados": "aliados",
     "criaturas": "deidades",
-    "mitos": "deidades"
+    "mitos": "deidades",
+    "astros": "deidades"
   },
   "relaciones": {
     "creencias": "creencia",
@@ -38,6 +39,7 @@
     "lugares_sagrados": "lugar",
     "manifestaciones": "evento",
     "fenomenos": "fenomeno",
+    "astros": "astro",
     "objetos": "objeto",
     "criaturas": "criatura",
     "mitos": "mito"

@@ -1,0 +1,62 @@
+{
+  "tipo": "astro",
+  "familia": "astro",
+  "crear_desde_cero": false,
+  "emoji": "🌙",
+  "huecos_propios": {
+    "min": 1,
+    "max": 5
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Lo que se cree": 2,
+    "En la cultura": 2
+  },
+  "carpeta": {
+    "fija": "70_Sistemas_y_Cosmologia/Cosmos_y_Astros"
+  },
+  "fechas": [
+    "aparicion",
+    "desaparicion"
+  ],
+  "tiempo": {
+    "propiedad": "situacion",
+    "presente": ["estable", "cambiante"],
+    "pasado": "desaparecido",
+    "futuro": "por_venir"
+  },
+  "valores": {
+    "categoria": ["sol", "luna", "planeta", "estrella", "constelacion", "cometa", "fenomeno_celeste", "cosmos", "otro"],
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "visibilidad": ["diaria", "nocturna", "estacional", "periodica", "rara", "oculta"],
+    "situacion": ["estable", "cambiante", "desaparecido", "por_venir"]
+  },
+  "solo_si": {
+    "desaparicion": {"situacion": ["desaparecido"]}
+  },
+  "reciprocas": {
+    "orbita": "satelites",
+    "satelites": "orbita",
+    "calendarios": "astros",
+    "deidades": "astros",
+    "relacionados": "relacionados"
+  },
+  "relaciones": {
+    "orbita": "astro",
+    "satelites": "astro",
+    "calendarios": "calendario",
+    "deidades": "deidad",
+    "creencias": "creencia",
+    "mitos": "mito",
+    "costumbres": "costumbre",
+    "fenomenos": "fenomeno",
+    "sistemas": "sistema",
+    "pueblos": "cultura",
+    "obras": "obra",
+    "relacionados": "astro",
+    "era": "era"
+  }
+}

@@ -46,6 +46,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | creencia | su símbolo sagrado | `Square 1:1 format` | `Iconos` | `Simbolo_` |
 | era | escena alegórica de la era | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Era_` |
 | evento | escena dramática del momento clave | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Evento_` |
+| astro | el astro sobre un paisaje del mundo, como se ve desde él | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Astro_` |
 | secreto | no lleva imagen | — | — | — |
 
 Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imagen: dilo y detente. Cada módulo nuevo añade aquí su fila y su sección.
@@ -272,6 +273,26 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 - **canción o representación:** el momento en que se canta o se representa, con quien la canta y quien escucha: `A scene of a song being performed in an invented world`.
 
 La obra es el sujeto: lo que muestra o lo que se canta se entiende sin palabras. Si es un relato, se elige su escena más reconocible, como en un mito.
+
+## astro — en el cielo del mundo
+```
+{ESTILO}. Wide view of the sky over a landscape of an invented world, {MOMENTO}. In the sky: {SUJETO}. Its appearance: {ASPECTO}. Below it: {PAISAJE}. Watchers: {TESTIGOS}. Lighting and atmosphere: {LUZ}. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| MOMENTO | Cuándo se ve mejor, de «Cómo se ve» | `on a clear autumn night, just before dawn` |
+| SUJETO | Qué es, sin su nombre | `a large dim brownish moon hanging low over the horizon` |
+| ASPECTO | Su color, su brillo, su forma, su fase | `a dull copper disc with darker blotches and a faint grey halo` |
+| PAISAJE | El paisaje de abajo, del mundo | `a frozen salt marsh with scattered reed huts` |
+| TESTIGOS | Quien lo mira, pequeño, o nadie | `two small figures on a rooftop, one pointing upward` |
+| LUZ | La luz que da y el ambiente | `cold reddish light washing over everything, long shadows` |
+
+**El cielo es el sujeto:** el astro domina el plano, visto desde el suelo del mundo, y el paisaje lo ancla. Según su categoría:
+- **sol:** al alba o al ocaso, para que se pueda mirar;
+- **constelación:** sus estrellas, unidas apenas por la forma que le ve su pueblo, sin líneas ni letras;
+- **cometa o fenómeno del cielo:** en su momento (el eclipse en su punto, la aurora en su máximo, la lluvia de estrellas), con la gente reaccionando a lo lejos;
+- **cosmos:** la forma del cielo y del mundo tal como la imaginan quienes lo miran (la bóveda, los cielos superpuestos), como una escena, no como un diagrama.
 
 ## asentamiento — llegada por el camino
 ```

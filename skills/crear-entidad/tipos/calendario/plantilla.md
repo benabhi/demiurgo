@@ -17,6 +17,7 @@ inicio: ""
 fin: ""
 culturas: []
 regiones: []
+astros: []
 evento_cero: ""
 eras: []
 festividades: []

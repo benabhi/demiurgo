@@ -31,11 +31,13 @@
     "calendario_base": "derivados",
     "derivados": "calendario_base",
     "eras": "calendarios",
-    "festividades": "calendario"
+    "festividades": "calendario",
+    "astros": "calendarios"
   },
   "relaciones": {
     "culturas": "cultura",
     "regiones": "lugar",
+    "astros": "astro",
     "evento_cero": "evento",
     "eras": "era",
     "festividades": "costumbre",

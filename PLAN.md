@@ -161,6 +161,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
 - [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
 - [ ] `ecosistema` (#25): un ecosistema de relevancia 3 con su pieza clave, su flora y sus criaturas, y la reciprocidad con sus zonas.
+- [ ] `astro` (#26): una luna de relevancia 4 que rige el calendario de referencia y que una deidad encarna.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -310,7 +311,12 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - **`contenedor: false`** (nuevo en `modulo.json`, también en la ruta): un tipo de la familia `lugar` que no contiene a otros no es el foco del mundo ni la región de nadie.
   - **Motor:** tabla `Ecosistema.md` y tres paquetes (tierra viva, el equilibrio roto, los que viven de la tierra).
   - **Imagen:** paisaje del bioma, con su vida, apaisado (`Lugares`, `Ecosistema_`).
-- [ ] **26. `astro` 🌙 — cuerpos celestes y fenómenos del cielo.** Carpeta `Cosmos_y_Astros`; imagen: el astro sobre un paisaje nocturno, apaisado (`Escenas`).
+- [x] **26. `astro` 🌙 — soles, lunas, planetas, estrellas, constelaciones, cometas, fenómenos del cielo y la forma del cielo.**
+  - **Carpeta:** `70_Sistemas_y_Cosmologia/Cosmos_y_Astros`. Como se ve desde el mundo; un mundo que se visita o se habita es una región.
+  - **Ficha:** cómo se ve; su ciclo y lo que rige; lo que se sabe (con la técnica del mundo) y lo que se cree, por separado; en la cultura; historia. `naturaleza`, `visibilidad`, `situacion` (de estable a desaparecido, o por venir: el cometa que se espera) y `ciclo`.
+  - **Conexiones:** recíproco con sus calendarios (el calendario gana `astros`), sus deidades (la deidad gana `astros`), su astro central y sus satélites (`orbita`, `satelites`) y sus astros relacionados.
+  - **Motor:** no se crea desde cero (`crear_desde_cero: false`): el cielo es la base de calendarios, fes y mitos. Tabla `Astro.md` para completar los que ya nombran las notas; sin paquetes.
+  - **Imagen:** el astro sobre un paisaje del mundo, como se ve desde él, apaisado (`Escenas`, `Astro_`).
 
 ### Hechos desde el principio
 - [x] `personaje` 👤 — individuos con nombre propio.
