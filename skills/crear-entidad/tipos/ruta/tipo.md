@@ -120,7 +120,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **La Ficha:** la tecnología y los poderes deciden cómo se viaja; el conflicto central se nota en el camino (qué lo amenaza, qué ya no se puede cruzar).
 - **Lo que ya existe:** las notas que ya la nombran (como enlace pendiente) y las de sus extremos cuentan cosas de ella. Léelas (`build_context.py`) y no las contradigas: si su ciudad dice que la caravana sale en primavera, sale en primavera.
 - **Reciprocidad:** su partida, su destino y sus paradas la listan en `rutas`; sus regiones, también; las rutas que conecta, en `conexiones`; su red, en `ramales`; sus criaturas, fenómenos y eventos, en su propiedad inversa.
-- **Los mapas de lo que une:** la ruta aparece en los mapas de las regiones y los parajes que cruza, si tienen leyenda: `map_key.py <Región> --sync-routes` (ver «Las rutas en los mapas» en `referencias/mapas.md`).
+- **Los mapas de lo que une:** la ruta aparece en los mapas de las regiones, los parajes y las ciudades que cruza, si tienen leyenda: al crearla, `map_key.py --sync-routes` la pone en su bloque «Rutas» y conecta las zonas que une (ver «Las rutas en los mapas» en `referencias/mapas.md`). Los portales y las rutas por el aire o el espacio no se dibujan en ellos, ni las perdidas o dudosas.
 - **Glosario:** registra su nombre (como ruta), sus otros nombres y los términos que nacen de ella (el nombre de un peaje, de un oficio del camino).
 
 ## Enlaces pendientes

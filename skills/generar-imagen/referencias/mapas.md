@@ -1,6 +1,6 @@
 # Mapas
 
-Los lugares que lo merecen (ruinas, mazmorras, edificios, asentamientos, parajes y regiones, según la regla `mapa` de su módulo) tienen, **además** de su imagen principal, un mapa. El mapa es la **leyenda numerada** de la sección `## Mapa` de la nota (ver `crear-entidad/referencias/mapas.md`); la imagen que dibuja esta skill es una **edición** de esa leyenda. El concept art sigue siendo obligatorio y la primera imagen de la nota: el mapa va después y en su propia sección.
+Los lugares que lo merecen (ruinas, mazmorras, edificios, asentamientos, parajes, regiones y rutas, según la regla `mapa` de su módulo) tienen, **además** de su imagen principal, un mapa. El mapa es la **leyenda numerada** de la sección `## Mapa` de la nota (ver `crear-entidad/referencias/mapas.md`); la imagen que dibuja esta skill es una **edición** de esa leyenda. El concept art sigue siendo obligatorio y la primera imagen de la nota: el mapa va después y en su propia sección.
 
 ## Qué edición toca
 `python <crear-entidad>/scripts/map_key.py <Nota> --json` dice la clase del mapa, la edición, las zonas, las que faltan por cartografiar y si toca dibujar (`toca`):
@@ -46,7 +46,7 @@ Se escribe en inglés y se arma con la leyenda y lo que la nota cuenta del lugar
 | AMBIENTACIÓN, PALETA | Los bloques de la Guía Visual, tal cual (la paleta, según el Color de la técnica) | |
 | FORMA | La forma del conjunto y lo que hay en sus bordes, de su descripción | `The crypt is carved into dark bedrock; the east edge is flooded; the north edge breaks into a natural cave` |
 | ZONAS | Cada zona de la leyenda de este nivel, en orden: `{número} ({orientación}, {lo que es}): {lo que se ve}`. Lo que se ve sale de su línea y de lo que la nota cuenta de ella, concreto y sin nombres propios | `1 (south, entry): worn stone stairs descending from the surface into a pillared antechamber; 2 (center): a vaulted hall with a dry fountain and fallen statues` |
-| CONEXIONES | Las conexiones de la leyenda, con su forma (un pasillo, una escalera, una calle, un camino). Las que llevan a otro nivel se dibujan como una escalera que baja o sube, sin el marcador del otro nivel. En un territorio, solo los caminos que se citan: «the other places have no road» | `Passages: 1 to 2 by a short stair; 2 to 3 and 2 to 5 by narrow corridors; 5 leads down a spiral stair to the lower level` |
+| CONEXIONES | Las conexiones de la leyenda, con su forma (un pasillo, una escalera, una calle, un camino). Las que llevan a otro nivel se dibujan como una escalera que baja o sube, sin el marcador del otro nivel. En un territorio, solo los caminos que se citan: «the other places have no road». Las rutas del bloque «Rutas», cada una con su estilo (ver «Las rutas») | `Passages: 1 to 2 by a short stair; 2 to 3 and 2 to 5 by narrow corridors; 5 leads down a spiral stair to the lower level` |
 | OCULTO | Solo si la leyenda tiene pasos ocultos o trampas en este nivel: los símbolos de la Guía Visual (`## Símbolos de mapa`) con las zonas donde van | `Hidden passages, each drawn as a thin dotted line crossing the wall, with no door drawn there: between 2 and 6. Traps, each marked with a small red-ochre triangle outline on the floor: in 4. ` |
 | MARCADORES | La regla de los marcadores (abajo), con la lista exacta de números de este nivel | |
 | ACABADO | El bloque ACABADO de la técnica de mapas | `airy, expressive sketchbook watercolor with loose unfinished edges` |
@@ -56,7 +56,12 @@ Se escribe en inglés y se arma con la leyenda y lo que la nota cuenta del lugar
 - **interior:** `An overhead top-down 2D tabletop RPG map of {lugar}, a plan of rooms, halls and passages seen from directly above`. Los muros, gruesos y legibles; el interior de cada sala, con sus objetos característicos dibujados desde arriba (mesas, camastros, barriles, pilares, escombros, agua).
 - **urbano:** `An overhead top-down 2D map of {asentamiento}, a hand-drawn town plan seen from directly above, with streets, blocks of buildings, walls, gates and open spaces`. Los barrios, como manzanas de tejados con su carácter (ricos y ordenados, pobres y apiñados); los lugares notables, con su forma propia.
 - **paraje:** `A top-down 2D map of {paraje}, the terrain seen from directly above, with hand-drawn relief, vegetation, paths and water`.
-- **territorio:** `A top-down 2D hand-drawn regional map of {región}, with mountain ranges as inked ridges, forests as clusters of small trees, rivers, coasts, marshes and roads`. Los asentamientos, como pequeños grupos de edificios a su escala; las distancias, coherentes con lo que cuenta la nota (lo que está a dos jornadas, más lejos que lo que está a una).
+- **territorio:** `A top-down 2D hand-drawn regional map of {región}, with mountain ranges as inked ridges, forests as clusters of small trees, rivers, coasts, marshes and roads`. Los asentamientos, como pequeños grupos de edificios a su escala; las distancias, coherentes con lo que cuenta la nota y con los días de sus rutas (lo que está a dos jornadas, más lejos que lo que está a una).
+- **itinerario:** `A top-down 2D hand-drawn itinerary map of {ruta}, in the manner of an old road map: only a narrow band of land along the route is drawn, and the rest of the sheet is left as bare {soporte}`. La ruta recorre la hoja de su partida (la 1) a su destino, con lo que hay a sus lados: los ríos que cruza, los puentes, los bosques, las cuestas, las posadas. Su forma sale de su descripción (serpentea por un valle, zigzaguea por una ladera, bordea la costa) y su estilo, de su categoría (ver «Las rutas»: una ruta marítima es la franja de mar con su costa; una subterránea, la sucesión de túneles y salas vista desde arriba). Según su trazado:
+  - **sin salida:** se desvanece al final: `the path fades out and vanishes into {lo que la borra}`;
+  - **circular:** cierra el lazo y vuelve a la 1;
+  - **red:** sus vías y sus cruces, cada una de un extremo a otro de la hoja;
+  - **perdida o dudosa:** es una reconstrucción: `the route drawn as a reconstruction from an old account, with faint, half-erased stretches where its course is uncertain`.
 
 ### Los marcadores
 Es lo que más falla: Gemini a veces repite o salta números. La regla va siempre, entera:
@@ -68,13 +73,22 @@ En una edición nueva o en un nivel, `{lista}` son los números de las zonas que
 
 ### El formato
 Que quepa en un A4 (1:1,41) aprovechando la hoja: **vertical 3:4** u **horizontal 4:3**, las proporciones estándar más cercanas, que impresas llenan el 94 % de la hoja.
-- **Horizontal** si las zonas se reparten más de oeste a este que de norte a sur, o el lugar es alargado así (una costa, un valle, una muralla): `Horizontal 4:3 landscape format, to be printed on an A4 sheet`.
+- **Horizontal** si las zonas se reparten más de oeste a este que de norte a sur, o el lugar es alargado así (una costa, un valle, una muralla, una ruta que va de oeste a este): `Horizontal 4:3 landscape format, to be printed on an A4 sheet`.
 - **Vertical** en los demás casos: `Vertical 3:4 portrait format, to be printed on an A4 sheet`.
+
+### Las rutas
+Las rutas del bloque «Rutas» de la leyenda (las rutas con nota que cruzan el lugar) se dibujan sin nombre, cada una con el estilo de su categoría, en el campo CONEXIONES:
+- `camino`: `a clear road`; `sendero`: `a faint footpath`; `paso`: `a winding road over the pass`; `fluvial`: `a river route along the river, with towpaths or small boats`; `maritima`: `a sea lane drawn as a fine dashed line across the water`; `subterranea`: `a road that enters a tunnel mouth and comes out at another`; `otro`: `a route`, con su forma.
+- Su situación cambia el trazo: una `abandonada`, `old and overgrown, drawn faint and broken`; una `cortada`, con lo que la corta (`blocked by a rockfall`, `with its bridge fallen`); una `en_construccion`, `unfinished, ending in works`.
+- «sigue»: `continuing off the edge of the map beyond 5`, por el borde más cercano a esa zona. «se pierde»: `fading out into nothing beyond 4`.
+- Ejemplo: `Roads, unlabeled: a clear road from 1 through 3 to 5, continuing off the east edge beyond 5; a faint footpath from 3 to 4 that fades out into nothing. The other places have no road.`
+
+Una ruta más importante que las demás (la que vertebra la región) puede ir con un trazo más marcado: `a broad paved road`.
 
 ## Edición nueva: primero, editar la anterior
 Para que el mapa no cambie de dibujo en cada edición, intenta primero **editar la edición anterior** en Gemini:
 1. Adjunta la imagen de la edición anterior (de ese nivel) en el chat nuevo de Gemini, con la herramienta de subir archivos de Claude in Chrome. Si no puedes adjuntarla, ve directamente al punto 3.
-2. Pide solo lo nuevo: `Edit this map. Keep the drawing exactly as it is: the same layout, style, colors and markers. Add only these new zones, each with a marker in the same style: {ZONAS nuevas}. {CONEXIONES nuevas}. Each number appears exactly once in the whole map; no other text.`
+2. Pide solo lo nuevo: `Edit this map. Keep the drawing exactly as it is: the same layout, style, colors and markers. Add only these new zones, each with a marker in the same style: {ZONAS nuevas}. {CONEXIONES nuevas}. Each number appears exactly once in the whole map; no other text.` Las rutas nuevas o cambiadas (las que el bloque «Rutas» marca sin cartografiar) van en las CONEXIONES nuevas; si solo cambiaron rutas, sin zonas nuevas: `Add only these roads, in the same style: {RUTAS}`.
 3. Si no se pudo adjuntar, o el resultado cambió el dibujo o desordenó los marcadores y no se arregla con una corrección, **redibuja** con el prompt completo de todas las zonas del nivel.
 
 ## Comprobación
@@ -83,6 +97,7 @@ Sigue la comprobación de `SKILL.md` (Paso 3c). En un mapa, además:
 - **Texto:** ni títulos, ni nombres, ni letras sueltas, ni cuadrícula, ni marco.
 - **Lo oculto:** la línea de puntos entre las zonas con paso oculto y el triángulo en las que tienen trampa; ninguno de más (sobre todo, ninguna puerta dibujada donde va un paso oculto).
 - **Zonas:** lo característico de cada una (el trono, el pozo, las rejas) y su sitio aproximado según su orientación, con el norte arriba.
+- **Rutas:** cada una del bloque «Rutas», con su estilo, entre sus zonas y saliendo por el borde donde «sigue»; ningún camino de más. En un itinerario, los marcadores en el orden de la ruta, de la 1 al final.
 - **Estilo:** el de la técnica de mapas, y que case con el concept art del mundo.
 - **Formato:** vertical u horizontal, el pedido.
 

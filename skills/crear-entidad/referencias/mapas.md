@@ -3,11 +3,12 @@
 Además de su imagen principal (el concept art, que sigue siendo obligatorio y la primera imagen de la nota), los lugares que lo merecen tienen **mapa**. El mapa no es la imagen: es la **leyenda numerada** de la sección `## Mapa`. La imagen la dibuja `generar-imagen` y es una *edición* de esa leyenda. El mundo crece en la leyenda; el dibujo se rehace cuando ha cambiado bastante.
 
 ## Qué lugares la llevan
-La regla `mapa` del `modulo.json` de cada tipo dice qué categorías llevan mapa, de qué clase y desde qué relevancia. `check_note.py --depth <tipo>:<relevancia>:<categoría>` dice si a una nota le toca. Hay cuatro clases:
+La regla `mapa` del `modulo.json` de cada tipo dice qué categorías llevan mapa, de qué clase y desde qué relevancia. `check_note.py --depth <tipo>:<relevancia>:<categoría>` dice si a una nota le toca. Hay cinco clases:
 - **interior:** el plano de un edificio, unas ruinas o una mazmorra, por niveles;
 - **urbano:** el plano de un asentamiento;
 - **paraje:** el mapa de una isla, un bosque, una montaña o un paraje;
-- **territorio:** el mapa de una región. La leyenda se escribe desde que le toca, pero la imagen espera a que tenga las zonas mínimas de su regla (`zonas_minimas`): un territorio con dos lugares sería un mapa pobre.
+- **territorio:** el mapa de una región. La leyenda se escribe desde que le toca, pero la imagen espera a que tenga las zonas mínimas de su regla (`zonas_minimas`): un territorio con dos lugares sería un mapa pobre;
+- **itinerario:** el mapa de una ruta: la franja de tierra (o de agua) a lo largo de ella, de su partida a su destino. Los portales no lo llevan, porque no cruzan lo que hay en medio.
 
 ## Qué entra en la leyenda
 Cada mapa muestra **solo su nivel directo**:
@@ -15,6 +16,7 @@ Cada mapa muestra **solo su nivel directo**:
 - **urbano:** sus barrios y zonas, sus lugares notables y lo que da forma al plano (las puertas, el puerto, la plaza mayor). No los locales de cada barrio: esos irán en el mapa del barrio, si llega a ser un lugar propio.
 - **paraje:** sus partes (un claro, una cumbre, una orilla) y sus lugares notables.
 - **territorio:** su capital (primero), sus asentamientos y lugares notables, y los accidentes con nombre que cuenta su Geografía (un río, una cordillera). No los lugares que están dentro de sus asentamientos.
+- **itinerario:** sus puntos en orden, y la partida es la 1: las paradas, los pasos, los vados, los puentes, los cruces y los hitos de su Recorrido, y el destino (en una sin salida, el sitio donde se pierde; en una circular, la última zona conecta con la 1). Cada punto conecta con el siguiente; un ramal o un desvío conocido conecta con el punto de donde sale. Con más de 12 puntos, los principales.
 
 La leyenda solo indexa lo que la nota cuenta: si una zona importa, la nota también la describe en su sección.
 
@@ -47,6 +49,19 @@ Es una viñeta con el número en negrita, no una lista numerada: Obsidian renume
   - Si sale con código 3, la leyenda está llena: no lo fuerces. Anota la pregunta con `add_entries.py --question` (qué zona con mapa propio debería agruparlo).
 - `map_key.py <Nota>` muestra la leyenda, su edición y si toca dibujar la primera edición o una nueva.
 
+## Las rutas en los mapas
+El mapa de un lugar dibuja también las rutas con nota que lo cruzan: el camino entre dos ciudades de una región, el paso que sale por su frontera, la senda que se pierde en su bosque. Van en un bloque al final de la sección Mapa, que **no se escribe a mano**: lo deriva de las notas de las rutas `map_key.py --sync-routes`.
+```
+**Rutas:**
+- **[[Camino_Real|Camino Real]]** (camino): sigue → 1 → 3 → 5.
+- **[[Senda_Vieja|Senda Vieja]]** (sendero, abandonada): 3 → 4 → se pierde.
+```
+- Cada ruta lleva su categoría (y su situación, si no está en uso) y las zonas por las que pasa, en orden. Un punto de la ruta que no es una zona cuenta por la zona que lo contiene (la posada del camino, por su ciudad). «sigue» marca que viene de fuera del mapa o sale de él, y «se pierde», que acaba en nada dentro de él.
+- Solo entran las rutas con trazado sobre el terreno y que se sabe por dónde van. Los portales y las rutas por el aire o el espacio no se dibujan, y tampoco las perdidas ni las dudosas. Las redes entran por sus rutas.
+- El script conecta en la leyenda (`Conecta con`) las zonas que une cada ruta.
+- Una ruta nueva o cambiada queda «sin cartografiar» y cuenta para la edición siguiente como una zona más.
+- **Cuándo:** al crear una ruta o cambiar su recorrido, `map_key.py --sync-routes`, sin nota, rehace el bloque de todas las leyendas. Al añadir una zona con `--add`, el bloque de esa leyenda se rehace solo, porque la zona nueva puede ser el punto de una ruta que ya existía.
+
 ## Variedad: las tablas de mapas
 Los modelos repiten patrones: sin azar, todas las mazmorras tendrían la misma planta y todas las ciudades los mismos barrios. Antes de escribir la leyenda, tira en las tablas de mapas (`<expandir-mundo>/assets/Tablas/Mapas.md`, o la versión del mundo en `06_Generacion/Tablas`) con `roll_tables.py`, que da azar real; `--count` da varios resultados distintos entre sí:
 - **interior:**
@@ -58,7 +73,8 @@ Los modelos repiten patrones: sin azar, todas las mazmorras tendrían la misma p
   ```
 - **urbano:** `Urbano: forma`, `Urbano: hito` y `Urbano: bordes`, y `Urbano: barrios` con `--count <zonas>`;
 - **paraje:** `Paraje: partes` con `--count <zonas>`;
-- **territorio:** `Territorio: dónde vive la gente` y `Territorio: caminos`, y `Territorio: accidentes` con `--count <3 a 5>`.
+- **territorio:** `Territorio: dónde vive la gente` y `Territorio: caminos`, y `Territorio: accidentes` con `--count <3 a 5>`;
+- **itinerario:** `Itinerario: forma` y `Itinerario: lo escondido`, `Itinerario: tramos` con `--count <tramos>` e `Itinerario: hitos` con `--count <3 a 5>`. Un atajo de contrabandistas va como paso oculto; una emboscada conocida, como trampa (con sus cuatro tablas, abajo).
 
 **Lo oculto:** tira `Interior: lo oculto`. Por cada trampa, tira juntas sus cuatro tablas: `Trampa: mecanismo`, `Trampa: disparador`, `Trampa: efecto` y `Trampa: quién la puso y para qué`. Por cada paso oculto, `Paso oculto: forma` y `Paso oculto: quién lo conoce`. Son categorías, no trampas hechas: combínalas en una sola, concreta, que encaje con el lugar y con su historia. Quién la puso y para qué es lo que la hace única. Nunca repitas una trampa en un mismo lugar, ni copies la de otro: cada una sale de su propia tirada.
 

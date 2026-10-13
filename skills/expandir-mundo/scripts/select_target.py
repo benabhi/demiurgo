@@ -53,7 +53,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "
 from build_context import region_chain  # noqa: E402
 from vault_lib import (SKILL_DIR, WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
-                       omitted_sections, parse_map_key, read_world, split_note, template_sections)
+                       omitted_sections, parse_map_key, parse_map_routes, read_world, split_note,
+                       template_sections)
 from vault_lib import vault_path  # noqa: E402
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
@@ -89,14 +90,16 @@ def map_candidates(vault, index, modules):
         zones, problems = parse_map_key(body)
         if zones is None or problems or map_key_problems(zones)[0]:
             continue
-        status = map_status(module, entry["props"], zones, relevance)
+        routes, _ = parse_map_routes(body)
+        status = map_status(module, entry["props"], zones, relevance, routes)
         if not status["toca"]:
             continue
         first_edition = status["toca"] == "primera"
         options.append({"accion": "cartografiar", "nota": entry["name"], "tipo": entry["tipo"],
                         "clase": status["clase"], "edicion": "primera" if first_edition else "nueva",
                         "niveles": status["niveles"],
-                        "puntos": relevance + status["sin_cartografiar"] + (3 if first_edition else 0),
+                        "puntos": relevance + status["sin_cartografiar"] + status["rutas_sin_cartografiar"]
+                        + (3 if first_edition else 0),
                         "razones": [status["razon"], f"relevancia {relevance}"]})
     return options
 

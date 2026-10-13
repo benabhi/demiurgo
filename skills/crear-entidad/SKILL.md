@@ -19,7 +19,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
 - **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
-- **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, y `--add` le añade una zona (ver `referencias/mapas.md`).
+- **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
 - **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
 
@@ -165,6 +165,7 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
 
   Si no cambia nada en ninguna de las dos, basta con el enlace: no hace falta una fila de relación.
 - **Leyenda del lugar donde está:** si la entidad es un lugar (un lugar, un asentamiento o una región) y el lugar que la contiene ya tiene nota y leyenda (su `ubicacion`, su `region` o su `region_padre`; `map_key.py <Contenedor>` lo dice; si aún es un enlace pendiente, no hay nada que hacer: tendrá su leyenda al crearse), añádela con `map_key.py <Contenedor> --add "[[Nota|Nombre]]" --position <orientación> --desc "<una línea>"` y, si las hay, sus conexiones (`--connects`), sin leer la nota del contenedor. Si ya estaba (como enlace pendiente), el script no hace nada; si la leyenda está llena (código 3), anota la pregunta. Ver `referencias/mapas.md`.
+- **Rutas en los mapas:** si la entidad es una ruta (o cambiaste el recorrido de una), ejecuta `map_key.py --sync-routes`: la pone en el bloque «Rutas» de las leyendas de los lugares que cruza (sus regiones, los parajes y ciudades por los que pasa) y conecta las zonas que une. Una ruta no es una zona: no la añadas con `--add`. Si a uno de esos mapas le toca una edición nueva, dilo en el informe; la dibuja el motor (`cartografiar`) o el usuario.
 - **Anclaje:** una entidad creada de la nada (sin un enlace pendiente que la pidiera) no puede quedar huérfana. Si la reciprocidad no la enlaza desde ninguna nota, añade su enlace en al menos una nota existente con la que se relaciona (su asentamiento, su región, su facción), en la propiedad que encaje (`add_relation.py`).
 - **Glosario:** registra el nombre y los términos que inventaste con `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>` (repetible; con la nota vacía, `""`, para un término sin nota).
 - **Enlace pendiente completado:** si llevaba un nombre de rol, reemplázalo por el definitivo en todas las notas con `rename_link.py <Rol_de_Entidad> <Nombre_Real>`. Si llevaba el nombre real, no hay nada que reemplazar.

@@ -21,8 +21,9 @@ Comprueba:
   - que la nota no enlace a un secreto y que su imagen exista;
   - en los lugares con mapa (regla `mapa` del módulo): la sección Mapa cuando le toca por su categoría
     y su relevancia, y su leyenda (números del 1 al N sin repetir ni saltar, orientaciones válidas,
-    conexiones con zonas que existen y en los dos sentidos, como mucho 12 zonas por nivel), y que las
-    imágenes de `mapa` existan y vayan embebidas, con `mapa_edicion` y `mapa_zonas` coherentes;
+    conexiones con zonas que existen y en los dos sentidos, como mucho 12 zonas por nivel), las rutas
+    que lo cruzan (bloque «Rutas»: zonas que existen y que la leyenda conecta), y que las imágenes de
+    `mapa` existan y vayan embebidas, con `mapa_edicion` y `mapa_zonas` coherentes;
   - en un calendario, las tablas que leen los scripts (meses, estaciones, festividades);
   - en una costumbre, que solo las festividades lleven `calendario` y `fecha`, y que la fiesta esté en la
     tabla «Festividades» de su calendario con la misma fecha y un mes que existe (avisos);
@@ -56,7 +57,7 @@ from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LIN
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
                        load_modules, malformed_lines, MAP_ITEM_EMPTY_RE, map_applies, map_key_problems, map_rule,
                        normalize, note_link_labels, omitted_sections, own_gaps_range, parse_calendar,
-                       parse_map_key,
+                       map_routes_problems, parse_map_key, parse_map_routes,
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
                        reference_calendar, resolve_note, section_table, split_note, table_cell,
                        unlinked_entities, unlinked_mentions, unlinked_names, unquote)
@@ -431,6 +432,13 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
             key_errors, key_warnings = map_key_problems(zones)
             errors += key_errors
             warnings += key_warnings
+        # Las rutas que cruzan el mapa (bloque «Rutas»): sus zonas existen y la leyenda las conecta
+        routes, route_format = parse_map_routes(body)
+        errors += route_format
+        if routes:
+            route_errors, route_warnings = map_routes_problems(routes, zones)
+            errors += route_errors
+            warnings += route_warnings
         edition, charted = first(props.get("mapa_edicion")), first(props.get("mapa_zonas"))
         for key, raw in (("mapa_edicion", edition), ("mapa_zonas", charted)):
             if raw and (int_value(raw) is None or int_value(raw) < 1):

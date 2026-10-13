@@ -16,14 +16,21 @@ relevancia), la edición, las zonas sin cartografiar y si toca dibujar la primer
       añade y sale con código 3.
   --charted
       Tras dibujar una edición: suma una a `mapa_edicion`, pone `mapa_zonas` en el último número y
-      quita las marcas «sin cartografiar».
+      quita las marcas «sin cartografiar» (también las de las rutas).
+  --sync-routes
+      Rehace el bloque «Rutas» de la leyenda a partir de las notas de las rutas: las que pasan por sus
+      zonas, en orden, con «sigue» donde continúan fuera del mapa y «se pierde» donde acaban en nada; y
+      conecta en la leyenda las zonas que cada ruta une. Una ruta nueva o cambiada queda «sin
+      cartografiar» y cuenta para la edición siguiente. Sin nota, lo hace en todas las leyendas de la
+      bóveda (tras crear o cambiar una ruta). Al añadir una zona con --add, se hace solo.
 
 Ejemplos:  map_key.py Puerto_Gris
            map_key.py Puerto_Gris --json
            map_key.py Puerto_Gris --add "[[Torre_Hendida|La torre hendida]]" --position noreste --desc "Vigía sobre el río." --connects 5
            map_key.py Cripta_Honda --add "las celdas" --position oeste --level 2 --desc "Cuatro celdas con rejas." --connects 9
            map_key.py Cripta_Honda --add "la capilla" --position norte --desc "Altar tallado." --connects 2 --hidden 5 --trap "una losa que se hunde bajo el altar"
-           map_key.py Puerto_Gris --charted"""
+           map_key.py Puerto_Gris --charted
+           map_key.py --sync-routes"""
 import argparse
 import json
 import re
@@ -32,11 +39,11 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP_SECTION, MAX_MARKERS,  # noqa: E402
-                       HIDDEN_RE, ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK, first, format_connections,
-                       format_hidden,
-                       int_value, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
-                       parse_map_key, resolve_note, zones_per_level)
+from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP_ROUTES_HEADING,  # noqa: E402
+                       MAP_SECTION, MAX_MARKERS, HIDDEN_RE, ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK,
+                       compute_map_routes, first, format_connections, format_hidden, format_map_route, int_value,
+                       load_index, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
+                       parse_map_key, parse_map_routes, resolve_note, zones_per_level)
 from vault_lib import vault_path  # noqa: E402
 
 EXIT_FULL = 3
@@ -78,10 +85,10 @@ def add_connection(line, number, pattern=CONNECTS_RE, formatter=format_connectio
     return f"{line.rstrip()} {phrase}"
 
 
-def show(path, status, zones, problems, as_json):
+def show(path, status, zones, routes, problems, as_json):
     if as_json:
-        print(json.dumps({"nota": path.stem, **status, "leyenda": zones or [], "problemas": problems},
-                         ensure_ascii=False, indent=2))
+        print(json.dumps({"nota": path.stem, **status, "leyenda": zones or [], "rutas": routes,
+                          "problemas": problems}, ensure_ascii=False, indent=2))
         return
     print(f"Mapa de {path.stem}")
     if not status["aplica"]:
@@ -108,8 +115,87 @@ def show(path, status, zones, problems, as_json):
         hidden = f" · paso oculto a {', '.join(map(str, zone['ocultos']))}" if zone["ocultos"] else ""
         trap = f" · trampa: {zone['trampa']}" if zone["trampa"] else ""
         print(f"  {zone['numero']:>2}. {zone['nombre']}{link} · {where}{connects}{hidden}{trap}{extra}")
+    if routes:
+        print("  Rutas que lo cruzan:")
+    for route in routes:
+        extra = " · sin cartografiar" if route["sin_cartografiar"] else ""
+        steps = " → ".join(str(step) for step in route["recorrido"])
+        print(f"   - {route['nombre']} ({route['estilo']}): {steps}{extra}")
     for problem in problems:
         print(f"  ERROR: {problem}")
+
+
+def sync_routes(path, vault, index):
+    """Rehace el bloque «Rutas» de la leyenda de una nota a partir de las notas de las rutas y conecta las
+    zonas que une cada una. Devuelve las líneas del resumen (vacía si no cambió nada)."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    end = frontmatter_end(lines)
+    if end is None:
+        return []
+    props = parse_frontmatter(lines[1:end], [])
+    body = lines[end + 1:]
+    zones, problems = parse_map_key(body)
+    if not zones or problems or map_key_problems(zones)[0]:
+        return []
+    old_routes, _ = parse_map_routes(body)
+    computed = compute_map_routes(vault, index, path.stem, zones)
+    edition = int_value(first(props.get("mapa_edicion")))
+    previous = {(route["enlace"] or route["nombre"]).lower(): route for route in old_routes}
+    block, summary = [], []
+    for route in computed:
+        old = previous.pop(route["enlace"].lower(), None)
+        same = bool(old) and old["estilo"] == route["estilo"] and old["recorrido"] == route["recorrido"]
+        block.append(format_map_route(route["nombre"], route["estilo"], route["recorrido"],
+                                      bool(edition) and (not same or old["sin_cartografiar"])))
+        if not same:
+            steps = " → ".join(str(step) for step in route["recorrido"])
+            summary.append(f"{'cambia' if old else 'entra'} {route['nombre']} ({route['estilo']}): {steps}")
+    summary += [f"sale {route['nombre']} (ya no pasa por sus zonas)" for route in previous.values()]
+
+    # Las zonas que une cada ruta quedan conectadas en la leyenda, en los dos sentidos
+    offset = section_start(lines, end) + 1
+    by_number = {zone["numero"]: zone for zone in zones}
+    joined = []
+    for route in computed:
+        numbers = [step for step in route["recorrido"] if isinstance(step, int)]
+        for a, b in zip(numbers, numbers[1:]):
+            for x, y in ((a, b), (b, a)):
+                if x != y and y not in by_number[x]["conecta"]:
+                    row = offset + by_number[x]["linea"]
+                    lines[row] = add_connection(lines[row], y)
+                    by_number[x]["conecta"].append(y)
+                    joined.append((min(x, y), max(x, y)))
+    if joined:
+        summary.append("zonas conectadas: " + ", ".join(f"{a} y {b}" for a, b in sorted(set(joined))))
+    if not summary:
+        return []
+
+    # El bloque va al final de la sección Mapa: se quita el anterior y se escribe de nuevo
+    stop = next((i for i in range(offset, len(lines)) if lines[i].startswith("## ")), len(lines))
+    heading = next((i for i in range(offset, stop) if lines[i].strip() == MAP_ROUTES_HEADING), None)
+    if heading is not None:
+        after = heading + 1
+        while after < stop and (not lines[after].strip() or lines[after].lstrip().startswith("- ")):
+            after += 1
+        while heading > offset and not lines[heading - 1].strip():
+            heading -= 1
+        del lines[heading:after]
+        stop = next((i for i in range(offset, len(lines)) if lines[i].startswith("## ")), len(lines))
+    at = stop
+    while at > offset and not lines[at - 1].strip():
+        at -= 1
+    lines[at:stop] = (["", MAP_ROUTES_HEADING] + block if block else []) + ([""] if stop < len(lines) else [])
+    path.write_text("\n".join(lines).rstrip("\n") + "\n", encoding="utf-8", newline="\n")
+    return [f"{path.stem} — rutas del mapa: " + "; ".join(summary)]
+
+
+def legends(vault, index, modules):
+    """Notas con leyenda de mapa: las de los tipos con `mapa` que tienen sección Mapa."""
+    for entry in index:
+        if modules.get(entry["tipo"], {}).get("mapa") and entry["estado"] != "archivado":
+            path = vault / entry["path"]
+            if f"## {MAP_SECTION}" in path.read_text(encoding="utf-8"):
+                yield path
 
 
 def main():
@@ -119,7 +205,8 @@ def main():
             stream.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("note", help="Nombre o ruta de la nota del lugar")
+    parser.add_argument("note", nargs="?",
+                        help="Nombre o ruta de la nota del lugar (sin ella, con --sync-routes: todas las leyendas)")
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
     parser.add_argument("--add", metavar="NOMBRE", help="Añade una zona al final de la leyenda")
@@ -130,11 +217,20 @@ def main():
     parser.add_argument("--hidden", default="", help="Zonas a las que lleva un paso oculto que la nota conoce: 7")
     parser.add_argument("--trap", default="", help="La trampa de la zona, si la nota la conoce (una línea)")
     parser.add_argument("--charted", action="store_true", help="Marca la leyenda como cartografiada tras una edición")
+    parser.add_argument("--sync-routes", action="store_true",
+                        help="Rehace el bloque «Rutas» de la leyenda (sin nota: el de todas las leyendas)")
     args = parser.parse_args()
 
     vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
+    if args.sync_routes and not args.note:
+        index, modules = load_index(vault), load_modules()
+        changes = [line for path in legends(vault, index, modules) for line in sync_routes(path, vault, index)]
+        print("\n".join(changes) if changes else "Rutas de los mapas: sin cambios.")
+        return
+    if not args.note:
+        sys.exit("Error: indica la nota del lugar (o --sync-routes, para todas las leyendas).")
     path = resolve_note(args.note, vault)
     if not path:
         sys.exit(f"Error: no encuentro la nota '{args.note}' (o hay varias con ese nombre).")
@@ -148,10 +244,16 @@ def main():
         sys.exit(f"Error: el tipo «{first(props.get('tipo')) or 'vacío'}» de {path.name} no lleva mapa.")
     body = lines[end + 1:]
     zones, problems = parse_map_key(body)
+    routes, route_problems = parse_map_routes(body)
+    problems += route_problems
     relevance = int_value(first(props.get("relevancia")))
 
+    if args.sync_routes and not args.add and not args.charted:
+        changes = sync_routes(path, vault, load_index(vault))
+        print("\n".join(changes) if changes else f"{path.name} — rutas del mapa: sin cambios.")
+        return
     if not args.add and not args.charted:
-        show(path, map_status(module, props, zones, relevance), zones, problems, args.json)
+        show(path, map_status(module, props, zones, relevance, routes), zones, routes, problems, args.json)
         return
     if zones is None:
         sys.exit(f"Error: {path.name} no tiene sección Mapa. Si ya le toca mapa, profundízala para añadírsela.")
@@ -163,8 +265,8 @@ def main():
     if args.charted:
         if not zones:
             sys.exit(f"Error: la leyenda de {path.name} está vacía.")
-        for zone in zones:
-            row = offset + zone["linea"]
+        for item in zones + routes:
+            row = offset + item["linea"]
             lines[row] = lines[row].replace(f" {UNCHARTED_MARK}", "").replace(UNCHARTED_MARK, "").rstrip()
         edition = (int_value(first(props.get("mapa_edicion"))) or 0) + 1
         last = max(zone["numero"] for zone in zones)
@@ -243,6 +345,9 @@ def main():
             lines.insert(at, new_line)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(f"{path.name} — zona {number} añadida a la leyenda: {new_line}")
+    # La zona nueva puede ser el punto de una ruta que ya existía: el bloque «Rutas» se rehace
+    for change in sync_routes(path, vault, load_index(vault)):
+        print(change)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 Ingredientes para la leyenda del mapa de un lugar (ver `crear-entidad/referencias/mapas.md`): su forma, su tamaño, sus niveles, sus salas, sus barrios, sus partes o sus accidentes. Así los lugares no salen todos iguales. Son genéricos: Claude los adapta al mundo, a su género y a su tecnología, y lo que cuenta la nota manda sobre la tirada. A más peso, más frecuente.
 
-Cada clase de mapa usa las suyas: las de **Interior** (edificios, ruinas, mazmorras, torres), las de **Urbano** (asentamientos), las de **Paraje** (islas, bosques, montañas) y las de **Territorio** (regiones). Las de varias zonas se tiran con `--count`, que da resultados distintos entre sí.
+Cada clase de mapa usa las suyas: las de **Interior** (edificios, ruinas, mazmorras, torres), las de **Urbano** (asentamientos), las de **Paraje** (islas, bosques, montañas), las de **Territorio** (regiones) y las de **Itinerario** (rutas). Las de varias zonas se tiran con `--count`, que da resultados distintos entre sí.
 
 ## Interior: planta
 | Peso | Resultado |
@@ -331,3 +331,69 @@ Cada clase de mapa usa las suyas: las de **Interior** (edificios, ruinas, mazmor
 | 1 | Caminos antiguos, mejores que lo que se construye hoy |
 | 1 | Caminos cortados o abandonados que nadie repara |
 | 1 | Un único paso que todos deben cruzar |
+
+## Itinerario: forma
+| Peso | Resultado |
+|---|---|
+| 3 | Serpentea por el fondo de un valle, siguiendo el agua |
+| 2 | Recta como una flecha, trazada por quien tenía prisa o poder |
+| 2 | Zigzaguea por una ladera, en curvas cerradas |
+| 2 | Bordea una costa, un lago o un acantilado |
+| 2 | Va de un punto de agua a otro (pozos, oasis, fuentes) y se desvía por ellos |
+| 1 | Sigue las crestas, por lo alto, para ver venir el peligro |
+| 1 | Baja por el fondo de un cañón o una garganta |
+| 1 | Cruza una ciénaga por pasarelas, diques o calzadas elevadas |
+| 1 | Salta de isla en isla, de orilla en orilla o de faro en faro |
+| 1 | Se divide y se junta: dos trazados que compiten (el de verano y el de invierno) |
+| 1 | Rodea algo que nadie quiere cruzar (un bosque, unas ruinas, una tierra maldita) |
+| 1 | Bajo tierra, de sala en sala o de pozo en pozo |
+| 1 | Rareza: cambia de trazado con las estaciones, o nadie la recorre igual dos veces |
+
+## Itinerario: tramos
+| Peso | Resultado |
+|---|---|
+| 3 | Llano abierto, sin sombra ni refugio |
+| 2 | Bosque cerrado, donde el camino se estrecha |
+| 2 | Cuesta larga, con descansos tallados |
+| 2 | Junto a un río, hasta su vado o su puente |
+| 2 | Campos y huertas, cerca de gente |
+| 1 | Desfiladero estrecho, donde cabe un carro y nada más |
+| 1 | Ciénaga, sobre tablones o piedras que se hunden |
+| 1 | Pedregal o arenal, donde el camino se borra |
+| 1 | Cornisa sobre un abismo |
+| 1 | Ruinas junto al camino, de lo que hubo antes |
+| 1 | Tramo antiguo, de obra mejor que el resto |
+| 1 | Tramo hundido, derrumbado o comido por el agua |
+| 1 | Tierra tocada por el conflicto del mundo, que se cruza deprisa |
+| 1 | Rareza: un tramo donde los viajeros no hablan, o donde el tiempo parece otro |
+
+## Itinerario: hitos
+| Peso | Resultado |
+|---|---|
+| 3 | Una posada o una venta |
+| 2 | Un puente |
+| 2 | Un vado |
+| 2 | Un cruce de caminos |
+| 2 | Un puesto de peaje o de guardia |
+| 2 | Una fuente, un pozo o un abrevadero |
+| 1 | Un santuario o un altar del camino |
+| 1 | Un mojón, un hito o una piedra con marcas |
+| 1 | Una torre de señales o un faro |
+| 1 | Un campamento de caravanas o de pastores |
+| 1 | Una barca, un transbordador o una balsa |
+| 1 | Unas tumbas o un cementerio de viajeros |
+| 1 | Un árbol solitario que todos conocen |
+| 1 | Un fuerte o una muralla que cierra el paso |
+| 1 | Un mercado de cruce que solo existe unos días al año |
+| 1 | Rareza: algo que no debería estar ahí (una estatua sin pueblo, una puerta en medio del campo) |
+
+## Itinerario: lo escondido
+| Peso | Resultado |
+|---|---|
+| 3 | Nada que se sepa |
+| 2 | Un atajo de contrabandistas que evita el peaje (un paso oculto) |
+| 2 | Un sitio de emboscada conocido (una trampa: quién embosca y cómo) |
+| 1 | Un sendero de pastores que solo conocen los del lugar (un paso oculto) |
+| 1 | Un mojón falso que lleva al barranco (una trampa) |
+| 1 | Un refugio escondido junto al camino |
+| 1 | Una trampa vieja de una guerra, que nadie desmontó |

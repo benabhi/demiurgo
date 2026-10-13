@@ -272,19 +272,23 @@ def zones_per_level(zones):
     return counts
 
 
-def map_status(module, props, zones, relevance):
+def map_status(module, props, zones, relevance, routes=None):
     """Estado del mapa de una nota: si le toca leyenda, su clase, la edición, cuántas zonas hay y cuántas
     faltan por cartografiar, y si toca dibujar (`toca`: "primera", "nueva" o None, con su razón y
-    los niveles que hay que dibujar)."""
+    los niveles que hay que dibujar). Las rutas nuevas o cambiadas del bloque «Rutas» (`routes`, de
+    parse_map_routes) cuentan para la edición nueva como una zona sin cartografiar cada una."""
     rule = map_applies(module, props, relevance)
     zones = zones or []
     edition = int_value(first(props.get("mapa_edicion"))) or 0
     charted = int_value(first(props.get("mapa_zonas"))) or 0
     uncharted = [z for z in zones if z["numero"] > charted] if edition else list(zones)
+    new_routes = [r for r in routes or [] if r["sin_cartografiar"]] if edition else []
+    pending = len(uncharted) + len(new_routes) if edition else 0
     status = {"aplica": bool(rule), "clase": rule["clase"] if rule else None,
               "desde": rule["desde"] if rule else None, "edicion": edition, "zonas": len(zones),
               "cartografiadas": len(zones) - len(uncharted) if edition else 0,
-              "sin_cartografiar": len(uncharted) if edition else 0, "toca": None, "niveles": [], "razon": ""}
+              "sin_cartografiar": len(uncharted) if edition else 0, "rutas": len(routes or []),
+              "rutas_sin_cartografiar": len(new_routes), "toca": None, "niveles": [], "razon": ""}
     if not rule:
         return status
     per_level = zones_per_level(zones)
@@ -296,13 +300,180 @@ def map_status(module, props, zones, relevance):
             status.update(toca="primera", niveles=sorted(per_level), razon="aún no tiene mapa")
         else:
             status["razon"] = f"tiene {len(zones)} zona(s); el mapa se dibuja desde {minimum}"
-    elif uncharted and (len(uncharted) >= NEW_EDITION_ZONES or 4 * len(uncharted) >= max(charted, 1)):
-        status.update(toca="nueva", niveles=sorted({z["nivel"] for z in uncharted}),
-                      razon=f"{len(uncharted)} zona(s) sin cartografiar")
-    elif uncharted:
-        status["razon"] = (f"{len(uncharted)} zona(s) sin cartografiar; la edición nueva toca con "
-                           f"{NEW_EDITION_ZONES} o con un cuarto de las cartografiadas")
+    else:
+        what = ", ".join(part for part in (f"{len(uncharted)} zona(s)" if uncharted else "",
+                                           f"{len(new_routes)} ruta(s)" if new_routes else "") if part)
+        if pending and (pending >= NEW_EDITION_ZONES or 4 * pending >= max(charted, 1)):
+            # Los niveles que se redibujan: los de las zonas nuevas y los que cruzan las rutas nuevas
+            levels = {z["nivel"] for z in uncharted}
+            by_number = {z["numero"]: z["nivel"] for z in zones}
+            levels |= {by_number[n] for r in new_routes for n in r["recorrido"] if n in by_number}
+            status.update(toca="nueva", niveles=sorted(levels), razon=f"{what} sin cartografiar")
+        elif pending:
+            status["razon"] = (f"{what} sin cartografiar; la edición nueva toca con {NEW_EDITION_ZONES} "
+                               f"o con un cuarto de las zonas cartografiadas")
     return status
+
+
+# --- Las rutas en los mapas ----------------------------------------------------
+# El mapa de un lugar dibuja también las rutas que lo cruzan. Van en un bloque al final de la sección Mapa,
+# derivado de las notas de las rutas (lo escribe `map_key.py --sync-routes`): cada ruta, con su categoría
+# (y su situación, si no está en uso) y las zonas por las que pasa, en orden. «sigue» marca que continúa
+# fuera del mapa, y «se pierde», que acaba en nada dentro de él:
+#   **Rutas:**
+#   - **[[Camino_Real|Camino Real]]** (camino): sigue → 1 → 3 → 5.
+#   - **[[Senda_Vieja|Senda Vieja]]** (sendero, abandonada): 3 → 4 → se pierde.
+
+MAP_ROUTES_HEADING = "**Rutas:**"
+ROUTE_CONTINUES = "sigue"
+ROUTE_FADES = "se pierde"
+MAP_ROUTE_RE = re.compile(r"^-\s+\*\*(?P<nombre>.+?)\*\*\s+\((?P<estilo>[^)]+)\):\s+(?P<recorrido>.+?)\.(?:\s+(?P<resto>.*))?$")
+# Las rutas que se dibujan sobre el terreno: los portales y las rutas por el aire o el espacio, no
+GROUND_ROUTE_CATEGORIES = ("camino", "sendero", "paso", "fluvial", "maritima", "subterranea", "otro")
+# Las que no se sabe por dónde van no se dibujan
+UNMAPPED_ROUTE_SITUATIONS = ("perdida",)
+CONTAINMENT_PROPS = ("ubicacion", "region", "region_padre")
+
+
+def parse_map_routes(body):
+    """(rutas, problemas) del bloque «Rutas» de la sección Mapa. Cada ruta: linea (índice dentro de la
+    sección), nombre, enlace, estilo, recorrido (números de zona, «sigue» y «se pierde») y sin_cartografiar."""
+    lines = map_section(body)
+    routes, problems, inside = [], [], False
+    for i, line in enumerate(lines or []):
+        stripped = line.strip()
+        if stripped == MAP_ROUTES_HEADING:
+            inside = True
+            continue
+        if not inside or not stripped:
+            continue
+        if not stripped.startswith("- "):
+            break
+        match = MAP_ROUTE_RE.match(stripped)
+        if not match:
+            problems.append(f"ruta del mapa con formato no válido: «{stripped}» (debe ser "
+                            f"`- **[[Ruta|Nombre]]** (categoría): 1 → 3 → {ROUTE_CONTINUES}.`)")
+            continue
+        steps = []
+        for token in (t.strip() for t in match.group("recorrido").split("→")):
+            if token.isdigit():
+                steps.append(int(token))
+            elif normalize(token) in (ROUTE_CONTINUES, ROUTE_FADES):
+                steps.append(normalize(token))
+            else:
+                problems.append(f"ruta del mapa «{strip_links(match.group('nombre'))}»: «{token}» no es una zona "
+                                f"(un número), «{ROUTE_CONTINUES}» ni «{ROUTE_FADES}»")
+        link = LINK_RE.search(match.group("nombre"))
+        routes.append({"linea": i, "nombre": strip_links(match.group("nombre")).strip(),
+                       "enlace": link.group(1).rstrip("\\").strip() if link else None,
+                       "estilo": match.group("estilo").strip(), "recorrido": steps,
+                       "sin_cartografiar": "sin cartografiar" in normalize(match.group("resto") or "")})
+    return routes, problems
+
+
+def format_map_route(name, style, steps, uncharted=False):
+    """`- **[[Ruta|Nombre]]** (estilo): 1 → 3 → sigue.`, con la marca de sin cartografiar si hace falta."""
+    path = " → ".join(str(step) for step in steps)
+    return f"- **{name}** ({style}): {path}." + (f" {UNCHARTED_MARK}" if uncharted else "")
+
+
+def map_routes_problems(routes, zones):
+    """(errores, avisos) del bloque «Rutas»: sus zonas existen y la leyenda las conecta como la ruta."""
+    errors, warnings = [], []
+    known = {z["numero"]: z for z in zones or []}
+    for route in routes:
+        numbers = [n for n in route["recorrido"] if isinstance(n, int)]
+        missing = [n for n in numbers if n not in known]
+        if missing:
+            errors.append(f"la ruta «{route['nombre']}» del mapa pasa por zonas que no existen: "
+                          f"{', '.join(map(str, missing))}")
+            continue
+        for a, b in zip(numbers, numbers[1:]):
+            if a != b and b not in known[a]["conecta"]:
+                warnings.append(f"la ruta «{route['nombre']}» del mapa va de {a} a {b}, pero la leyenda no los "
+                                f"conecta (`map_key.py <Nota> --sync-routes` lo arregla)")
+    return errors, warnings
+
+
+def route_points(vault, entry):
+    """Los puntos de una ruta en orden, (texto, enlace o None): los de su Recorrido encadenado o, sin él, su
+    partida, sus paradas y su destino."""
+    _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
+    points = []
+    for segment in route_segments(body) or []:
+        for label, link in ((segment["desde"], segment["desde_enlace"]), (segment["hasta"], segment["hasta_enlace"])):
+            if label and (not points or (points[-1][1] or points[-1][0]).lower() != (link or label).lower()):
+                points.append((label, link))
+    if points:
+        return points
+    props = entry["props"]
+    links = [link_value(first(props.get("partida")) or "")] + [link_value(v) for v in props.get("paradas", [])] \
+        + [link_value(first(props.get("destino")) or "")]
+    return [(link.replace("_", " "), link) for link in links if link]
+
+
+def compute_map_routes(vault, index, note_name, zones):
+    """Las rutas que cruzan las zonas de una leyenda: [{enlace, nombre, estilo, recorrido}], con el recorrido
+    por sus zonas en orden. Un punto que no es una zona cuenta por la zona que lo contiene (la posada, por su
+    ciudad); «sigue» si la ruta viene de fuera del mapa o sale de él, y «se pierde» si acaba en nada dentro de
+    él. Solo las rutas con trazado sobre el terreno que se sabe por dónde van (ni portales, ni rutas por el
+    aire o el espacio, ni perdidas o dudosas); la propia nota, si es una ruta, no."""
+    by_name = {e["name"].lower(): e for e in index}
+    note_key = note_name.lower()
+    zone_by_link = {z["enlace"].lower(): z["numero"] for z in zones or [] if z["enlace"]}
+
+    def locate(link):
+        """(zona o None, si está dentro del mapa: True, False o None si no se sabe: un punto sin nota o un
+        enlace pendiente)."""
+        if not link:
+            return None, None
+        if link.lower() not in zone_by_link and link.lower() not in by_name:
+            return None, None
+        stack, seen = [link.lower()], set()
+        while stack:
+            key = stack.pop()
+            if key in seen:
+                continue
+            seen.add(key)
+            if key in zone_by_link:
+                return zone_by_link[key], True
+            if key == note_key:
+                return None, True
+            entry = by_name.get(key)
+            for prop in CONTAINMENT_PROPS:
+                stack += [t.lower() for t in (entry["relaciones"].get(prop, []) if entry else [])]
+        return None, False
+
+    found = []
+    for entry in index:
+        props = entry["props"]
+        if entry["tipo"] != ROUTE_TYPE or entry["name"].lower() == note_key or entry["estado"] == "archivado" \
+                or first(props.get("categoria")) not in GROUND_ROUTE_CATEGORIES \
+                or first(props.get("situacion")) in UNMAPPED_ROUTE_SITUATIONS \
+                or first(props.get("certeza")) == "dudosa" or first(props.get("trazado")) == "red":
+            continue
+        points = route_points(vault, entry)
+        located = [locate(link) for _, link in points]
+        steps = []
+        for zone, _ in located:
+            if zone is not None and (not steps or steps[-1] != zone):
+                steps.append(zone)
+        if not steps:
+            continue
+        first_zone, first_inside = located[0]
+        last_zone, last_inside = located[-1]
+        if first_zone is None and first_inside is False:
+            steps.insert(0, ROUTE_CONTINUES)
+        if last_zone is None:
+            if last_inside is False:
+                steps.append(ROUTE_CONTINUES)
+            elif first(props.get("trazado")) == "sin_salida":
+                steps.append(ROUTE_FADES)
+        situation = first(props.get("situacion"))
+        style = first(props.get("categoria")) + (f", {situation}" if situation and situation != "en_uso" else "")
+        name = f"[[{entry['name']}|{entry['titulo']}]]" if "_" in entry["name"] else f"[[{entry['name']}]]"
+        found.append({"enlace": entry["name"], "nombre": name, "estilo": style, "recorrido": steps})
+    return sorted(found, key=lambda r: r["enlace"].lower())
 
 
 def date_keys(module):
