@@ -17,6 +17,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Pensado para mundos grandes:** la IA no lee la bóveda entera. Busca con scripts (entidades, enlaces pendientes, Glosario, preguntas), añade al Glosario y a otras notas sin leerlas, y valida y audita solo lo que tocó. Así un mundo de miles de notas no se come los tokens.
 - **Un grafo que se lee de un vistazo:** al crear el mundo, el grafo de Obsidian queda configurado con un color por tipo de entidad (verdes los lugares, azules la gente, cálidos la fe y los relatos…), los nombres visibles desde lejos, sin las notas del sistema que lo enredan y con los enlaces pendientes en gris. En Marcadores quedan dos vistas: «Grafo sin secretos», para enseñar el mundo sin spoilers, y «Grafo completo».
 - **Una bitácora del mundo** (`00_Sistema/Bitacora.md`): cada creación, entidad, tanda del motor, imagen o mapa deja una entrada breve con su fecha, lo creado y lo modificado, para ver de un vistazo cómo fue creciendo el mundo.
+- **Estadísticas del mundo** (`00_Sistema/Estadisticas.md`): cuántas entidades hay por tipo y por relevancia, los enlaces pendientes, las imágenes y los mapas que toca redibujar, lo más nombrado que falta y lo más enlazado. Se rehace sola al terminar cada tarea, y sus cifras van también en el frontmatter, para un tablero.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
 ## Las skills

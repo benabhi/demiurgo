@@ -33,7 +33,8 @@ Conectar (acción conectar): lo que debería estar unido por una ruta y no lo es
 vecinos sin camino, un asentamiento importante sin camino a la capital de su región, dos regiones vecinas
 que ninguna ruta une, un lugar importante al que no llega nada; routes.py --unconnected). Con
 --connect-chance, el ciclo crea la ruta que los une en vez de completar o crear otra cosa; como crear
-algo nuevo, se hace menos cuando hay muchos enlaces pendientes por entidad.
+algo nuevo, se hace menos cuando hay muchos enlaces pendientes por entidad. Con 1, siempre que haya algo
+que unir.
 
 Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
 Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
@@ -249,7 +250,8 @@ def main():
     parser.add_argument("--no-maps", action="store_true", help="No proponer mapas (en una tanda sin imágenes)")
     parser.add_argument("--connect-chance", type=float, default=0.2,
                         help="Probabilidad de unir con una ruta lo que debería estar unido y no lo está, en vez de "
-                             "completar o crear (0.2); con muchos enlaces pendientes baja como la de crear algo nuevo")
+                             "completar o crear (0.2); con muchos enlaces pendientes baja como la de crear algo nuevo; con 1, "
+                             "siempre que haya algo que unir")
     parser.add_argument("--seed", type=int, help="Semilla para repetir la elección")
     parser.add_argument("--top", type=int, default=5, help="Cuántos candidatos mostrar")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
@@ -393,7 +395,8 @@ def main():
                 option["puntos"] += 3
                 option["razones"].append("está en el foco")
         shuffle_ties(connections, rng)
-    connect_chance = args.connect_chance * (NEW_FLOOR + (1 - NEW_FLOOR) * factor)
+    # Con 1 (o más), siempre que haya algo que unir; por debajo, baja con los enlaces pendientes, como lo nuevo
+    connect_chance = 1.0 if args.connect_chance >= 1 else args.connect_chance * (NEW_FLOOR + (1 - NEW_FLOOR) * factor)
     if connections:
         balance.append(f"lugares por unir con una ruta: {len(connections)} · probabilidad de conectar "
                        f"{connect_chance:.0%}")

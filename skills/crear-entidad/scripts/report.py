@@ -54,6 +54,7 @@ from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicl
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
                        normalize, parse_note, readable_links)
 from vault_lib import vault_path  # noqa: E402
+from world_stats import summary, write_stats  # noqa: E402
 
 GLOSSARY = "00_Sistema/04_Convenciones/Glosario.md"
 OPEN_QUESTIONS = "00_Sistema/Preguntas_Abiertas.md"
@@ -665,7 +666,10 @@ def main():
         body = actions + (log or ["- Sin cambios en la bóveda."]) + footer
         warnings += add_chronicle_entry(vault, args.log.strip(), body)
         print(f"\nBitácora: añadida la entrada «{args.log.strip()}» en {CHRONICLE}.")
-        for warning in warnings:
+        # Las Estadísticas se rehacen con cada entrada de la Bitácora: al terminar cada tarea
+        numbers, stats_warnings = write_stats(vault)
+        print(summary(numbers))
+        for warning in warnings + stats_warnings:
             print(f"AVISO: {warning}")
 
 

@@ -286,6 +286,22 @@ def setup_graph(vault, warnings):
     return configure_graph(vault)
 
 
+def setup_stats(vault, warnings):
+    """Las Estadísticas del mundo (00_Sistema/Estadisticas.md), con el script de crear-entidad, enlazadas
+    desde MOC_Inicio. Devuelve la línea del resumen; si crear-entidad no está, avisa."""
+    scripts = Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"
+    if not (scripts / "world_stats.py").is_file():
+        warnings.append("no encuentro la skill crear-entidad: el mundo queda sin su nota de Estadísticas "
+                        "(la crea su world_stats.py cuando esté)")
+        return []
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from world_stats import summary, write_stats
+    numbers, stats_warnings = write_stats(vault)
+    warnings.extend(stats_warnings)
+    return [summary(numbers)]
+
+
 def add_chronicle_entry(path, title, lines, today):
     """Añade la entrada arriba de la Bitácora (la crea si no existe). No sobrescribe nada: solo inserta."""
     text = path.read_text(encoding="utf-8") if path.exists() else CHRONICLE_HEADER
@@ -397,6 +413,8 @@ def main():
         add_chronicle_entry(chronicle, "Se completó la estructura del mundo",
                             [f"- **Bóveda:** {len(files)} archivos y {len(created) - len(files)} carpetas que faltaban."],
                             today)
+    # Las Estadísticas, al final: cuentan lo que ya existe (la Bitácora incluida)
+    stats = setup_stats(vault, warnings)
     print(f"Mundo: {world}")
     print(f"Creados: {len(files)} archivos y {len(created) - len(files)} carpetas | "
           f"Ya existían (sin tocar): {len(skipped)}")
@@ -407,7 +425,7 @@ def main():
         print("  = " + str(path.relative_to(root)))
     print(f"Reglas de contenido: {len(rules)}")
     print("Pilares por definir: " + (", ".join(undefined) if undefined else "ninguno"))
-    for line in graph:
+    for line in graph + stats:
         print(line)
     for warning in warnings:
         print("AVISO: " + warning)

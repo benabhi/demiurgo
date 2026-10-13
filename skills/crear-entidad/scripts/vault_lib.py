@@ -45,9 +45,14 @@ HOME_MOC = "00_Sistema/MOC_Inicio.md"
 SECRET_TYPE = "secreto"
 SECRETS_FOLDER = "80_Secretos"
 SECRET_WARNING = "verdad oculta: la nota de lore no la cuenta; como mucho, señales o rumores que no la delaten"
-# Ni el registro de pendientes ni la Bitácora cuentan como notas que nombran entidades: un enlace que
-# solo quedara en ellas no debe seguir pendiente
-DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", "00_Sistema/03_Archivados", PENDING_NOTE, CHRONICLE)
+# Estadísticas del mundo: las rehace world_stats.py al terminar cada tarea (con report.py --log y log_entry.py)
+STATS_NOTE = "00_Sistema/Estadisticas.md"
+STATS_HOME_LINE = ("- [[Estadisticas|Estadísticas]] — cuánto hay en el mundo y qué falta: entidades, enlaces "
+                   "pendientes, imágenes y mapas.")
+ARCHIVED_FOLDER = "00_Sistema/03_Archivados"
+# Ni el registro de pendientes, ni la Bitácora, ni las Estadísticas cuentan como notas que nombran entidades:
+# un enlace que solo quedara en ellas no debe seguir pendiente
+DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", ARCHIVED_FOLDER, PENDING_NOTE, CHRONICLE, STATS_NOTE)
 
 
 # --- Bóveda ------------------------------------------------------------------

@@ -22,6 +22,7 @@ La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas
 - para buscar algo (entidades, enlaces pendientes, Glosario o preguntas), `search_vault.py "<texto>"`, o `--type <tipo>`;
 - para el contexto de una entidad, `build_context.py --target <Nota>`;
 - para distancias y caminos entre lugares, `routes.py <A> <B>` (o `routes.py <Lugar>`);
+- para saber cuánto hay en el mundo (entidades por tipo, enlaces pendientes, mapas por dibujar), `world_stats.py --print`;
 - para añadir al Glosario o a Preguntas Abiertas, `add_entries.py`.
 
 Lee entera solo la nota que necesites y, de una nota larga, solo la sección que te hace falta.

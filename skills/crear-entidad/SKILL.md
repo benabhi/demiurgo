@@ -21,6 +21,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
 - **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
 - **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
+- **Cuánto hay en el mundo** (entidades por tipo y relevancia, enlaces pendientes, imágenes, mapas por dibujar, lo más nombrado que falta): `world_stats.py --print`. La nota `00_Sistema/Estadisticas.md` la rehacen solas `report.py --log` y `log_entry.py`: no la edites ni la leas entera.
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
 
 Lee entera solo la nota que vas a escribir; de las demás, solo lo que el contexto no resuma bien. De una nota larga, lee solo la sección que necesites: búscala con `grep -n "^## <Sección>" <nota>` y lee ese tramo de líneas.
@@ -224,7 +225,7 @@ El usuario tiene que ver con claridad qué se generó, ahora y más adelante. Ej
 ```bash
 python <directorio de esta skill>/scripts/report.py --baseline <ruta de la instantánea> --log "<título>"
 ```
-`--log` añade además una entrada breve a la **Bitácora** (`00_Sistema/Bitacora.md`), la crónica del mundo para su autor: qué se creó y qué cambió, con su fecha. El título dice qué se hizo, con el nombre legible: `Crear entidad: Aldric Voss`, `Crear entidades: Aldric Voss y Mira Odan`, `Profundizar: Aldric Voss (relevancia 2 → 4)`. Si no cambió nada, no se añade ninguna entrada.
+`--log` añade además una entrada breve a la **Bitácora** (`00_Sistema/Bitacora.md`), la crónica del mundo para su autor: qué se creó y qué cambió, con su fecha. Y rehace las **Estadísticas** del mundo (`00_Sistema/Estadisticas.md`). El título dice qué se hizo, con el nombre legible: `Crear entidad: Aldric Voss`, `Crear entidades: Aldric Voss y Mira Odan`, `Profundizar: Aldric Voss (relevancia 2 → 4)`. Si no cambió nada, no se añade ninguna entrada.
 Si no hay instantánea (no se tomó o se perdió), usa `--since HEAD`, que también cuenta lo que ya estaba sin confirmar, o `--notes <Nota> …`.
 
 El informe trae, con enlaces que se abren con un clic:

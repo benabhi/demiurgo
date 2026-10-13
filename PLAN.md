@@ -96,6 +96,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - `check_note.py` cuenta los enlaces pendientes nuevos de cada nota, exige su tipo y avisa de los nombres propios, las entidades del Glosario y las menciones que quedaron sin enlace;
   - una confirmación pendiente (`Confirmar`) bloquea solo su sujeto, el primer enlace de la línea;
   - el motor equilibra completar y crear según los enlaces pendientes por entidad (simulado: se estabiliza en torno a 1,5), con un presupuesto de enlaces nuevos por nota.
+- [x] **Estadísticas del mundo** (`00_Sistema/Estadisticas.md`, tipo `meta`): `world_stats.py` la rehace entera con cada entrada de la Bitácora (`report.py --log`, `log_entry.py`) y al crear el mundo: entidades por tipo, estado y relevancia, secretos y archivadas, enlaces pendientes (listos, por confirmar y sin tipo), imágenes, mapas y los que toca redibujar, Glosario, preguntas, huérfanas, lo más nombrado que falta y lo más enlazado. Las cifras principales van en el frontmatter, para un tablero futuro. No cuenta como nota que nombra entidades. Se prueba con las pruebas pendientes.
 - [x] **Bitácora del mundo** (`00_Sistema/Bitacora.md`), probada con una mazmorra: la crónica para el autor, de lo más reciente a lo más antiguo. La crea `inicializar-mundo` con la creación del mundo; `report.py --log` añade la entrada de cada creación, profundización o tanda (con sus ciclos y la remisión al Registro de Generación); `log_entry.py`, las sueltas (una imagen o un mapa aparte, un cambio pedido fuera de las skills). Las notas que existen van enlazadas y los enlaces pendientes, como texto; la Bitácora no cuenta para los enlaces pendientes y la IA nunca la lee.
 - [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
 - [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
@@ -165,7 +166,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [x] `ecosistema` (#25): con la planta de la prueba de flora, su pieza clave y la reciprocidad con sus zonas, su flora y sus recursos.
 - [x] `astro` (#26): un cometa por venir, sin tocar el calendario.
 - [ ] El grafo de Obsidian: los marcadores «Grafo sin secretos» y «Grafo completo» (los colores por tipo y los nombres de lejos ya se vieron; las flechas se quitaron porque ensucian).
-- [ ] Una tanda del motor en modo prueba (`/expandir-mundo prueba 3`, con `--connect-chance 0.8` y `--map-chance 0.5`): las acciones `conectar` y `cartografiar`.
+- [ ] Una tanda del motor en modo prueba sobre el contenido de la prueba anterior (`/expandir-mundo prueba 3 --skip-canon --deepen-chance 0 --map-chance 1 --connect-chance 1`): `conectar` en la primera ronda y `cartografiar` en cuanto el mapa de la región tenga bastante sin dibujar, con la edición anterior archivada. `--connect-chance 1` ya es «siempre que haya algo que unir» (antes se multiplicaba por la densidad).
 - [ ] Lo arreglado tras la prueba de las entidades 21-26, en la próxima ocasión: que los puntos con peso de una ruta entren en la leyenda de su región; que una edición nueva de un mapa (o una imagen regenerada) archive la anterior y la enlace en la nota (`fetch_download.py keep`); la comprobación anotada en toda imagen; que el contexto de una entidad que nombra un secreto lo marque aparte (🔒); y que el chat no muestre `[[...]]`.
 
 ### Fase 1 — Lugares base
@@ -336,7 +337,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 
   Queda por decidir cómo se reparte en tandas (con presupuesto y por prioridad, como el motor) y si ofrece un modo de solo revisión.
 - **Ideas para más adelante** (sin decidir):
-  - `revisar-mundo`: repasar los borradores con el usuario, por tandas, y promoverlos a canon o archivarlos;
+  - `revisar-mundo`: repasar los borradores con el usuario, por tandas, y promoverlos a canon o archivarlos. Al archivar una entidad decidirá qué pasa con lo suyo: sus imágenes (a `02_Activos/Anteriores`, como las reemplazadas), su zona en las leyendas de los mapas, las notas que la enlazan y sus secretos;
   - `consultar-mundo`: responder preguntas sobre el mundo con los scripts de consulta, sin leer la bóveda;
   - `narrar`: relatos, escenas o crónicas ambientados en el mundo, coherentes con el canon;
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;

@@ -9,7 +9,8 @@ fuera de las skills o una entrada del pasado.
 La entrada va arriba, con su fecha (hoy, o la de --date) y su título: `## <fecha> · <título>`. Cada
 --line es una línea de la entrada; si no empieza por «- » ni por un número de lista, se le pone «- ».
 Las notas que existen van enlazadas (`[[Nota|Nombre]]`); los enlaces pendientes, como texto. Si la
-Bitácora no existe, la crea y la enlaza desde MOC_Inicio.
+Bitácora no existe, la crea y la enlaza desde MOC_Inicio. Después rehace las Estadísticas del mundo
+(`world_stats.py`).
 
 Ejemplos:  log_entry.py --title "Imagen: Aldric Voss" --line "**Nueva imagen** de [[Aldric_Voss|Aldric Voss]] en óleo (versión 2)."
            log_entry.py --title "Se creó el mundo «Ejemplo»" --date 2026-01-31 --line "**Bóveda:** estructura, guías y Ficha del Mundo.\""""
@@ -23,6 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import CHRONICLE, add_chronicle_entry, readable_links  # noqa: E402
 from vault_lib import vault_path  # noqa: E402
+from world_stats import summary, write_stats  # noqa: E402
 
 
 def main():
@@ -55,6 +57,11 @@ def main():
     for warning in add_chronicle_entry(vault, args.title.strip(), lines, args.date):
         print(f"AVISO: {warning}")
     print(f"Bitácora: añadida la entrada «{args.title.strip()}» en {CHRONICLE}.")
+    # Las Estadísticas se rehacen con cada entrada de la Bitácora
+    numbers, warnings = write_stats(vault)
+    print(summary(numbers))
+    for warning in warnings:
+        print(f"AVISO: {warning}")
 
 
 if __name__ == "__main__":

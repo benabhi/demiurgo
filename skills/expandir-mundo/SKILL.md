@@ -53,7 +53,7 @@ Opciones:
 - `--deepen-chance`: la probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25 por defecto);
 - `--map-chance`: la probabilidad de dibujar un mapa que toca en vez de completar o crear (0.25 por defecto);
 - `--no-maps`: no propone mapas (en una tanda "sin imagen");
-- `--connect-chance`: la probabilidad de unir con una ruta lo que debería estar unido y no lo está (0.2 por defecto; con muchos enlaces pendientes baja, como la de crear algo nuevo).
+- `--connect-chance`: la probabilidad de unir con una ruta lo que debería estar unido y no lo está (0.2 por defecto; con muchos enlaces pendientes baja, como la de crear algo nuevo; con 1, siempre que haya algo que unir).
 
 Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
 
