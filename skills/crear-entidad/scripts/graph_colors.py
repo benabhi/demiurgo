@@ -188,8 +188,8 @@ def main():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     for line in configure_graph(vault, replace_filter=args.filter):
         print(line)
-    print(f"Si en Obsidian había un grafo abierto, habrá guardado el suyo encima: abre el marcador «{FULL_VIEW}» "
-          "(panel Marcadores), que aplica esta configuración entera, o cierra el grafo y vuelve a ejecutar esto.")
+    print(f"Si en Obsidian había un grafo abierto, habrá guardado el suyo encima (también al cerrar Obsidian): cierra "
+          f"esa pestaña y abre el marcador «{FULL_VIEW}» (panel Marcadores), que aplica esta configuración entera.")
 
 
 if __name__ == "__main__":
