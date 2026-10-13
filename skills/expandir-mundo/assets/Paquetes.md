@@ -182,3 +182,50 @@ Peso: 1
 - sistema: 1 (un saber que se perdió, o casi)
 - lugar: 1 (donde quedó su último rastro)
 - personaje: 1 (quien lo busca)
+
+## Ruta de comercio
+Peso: 2
+- ruta: 1 (una ruta comercial que parte de un lugar que ya existe)
+- faccion: 1 (quien la controla o vive de ella: un gremio, una compañía, una casa)
+- asentamiento: 1 (una parada o su destino: un mercado de cruce, una villa de paso)
+
+## Paso disputado
+Peso: 1
+- ruta: 1 (un paso de montaña, un desfiladero, un vado o un estrecho que todos necesitan)
+- lugar: 1 (lo que lo cierra o lo vigila: una fortaleza, una torre, un puesto)
+- faccion: 1 (quien lo cobra o lo reclama)
+
+## Camino de peregrinación
+Peso: 1
+- ruta: 1 (el camino de los peregrinos, desde un lugar que ya existe)
+- lugar: 1 (el santuario al que lleva)
+- costumbre: 1 (el rito del camino)
+
+## El sendero que se pierde
+Peso: 1
+- ruta: 1 (un sendero sin salida que parte de un lugar que ya existe)
+- lugar: 1 (lo último que se ve antes de que se pierda: una ruina, una tumba, un mojón)
+- mito: 1 (lo que se cuenta de lo que habría más allá)
+
+## La ruta del texto antiguo
+Peso: 1
+- ruta: 1 (una ruta perdida o dudosa, que solo cuenta un texto antiguo)
+- lugar: 1 (adonde llevaría: un lugar perdido)
+- personaje: 1 (quien la busca)
+
+## Ruta de contrabando
+Peso: 1
+- ruta: 1 (una senda que evita los controles)
+- faccion: 1 (quienes la usan)
+- objeto: 1 (lo que pasa por ella)
+
+## La puerta entre dos lugares
+Peso: 1
+- ruta: 1 (un portal, si los poderes del mundo lo permiten; si no, un túnel o un paso secreto)
+- lugar: 1 (el sitio donde se abre)
+- secreto: 1 (lo que nadie sabe de ella)
+
+## La caravana
+Peso: 1
+- ruta: 1 (la ruta que recorre)
+- personaje: 2 (quien la guía y alguien que viaja con ella por sus propias razones)

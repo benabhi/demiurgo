@@ -111,6 +111,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
   - modo prueba en una rama aparte.
 - [x] **Lo insólito:** chispas raras (una de cada tres creaciones) con su grado de verdad, contrastes, conexiones inesperadas y rarezas en todas las tablas.
 - [x] **Profundizar:** una nota en borrador que nombran muchas notas (3 piden relevancia 3; 6, relevancia 4; 10, relevancia 5), o cuya relevancia ya pide secciones que no tiene, gana las secciones que le faltan sin reescribir lo escrito (`--deepen-chance`, 0.25). El mundo crece en extensión y en profundidad.
+- [ ] **Conectar:** lo que debería estar unido por una ruta y no lo está (vecinos sin camino, lo importante de una región sin camino a su capital, regiones vecinas sin ruta, lugares a los que no llega nada; `routes.py --unconnected`) se une con una ruta nueva (`--connect-chance`, 0.2, que baja con la densidad como la de crear algo nuevo). Una ruta suelta llega anclada a lo que más necesita unirse. Hecha; se tilda cuando se pruebe en una tanda del motor.
 - [x] **Canon de base primero:** los enlaces pendientes que nombra la Ficha o que nombran tres notas o más (como el conflicto central) se crean antes que los demás, con el mismo nombre del enlace.
 - [ ] **Más tablas y paquetes,** a medida que lleguen los módulos.
 - [ ] **Tablas propias de cada mundo** en su `06_Generacion/Tablas`, propuestas a partir de su Ficha.
@@ -273,7 +274,7 @@ Etapas:
   - **Motor:** tabla `Ruta.md`, paquetes y la acción `conectar`, que une lo que debería estar unido.
   - **Imagen:** vista a lo largo de la ruta, con viajeros, apaisado (`Lugares`, `Ruta_`).
 
-  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (itinerario y bloque «Rutas» en las leyendas) · [ ] 3. motor.
+  Etapas: [x] 1. módulo, recorrido, grafo y contexto · [x] 2. mapas (itinerario y bloque «Rutas» en las leyendas) · [x] 3. motor (tabla `Ruta.md`, ocho paquetes y la acción `conectar`). Falta la prueba del usuario.
 
 ### Fase 6 — Detalle del mundo
 - [ ] **22. `material` 💎 — minerales, materiales y recursos naturales.** Carpeta `Minerales_y_Materiales_Naturales` o `Recursos_Naturales`; imagen: lámina de espécimen (`Laminas`), técnica sugerida `codice`.

@@ -2,7 +2,8 @@
 """Tira en las tablas de generación (azar real) y devuelve los ingredientes como clave=valor.
 
 Las tablas son Markdown editable: 00_Sistema/06_Generacion/Tablas/<Archivo>.md en la bóveda o,
-si no existe, assets/Tablas/ de esta skill. Cada tabla es una sección `## Nombre` con filas
+si no existe, assets/Tablas/ de esta skill. Una tabla pedida con --table que la copia de la bóveda aún
+no tiene (llegó después con la skill) sale de la de la skill. Cada tabla es una sección `## Nombre` con filas
 `| Peso | Resultado |`: a más peso, más frecuente.
 
 Con --derive <Nota> añade ingredientes derivados del canon: por cada propiedad de relación de
@@ -111,16 +112,27 @@ def main():
         path = find_file(vault, name)
         if not path:
             sys.exit(f"Error: no existe el archivo de tablas '{name}'. Usa --list para ver los disponibles.")
-        for table, rows in parse_tables(path).items():
+        tables = parse_tables(path)
+        sources = dict.fromkeys(tables, path)
+        # Una tabla pedida que la copia de la bóveda aún no tiene (llegó con una versión posterior de la skill)
+        # sale de la de la skill
+        asset = next((a for a in sorted(ASSET_TABLES.glob("*.md")) if normalize(a.stem) == normalize(path.stem)), None)
+        if wanted and asset and asset != path:
+            present = {normalize(t) for t in tables}
+            for table, rows in parse_tables(asset).items():
+                if normalize(table) in wanted and normalize(table) not in present:
+                    tables[table], sources[table] = rows, asset
+        for table, rows in tables.items():
             if wanted and normalize(table) not in wanted:
                 continue
             total = sum(weight for weight, _ in rows)
             picks = weighted_sample(rows, args.count, rng)
             if args.count > len(rows):
                 print(f"# {table}: tiene {len(rows)} resultados; salen todos, sin repetir")
+            origin = f"{sources[table].stem} (de la skill)" if sources[table] != path else path.stem
             for i, (weight, result) in enumerate(picks, 1):
                 key = key_of(table) if args.count == 1 else f"{key_of(table)}_{i}"
-                print(f"{key}={result}    # {path.stem} · peso {weight} de {total}")
+                print(f"{key}={result}    # {origin} · peso {weight} de {total}")
 
     if args.derive:
         entry = next((e for e in load_index(vault) if e["name"].lower() == args.derive.strip().lower()), None)

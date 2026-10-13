@@ -21,6 +21,8 @@ Uso:
 - con pocos, crea algo nuevo más a menudo y cada nota puede abrir bastantes enlaces nuevos;
 - con muchos, casi siempre completa lo pendiente y cada nota abre los mínimos.
 
+Además, el mundo crece **en profundidad** (las notas que ganan peso se profundizan), **en sus mapas** (se redibujan cuando han cambiado bastante) y **en sus conexiones**: el selector ve lo que debería estar unido por una ruta y no lo está (dos aldeas vecinas sin camino, una ruina a la que no llega nada) y crea la ruta que lo une.
+
 ## Archivos
 - `scripts/setup_generation.py`: prepara `00_Sistema/06_Generacion` la primera vez, sin sobrescribir nunca.
 - `scripts/select_target.py`: elige qué desarrollar (enlaces pendientes puntuados, paquetes o una entidad nueva) y cuántos enlaces nuevos puede abrir cada nota, o pide detenerse.
@@ -50,7 +52,8 @@ Opciones:
 - `--skip-canon`;
 - `--deepen-chance`: la probabilidad de profundizar una nota que lo necesita en vez de completar o crear (0.25 por defecto);
 - `--map-chance`: la probabilidad de dibujar un mapa que toca en vez de completar o crear (0.25 por defecto);
-- `--no-maps`: no propone mapas (en una tanda "sin imagen").
+- `--no-maps`: no propone mapas (en una tanda "sin imagen");
+- `--connect-chance`: la probabilidad de unir con una ruta lo que debería estar unido y no lo está (0.2 por defecto; con muchos enlaces pendientes baja, como la de crear algo nuevo).
 
 Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
 
@@ -74,8 +77,15 @@ El resultado dice qué hacer:
 - **`completar_hueco`:** indica el enlace pendiente (`hueco`), el tipo esperado, los módulos que pueden crearlo y las notas que lo nombran (`nombrado_por`, de la más relevante a la menos). Antes de seguir, lee lo que dicen de él esas notas (`find_gaps.py --link <hueco>`). Si en realidad ningún módulo encaja (el selector propone una `region` para lo que las notas describen como una aldea, por ejemplo), no lo fuerces: anótalo en el registro y vuelve a ejecutar el selector con `--skip <hueco>`.
 - **`profundizar`:** una nota en borrador (`nota`) que pide más desarrollo, con su relevancia actual y la nueva (`relevancia_actual`, `relevancia_nueva`) y las secciones que le faltan (`secciones`). Sale cuando la nombran tantas notas que su relevancia se quedó corta (3 notas piden relevancia 3; 6, relevancia 4; 10, relevancia 5) o cuando su relevancia ya pide secciones que no tiene. Así el mundo crece también en profundidad, no solo en extensión.
 - **`cartografiar`:** un lugar con leyenda (`nota`) al que le toca dibujar su mapa: la primera edición (una región que ya tiene las zonas mínimas) o una nueva (`edicion`), con los niveles que hay que dibujar (`niveles`). Así los mapas siguen al mundo mientras crece, sin redibujarse en cada ciclo.
+- **`conectar`:** lo que debería estar unido por una ruta y no lo está (`routes.py --unconnected`), con su `motivo`, su `partida` y su `destino`:
+  - `vecinos`: dos asentamientos vecinos sin ningún camino entre ellos;
+  - `capital`: un asentamiento importante sin camino hasta la capital de su región (o hasta el asentamiento con rutas más importante);
+  - `regiones`: dos regiones vecinas que ninguna ruta une (la partida y el destino son las regiones: la ruta va de un lugar de una a uno de la otra, los de la frontera);
+  - `aislado`: un lugar importante al que no llega nada (`destino` vacío: la ruta llega a él desde donde diga su contexto).
+
+  Así el mundo se teje: cada ruta une lo que ya existe y, con sus paradas, sus peligros y quien la controla, nombra lo que vendrá.
 - **`paquete`:** un grupo de entidades que se crean juntas (ver `Paquetes.md`), en la región foco.
-- **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies).
+- **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies). Una ruta nueva viene con `conexion`, lo que más necesita unirse: úsala. Si no la trae, la ruta parte de un lugar que ya existe en el foco (hacia un lugar nuevo, sin salida o circular).
 
 `paquete` y `nueva_entidad` salen cuando toca crear algo nuevo o cuando no hay enlaces pendientes que se puedan crear.
 
@@ -87,7 +97,8 @@ python <directorio de esta skill>/scripts/roll_tables.py --file <Tipo> --file Or
 ```
 - **`--file <Tipo>`:** la tabla del tipo que vas a crear, si existe (`--list` muestra cuáles hay). Si el mundo tiene tablas propias en `06_Generacion/Tablas` que encajan con lo que se crea, añádelas con otro `--file`.
 - **`--derive`:** la primera nota de `nombrado_por` (la más relevante de las que nombran el enlace pendiente) o, si no hay ninguna, la región foco. Así los ingredientes salen de lo que ya existe allí. En `crear_foco` no hay de dónde derivar: omítelo. En `crear_canon`, deriva de la región foco.
-- **Mapas:** si lo que se crea lleva mapa (un lugar, un asentamiento o una región a los que les toca por su categoría y su relevancia), tira también su forma y sus zonas en `Mapas`, con las tablas de su clase y `--count` (ver «Variedad» en `crear-entidad/referencias/mapas.md`).
+- **Mapas:** si lo que se crea lleva mapa (un lugar, un asentamiento, una región o una ruta a los que les toca por su categoría y su relevancia), tira también su forma y sus zonas en `Mapas`, con las tablas de su clase y `--count` (ver «Variedad» en `crear-entidad/referencias/mapas.md`).
+- **Rutas:** de `Ruta`, tira primero `Categoría` y `Trazado` (si no los fijan la geografía o el contexto) y después solo las tablas que tocan: `Sin salida: dónde se pierde`, `Circular: por qué vuelve`, `Portal: cómo se cruza` y, en una ruta perdida o dudosa, las dos de `Ruta perdida`.
 - **Lo insólito** (`Insolito`) se tira siempre:
   - la **chispa** solo se usa si sale `hay_chispa=Sí` (una de cada tres veces, de media), y entra al mundo según su `grado_de_verdad`: como rumor, exageración, verdad a medias o verdad literal. Si la verdad literal choca con las reglas de la Ficha, vuelve a tirar solo el grado (`--table "Grado de verdad"`);
   - el **contraste** se integra en la entidad;
@@ -107,6 +118,8 @@ python <crear-entidad>/scripts/build_context.py --target <enlace pendiente, enti
 ```
 Es todo lo que necesitas saber del mundo para esta creación. Lee entera solo la nota que haga falta en detalle.
 
+En `conectar`, el objetivo es la partida (o el lugar aislado), y además `python <crear-entidad>/scripts/routes.py <partida> <destino>` dice si ya hay un camino entre ellos, más largo, y cuánto se tarda: la ruta nueva lo respeta (es más directa, o explica por qué no).
+
 ## Paso 4: componer
 Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingredientes y el contexto, salvo su instantánea y su informe final (el informe se da una sola vez, al terminar la tanda):
 - `origen: procedural` y `estado: borrador`.
@@ -114,6 +127,7 @@ Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingr
 - **Presupuesto:** cada nota abre los enlaces pendientes nuevos que diga `enlaces_nuevos` para su tipo, recortados al rango de su relevancia (`check_note.py --depth`), todos con tipo. Lo demás que nombre va sin nombre propio, o reutiliza lo que ya existe o ya está pendiente (el registro `Enlaces_Pendientes`).
 - **Paquete:** crea primero la entidad principal y después las demás. Cada una se enlaza con las anteriores (a su nota, no como pendiente) y usa su contexto. Respeta las cantidades y los papeles. La principal tiene una relevancia igual o mayor que la de las demás.
 - **Nueva entidad:** dentro de la región foco.
+- **Conectar:** crea una `ruta` en modo semilla, con `partida=[[<partida>]]` y `destino=[[<destino>]]`. En `aislado`, el lugar aislado es el destino y la partida, el lugar con rutas más cercano que diga el contexto. En `regiones`, un lugar de cada región. Su categoría, su trazado y lo demás salen de la geografía que cruza y de las tablas: entre dos puertos, una ruta marítima; a través de una sierra, un paso; si los poderes del mundo lo permiten y la tirada lo pide, un portal. Después, como toda ruta, `map_key.py --sync-routes`.
 - **Cartografiar:** no se crea nada ni hay ingredientes ni contexto (sáltate los pasos 2 y 3): pide a `generar-imagen` el mapa de la `nota` (modo mapa, ver su `referencias/mapas.md`), con la técnica de mapas del mundo. Después, valida la nota, registra el ciclo y haz el commit como siempre.
 - **Profundizar:** modo `profundizar=<Nota> relevancia=<relevancia_nueva>` de `crear-entidad` («Profundizar una nota»): añade las `secciones` que faltan sin reescribir lo que ya está. La nota no cambia de nombre ni de `origen`.
 - **Anclaje:** lo creado de la nada (un paquete, una entidad nueva) queda enlazado desde alguna nota existente (su asentamiento, su región…), como pide `crear-entidad`.
@@ -135,7 +149,7 @@ Corrige los errores antes de seguir.
 ## Paso 6: registrar
 Añade la entrada del ciclo al registro de generación con `log_cycle.py`. El script la pone arriba, con su número y la fecha de hoy (el título `## Ciclo <N> — <AAAA-MM-DD>`), sin que tengas que leer el registro. Pásale el cuerpo de la entrada por la entrada estándar (o con `--file`):
 ```markdown
-- **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo> · o · profundizar [[Nota]] (relevancia <n> → <m>) · o · cartografiar [[Nota]] (edición <n>, niveles <…>)
+- **Acción:** crear el foco «texto» → <tipo> · o · crear [[Referencia]] → <tipo> (canon de base) · o · completar [[Enlace]] → <tipo> · o · paquete «Nombre» · o · nueva entidad <tipo> · o · profundizar [[Nota]] (relevancia <n> → <m>) · o · cartografiar [[Nota]] (edición <n>, niveles <…>) · o · conectar [[Partida]] y [[Destino]] (<motivo>) → [[Ruta]]
 - **Por qué:** <razones del selector> (semilla <n>)
 - **Equilibrio:** densidad <n> enlaces pendientes por entidad · presupuesto <amplio, medio o justo> · enlaces pendientes nuevos abiertos: <n>
 - **Ingredientes:** <clave=valor, …> (semilla <n>); re-tiradas y su motivo
@@ -170,7 +184,7 @@ El usuario tiene que ver con claridad qué se generó.
    - los commits de los ciclos, que se deshacen por separado;
    - el estado del mundo: auditor, borradores pendientes, enlaces pendientes que ya se pueden crear (y cuántos por entidad) y los que no tienen tipo.
 2. Muéstralo tal cual. Encima, resume la tanda en pocas líneas:
-   - ciclos hechos y la acción de cada uno (completar un enlace pendiente, paquete o nueva entidad), con el motivo del selector;
+   - ciclos hechos y la acción de cada uno (completar un enlace pendiente, paquete, nueva entidad, profundizar, cartografiar o conectar), con el motivo del selector;
    - cómo quedó el equilibrio: densidad y presupuesto al empezar y al terminar;
    - los ingredientes o giros de las tablas que más marcaron lo creado;
    - si se detuvo antes y por qué (límite de revisión, error).

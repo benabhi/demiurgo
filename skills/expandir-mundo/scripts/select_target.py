@@ -29,6 +29,12 @@ edición (una región que ya tiene las zonas mínimas) o una nueva (3 zonas sin 
 cuarto de las cartografiadas). Con --map-chance, el ciclo cartografía en vez de completar o crear;
 --no-maps lo omite (en una tanda sin imágenes).
 
+Conectar (acción conectar): lo que debería estar unido por una ruta y no lo está (dos asentamientos
+vecinos sin camino, un asentamiento importante sin camino a la capital de su región, dos regiones vecinas
+que ninguna ruta une, un lugar importante al que no llega nada; routes.py --unconnected). Con
+--connect-chance, el ciclo crea la ruta que los une en vez de completar o crear otra cosa; como crear
+algo nuevo, se hace menos cuando hay muchos enlaces pendientes por entidad.
+
 Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
 Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
 bastantes enlaces pendientes nuevos (presupuesto amplio); con mucha, casi siempre se completa lo
@@ -51,7 +57,8 @@ from pathlib import Path
 # La lógica común vive en los scripts de crear-entidad
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
 from build_context import region_chain  # noqa: E402
-from vault_lib import (SKILL_DIR, WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
+from vault_lib import (ROUTE_TYPE, SKILL_DIR, WORLD_SHEET, blocked_links, connection_candidates,  # noqa: E402
+                       describe_expected, find_gaps,
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
                        omitted_sections, parse_map_key, parse_map_routes, read_world, split_note,
                        template_sections)
@@ -239,6 +246,9 @@ def main():
     parser.add_argument("--map-chance", type=float, default=0.25,
                         help="Probabilidad de dibujar un mapa que toca en vez de completar o crear (0.25)")
     parser.add_argument("--no-maps", action="store_true", help="No proponer mapas (en una tanda sin imágenes)")
+    parser.add_argument("--connect-chance", type=float, default=0.2,
+                        help="Probabilidad de unir con una ruta lo que debería estar unido y no lo está, en vez de "
+                             "completar o crear (0.2); con muchos enlaces pendientes baja como la de crear algo nuevo")
     parser.add_argument("--seed", type=int, help="Semilla para repetir la elección")
     parser.add_argument("--top", type=int, default=5, help="Cuántos candidatos mostrar")
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
@@ -254,7 +264,8 @@ def main():
     by_path = {e["path"]: e for e in index}
     modules = load_modules()
     world = read_world(vault)
-    place_types = sorted(t for t, module in modules.items() if module.get("familia") == "lugar")
+    # El foco es un lugar donde se genera lo demás (una región, una ciudad); una ruta no contiene nada
+    place_types = sorted(t for t, module in modules.items() if module.get("familia") == "lugar" and t != ROUTE_TYPE)
     focus = find_focus(world, index, place_types)
 
     def finish(result, code=0, types=()):
@@ -370,6 +381,20 @@ def main():
     shuffle_ties(maps, rng)
     if maps:
         balance.append(f"mapas por dibujar: {len(maps)} · probabilidad de cartografiar {args.map_chance:.0%}")
+    # Lo que debería estar unido por una ruta y no lo está; lo del foco, antes
+    connections = []
+    if ROUTE_TYPE in modules and modules[ROUTE_TYPE].get("crear_desde_cero", True):
+        connections = connection_candidates(vault, index)
+        for option in connections:
+            ends = [by_name.get(name.lower()) for name in (option["partida"], option["destino"]) if name]
+            if any(in_focus(entry, focus, by_name) for entry in ends if entry):
+                option["puntos"] += 3
+                option["razones"].append("está en el foco")
+        shuffle_ties(connections, rng)
+    connect_chance = args.connect_chance * (NEW_FLOOR + (1 - NEW_FLOOR) * factor)
+    if connections:
+        balance.append(f"lugares por unir con una ruta: {len(connections)} · probabilidad de conectar "
+                       f"{connect_chance:.0%}")
     if references and not args.skip_canon:
         pool = references[:TOP_DRAW]
         chosen = rng.choices(pool, weights=[r["puntos"] for r in pool])[0]
@@ -403,6 +428,17 @@ def main():
                            + [f"  {d['puntos']:>3} pts  [[{d['nota']}]] {d['relevancia_actual']} → "
                               f"{d['relevancia_nueva']}" for d in deepen[:args.top]] + balance},
                types=[chosen["tipo"]])
+    if connections and rng.random() < connect_chance:
+        pool = connections[:TOP_DRAW]
+        chosen = rng.choices(pool, weights=[c["puntos"] for c in pool])[0]
+        ends = f"[[{chosen['partida']}]]" + (f" y [[{chosen['destino']}]]" if chosen["destino"] else "")
+        finish({"accion": "conectar", **chosen, **common,
+                "resumen": f"ELEGIDO: conectar {ends} con una ruta ({chosen['motivo']}) · {chosen['puntos']} puntos",
+                "detalle": [f"razones: {'; '.join(chosen['razones'])}", "lugares por unir:"]
+                           + [f"  {c['puntos']:>3} pts  {c['motivo']:<9} [[{c['partida']}]]"
+                              + (f" ↔ [[{c['destino']}]]" if c["destino"] else "") for c in connections[:args.top]]
+                           + balance},
+               types=[ROUTE_TYPE])
     if create_new and available and rng.random() < PACKAGE_SHARE:
         package = rng.choices(available, weights=[p["peso"] for p in available])[0]
         why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"
@@ -427,7 +463,10 @@ def main():
     types = sorted(t for t, module in modules.items() if t != "secreto" and module.get("crear_desde_cero", True))
     new_type = rng.choice(types)
     why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"
-    finish({"accion": "nueva_entidad", "tipo": new_type, "foco": focus["name"] if focus else None, **common,
+    # Una ruta nueva nunca sale de la nada: une lo que más lo necesita, o parte de un lugar que ya existe
+    anchor = {"conexion": {k: connections[0][k] for k in ("motivo", "partida", "destino")}} \
+        if new_type == ROUTE_TYPE and connections else {}
+    finish({"accion": "nueva_entidad", "tipo": new_type, "foco": focus["name"] if focus else None, **anchor, **common,
             "resumen": f"ELEGIDO: nueva entidad de tipo {new_type}"
                        + (f" en el foco [[{focus['name']}]]" if focus else "") + f" ({why})",
             "detalle": balance}, types=[new_type])
