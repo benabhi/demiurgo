@@ -58,7 +58,8 @@
     "objetos": "materiales",
     "sistemas": "materiales",
     "rutas": "mercancias",
-    "relacionados": "relacionados"
+    "relacionados": "relacionados",
+    "plantas": "materiales"
   },
   "relaciones": {
     "yacimientos": "lugar",

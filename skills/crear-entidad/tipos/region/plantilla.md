@@ -20,6 +20,7 @@ especies: []
 control: []
 creencias: []
 criaturas: []
+flora: []
 recursos: []
 fenomenos: []
 clima: ""

@@ -49,6 +49,7 @@
     "asentamientos": "region",
     "capital": "region",
     "criaturas": "habitat",
+    "flora": "habitat",
     "recursos": "yacimientos"
   },
   "relaciones": {
@@ -63,6 +64,7 @@
     "control": "faccion",
     "creencias": "creencia",
     "criaturas": "criatura",
+    "flora": "flora",
     "recursos": "material",
     "fenomenos": "fenomeno",
     "era": "era"

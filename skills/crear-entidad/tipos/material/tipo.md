@@ -87,7 +87,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - Relaciones, solo con enlaces:
   - `yacimientos`: donde se encuentra o se saca (regiones, asentamientos, lugares como una mina o una cantera); cada uno lo tiene en sus `recursos`;
   - `criaturas` de las que se obtiene: cada una lo tiene en sus `materiales`;
-  - `plantas` de las que se obtiene (tipo `flora`);
+  - `plantas` de las que se obtiene: cada una lo tiene en sus `materiales`;
   - `objetos` que se hacen con él: cada uno lo tiene en sus `materiales`;
   - `sistemas` que alimenta, guarda o frena: cada uno lo tiene en sus `materiales`;
   - `facciones` que lo sacan, lo controlan o lo comercian;

@@ -83,6 +83,7 @@
     "fenomenos": "zonas_afectadas",
     "eventos": "lugares",
     "criaturas": "habitat",
+    "flora": "habitat",
     "recursos": "yacimientos"
   },
   "relaciones": {
@@ -94,6 +95,7 @@
     "ocupantes": "personaje",
     "creencias": "creencia",
     "criaturas": "criatura",
+    "flora": "flora",
     "objetos": "objeto",
     "recursos": "material",
     "fenomenos": "fenomeno",

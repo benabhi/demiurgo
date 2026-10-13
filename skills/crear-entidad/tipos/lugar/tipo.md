@@ -70,6 +70,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `dueno` (una persona) y `facciones` que lo controlan o lo usan;
   - `ocupantes`: quienes viven o trabajan allí;
   - `creencias` que se practican en él y `criaturas` que lo habitan (cada una lo tiene en su `habitat`);
+  - `flora`: las plantas y los hongos que crecen en él (cada una lo tiene en su `habitat`);
   - `objetos` que guarda;
   - `recursos`: los materiales que se sacan de allí (el metal de una mina, la sal de una salina); cada uno lo tiene en sus `yacimientos`;
   - `fenomenos` que lo afectan, recíproca con sus `zonas_afectadas`;

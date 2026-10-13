@@ -36,6 +36,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | linaje | su blasón o su marca de familia | `Square 1:1 format` | `Iconos` | `Blason_` |
 | afeccion | lámina de estudio de sus señales, sin nada gráfico | `Square 1:1 format` | `Laminas` | `Afeccion_` |
 | material | lámina de espécimen: el material en bruto y trabajado | `Square 1:1 format` | `Laminas` | `Material_` |
+| flora | lámina botánica: la planta entera y sus partes | `Square 1:1 format` | `Laminas` | `Flora_` |
 | criatura | cuerpo entero en su hábitat, en su pose característica | `Wide 16:9 landscape format` | `Ilustraciones/Seres` | `Criatura_` |
 | sistema | el poder, la técnica o la ley en uso, con su efecto y su precio | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Sistema_` |
 | mito | la escena clave del relato, tal como la imaginan quienes lo cuentan | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Mito_` |
@@ -399,6 +400,21 @@ Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imag
 | TONO | Cómo se siente | `quiet and studious, with a hint of danger` |
 
 **Una lámina, no una escena:** el material aislado y centrado, en bruto y trabajado, como en un tratado de su época. Lo que sale de un ser vivo, junto a una silueta pequeña del ser o de la planta, sin nada gráfico. Un recurso (el agua, el suelo, una fuente de energía), por su muestra y su fuente: un frasco junto al pozo dibujado, un corte de la tierra con sus capas. Si tiene propiedades extraordinarias, se notan en la muestra (una luz, una escarcha, un temblor del aire), según su sistema. **Técnica sugerida:** `codice` (lámina de naturalista); si el usuario la quiere para todos sus materiales, va en la tabla "Técnica por tipo" de su Guía Visual.
+
+## flora — lámina botánica
+```
+{ESTILO}. Botanical plate from an invented world's herbal, centered study composition. Subject of the plate: {SUJETO}. The whole plant: {PLANTA}. Details around it: {DETALLES}. Colors: {COLORES}. Mood: {TONO}. Only invented symbols: no letters, numbers or words from any real alphabet. {ACABADO}. {RESTRICCIONES}. Square 1:1 format.
+```
+
+| Campo | Fuente en la ficha | Ejemplo |
+|---|---|---|
+| SUJETO | Qué es, sin su nombre | `a low marsh herb with grey-green leaves` |
+| PLANTA | Su porte entero, con la raíz si se ve, de «Cómo es» | `the whole plant drawn upright, with its pale twisted roots` |
+| DETALLES | Sus partes en pequeño: la hoja, la flor, el fruto, la semilla, un corte | `a single leaf, a flower opened in cross-section, a seed pod and a slice of the root` |
+| COLORES | Los colores de la lámina | `muted sage green, bone white and a touch of violet` |
+| TONO | Cómo se siente | `calm and precise, faintly ominous` |
+
+**Una lámina, no una escena:** la planta entera y sus partes, como en un herbario de su época. Un árbol: su silueta pequeña, una rama con sus hojas y su fruto, y un corte del tronco. Un hongo: el sombrero, el pie y las láminas, y un trozo de lo que lo sostiene. Si tiene propiedades extraordinarias, se notan en la planta (una luz, una escarcha, un brillo de la savia), según su sistema. **Técnica sugerida:** `codice` (lámina de naturalista); si el usuario la quiere para toda su flora, va en la tabla "Técnica por tipo" de su Guía Visual.
 
 ## criatura — en su hábitat
 ```

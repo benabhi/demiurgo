@@ -80,6 +80,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - `pueblos`: las culturas que viven en la región. Es recíproca: la cultura la lista en sus `territorios`.
 - `recursos`: los materiales y recursos de la región (sus metales, su sal, su agua). Es recíproca: el material la lista en sus `yacimientos`.
 - `criaturas`: las criaturas que viven en la región. Es recíproca: la criatura la lista en su `habitat`.
+- `flora`: las plantas y los hongos propios de la región. Es recíproca: la planta la lista en su `habitat`.
 - `relevancia`: de 1 a 5 según la Guía de Organización. Una gran región o la región foco suele ser 4 o 5; una comarca, 3.
 - `ultima_revision` sin comillas.
 

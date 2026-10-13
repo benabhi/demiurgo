@@ -1,0 +1,49 @@
+{
+  "tipo": "flora",
+  "familia": "flora",
+  "emoji": "🌿",
+  "huecos_propios": {
+    "min": 1,
+    "max": 6
+  },
+  "profundidad": {
+    "Secretos y rumores": 3,
+    "Ganchos": 3,
+    "Citas": 3,
+    "Momentos decisivos": 3,
+    "Cultivo y recolección": 2,
+    "Lo que se cree": 3,
+    "Propiedades extraordinarias": 0
+  },
+  "carpeta": {
+    "fija": "50_Naturaleza/Flora"
+  },
+  "fechas": [],
+  "escalas": {
+    "peligrosidad": [1, 5]
+  },
+  "valores": {
+    "categoria": ["arbol", "arbusto", "hierba", "trepadora", "cultivo", "hongo", "acuatica", "otro"],
+    "naturaleza": ["natural", "sobrenatural", "artificial", "desconocida"],
+    "uso": ["alimento", "medicina", "veneno", "material", "ritual", "ornamental", "ninguno", "otro"],
+    "situacion": ["comun", "escasa", "rara", "legendaria", "extinta"]
+  },
+  "reciprocas": {
+    "habitat": "flora",
+    "materiales": "plantas",
+    "parientes": "parientes"
+  },
+  "relaciones": {
+    "habitat": "lugar",
+    "materiales": "material",
+    "afecciones": "afeccion",
+    "criaturas": "criatura",
+    "pueblos": "cultura",
+    "creencias": "creencia",
+    "sistemas": "sistema",
+    "fenomenos": "fenomeno",
+    "parientes": "flora",
+    "eventos": "evento",
+    "era": "era"
+  }
+}

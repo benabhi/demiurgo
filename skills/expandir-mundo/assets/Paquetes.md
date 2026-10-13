@@ -259,3 +259,27 @@ Peso: 1
 - material: 1 (un recurso del que dependen muchos: agua, suelo fértil, pesca)
 - faccion: 1 (quien controla el acceso)
 - asentamiento: 1 (quien depende de él)
+
+## Remedio del monte
+Peso: 1
+- flora: 1 (la planta que cura, a medias y a un precio)
+- personaje: 1 (quien sabe prepararla)
+- afeccion: 1 (lo que cura)
+
+## La cosecha
+Peso: 1
+- flora: 1 (un cultivo del que vive un pueblo)
+- asentamiento: 1 (quien lo siembra)
+- costumbre: 1 (la fiesta o el rito de la cosecha)
+
+## Veneno de la casa
+Peso: 1
+- flora: 1 (una planta que mata y se confunde con otra)
+- personaje: 1 (quien la usa)
+- secreto: 1 (a quién mató)
+
+## Bosque vivo
+Peso: 1
+- lugar: 1 (un bosque, una selva o una ciénaga)
+- flora: 1 (lo que crece allí y en ninguna otra parte)
+- criatura: 1 (lo que vive de ella)

@@ -158,6 +158,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 **Pruebas pendientes:**
 - [ ] `ruta` (#21): una región y una ruta entre dos de sus asentamientos (el itinerario y el bloque «Rutas» de la leyenda de la región), y la acción `conectar` en una tanda del motor.
 - [ ] `material` (#22): un material de relevancia 3 con su yacimiento (una mina, que lleva mapa interior) y la reciprocidad con la región y los objetos.
+- [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
@@ -288,7 +289,12 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - **Conexiones:** recíproco con sus yacimientos (región, asentamiento y lugar ganan `recursos`), sus criaturas y sus sistemas (`materiales`, que ya existían), sus objetos (el objeto gana `materiales`) y sus rutas (`mercancias`). El lugar gana la categoría `explotacion` (minas, canteras, salinas), con mapa interior desde relevancia 2 y su tabla de labores.
   - **Motor:** tabla `Material.md` y cinco paquetes (mina y su gente, fiebre del metal, materia prohibida, lo que vale una bestia, el agua de todos).
   - **Imagen:** lámina de espécimen, en bruto y trabajado (`Laminas`, `Material_`); técnica sugerida `codice`.
-- [ ] **23. `flora` 🌿 — plantas y hongos.** Carpeta `Flora`; imagen: lámina botánica (`Laminas`), técnica sugerida `codice`.
+- [x] **23. `flora` 🌿 — árboles, arbustos, hierbas, trepadoras, cultivos, hongos y plantas del agua.**
+  - **Carpeta:** `50_Naturaleza/Flora`. Lo que se saca de ella (la madera, la resina) es un material; el preparado, un objeto.
+  - **Ficha:** cómo es y cómo se reconoce (y con qué se confunde: la gemela que mata); dónde y cómo crece, con su ciclo; usos y cómo se prepara; peligros; cultivo y recolección; propiedades extraordinarias (solo si las tiene); lo que se cree; historia. `naturaleza`, `uso`, `situacion` (hasta `legendaria`, con sus fuentes) y `peligrosidad`.
+  - **Conexiones:** recíproca con su hábitat (región y lugar ganan `flora`), sus materiales (`plantas`) y sus parientes.
+  - **Motor:** tabla `Flora.md` y cuatro paquetes (remedio del monte, la cosecha, veneno de la casa, bosque vivo).
+  - **Imagen:** lámina botánica, la planta entera y sus partes (`Laminas`, `Flora_`); técnica sugerida `codice`.
 - [ ] **24. `obra` 🎨 — obras, canciones, textos y documentos del mundo.** Carpeta `Arte_y_Expresion`; imagen: la obra o su interpretación (`Escenas`).
 - [ ] **25. `ecosistema` 🌲 — biomas y ecosistemas** (familia `lugar`). Carpeta `Ecosistemas`; imagen: paisaje del bioma, apaisado (`Lugares`).
 - [ ] **26. `astro` 🌙 — cuerpos celestes y fenómenos del cielo.** Carpeta `Cosmos_y_Astros`; imagen: el astro sobre un paisaje nocturno, apaisado (`Escenas`).
