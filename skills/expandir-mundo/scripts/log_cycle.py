@@ -14,6 +14,10 @@ import re
 import sys
 from pathlib import Path
 
+# La lógica común vive en vault_lib.py, en los scripts de crear-entidad
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
+from vault_lib import vault_path  # noqa: E402
+
 LOG = "00_Sistema/06_Generacion/Registro_de_Generacion.md"
 MARKER = "<!-- Las entradas nuevas se añaden debajo de esta línea -->"
 CYCLE_RE = re.compile(r"^## Ciclo (\d+)\b")
@@ -30,7 +34,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    path = Path(args.vault) / LOG
+    path = vault_path(args.vault) / LOG
     if not path.is_file():
         sys.exit(f"Error: no existe {LOG}: ejecuta antes setup_generation.py.")
     body = (Path(args.file).read_text(encoding="utf-8") if args.file else sys.stdin.read()).strip("\n")

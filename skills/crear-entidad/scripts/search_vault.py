@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (OPEN_QUESTIONS, blocked_links, describe_expected, find_gaps,  # noqa: E402
                        glossary_table, load_index, load_modules, normalize, strip_links)
+from vault_lib import vault_path  # noqa: E402
 
 GROUPS = ("entidades", "pendientes", "glosario", "preguntas")
 MAX_SUMMARY = 140
@@ -80,7 +81,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     query = words(" ".join(args.query))

@@ -20,6 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (PENDING_NOTE, blocked_links, find_gaps, known_types, load_index,  # noqa: E402
                        load_modules, load_pending_types, split_note, strip_links)
+from vault_lib import vault_path  # noqa: E402
 
 # La mención se recorta a esta longitud, empezando un poco antes del enlace
 MENTION_LENGTH, MENTION_BEFORE = 140, 50
@@ -149,7 +150,7 @@ def main():
     parser.add_argument("--list", action="store_true", help="Muestra el resumen sin escribir el registro")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     modules = load_modules()

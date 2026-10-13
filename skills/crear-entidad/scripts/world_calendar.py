@@ -18,6 +18,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (calendar_summary, format_date, format_year, load_calendars, normalize,  # noqa: E402
                        parse_exact_date, read_world, reference_calendar)
+from vault_lib import vault_path  # noqa: E402
 
 
 def find_calendar(calendars, name):
@@ -45,7 +46,7 @@ def main():
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     calendars = load_calendars(vault)

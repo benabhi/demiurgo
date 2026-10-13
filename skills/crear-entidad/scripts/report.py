@@ -53,6 +53,7 @@ from audit_world import run_audit  # noqa: E402
 from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
                        normalize, parse_note, readable_links)
+from vault_lib import vault_path  # noqa: E402
 
 GLOSSARY = "00_Sistema/04_Convenciones/Glosario.md"
 OPEN_QUESTIONS = "00_Sistema/Preguntas_Abiertas.md"
@@ -622,7 +623,7 @@ def main():
     if args.cycles and not args.log:
         parser.error("--cycles va con --log")
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
 
@@ -652,7 +653,9 @@ def main():
         except (RuntimeError, FileNotFoundError) as error:
             sys.exit(f"Error: no puedo leer los cambios con git ({error}). Usa --snapshot y --baseline, o --notes.")
 
-    out, log = build_report(vault, Path(args.vault).as_posix(), changes)
+    # Los enlaces del informe van relativos al directorio desde el que se ejecuta (la bóveda puede estar más arriba)
+    prefix = Path(os.path.relpath(vault.resolve(), Path.cwd().resolve())).as_posix()
+    out, log = build_report(vault, prefix, changes)
     print("\n".join(out))
     if args.log:
         actions, footer, warnings = cycle_lines(vault, args.cycles) if args.cycles else ([], [], [])

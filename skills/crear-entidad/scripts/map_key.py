@@ -37,6 +37,7 @@ from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP
                        format_hidden,
                        int_value, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
                        parse_map_key, resolve_note, zones_per_level)
+from vault_lib import vault_path  # noqa: E402
 
 EXIT_FULL = 3
 
@@ -131,7 +132,7 @@ def main():
     parser.add_argument("--charted", action="store_true", help="Marca la leyenda como cartografiada tras una edición")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     path = resolve_note(args.note, vault)

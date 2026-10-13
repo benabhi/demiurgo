@@ -21,6 +21,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import SKILL_DIR, load_index, normalize  # noqa: E402
+from vault_lib import vault_path  # noqa: E402
 
 VAULT_PROFILES = "00_Sistema/06_Generacion/Nombres"
 SKILL_PROFILES = SKILL_DIR / "assets" / "nombres"
@@ -120,7 +121,7 @@ def main():
     parser.add_argument("--list", action="store_true", help="Lista los perfiles disponibles")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if args.list:
         for folder in profile_dirs(vault):
             origin = "bóveda" if folder != SKILL_PROFILES else "skill (por defecto)"

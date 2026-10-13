@@ -22,6 +22,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import CHRONICLE, add_chronicle_entry, readable_links  # noqa: E402
+from vault_lib import vault_path  # noqa: E402
 
 
 def main():
@@ -37,7 +38,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     if args.date:

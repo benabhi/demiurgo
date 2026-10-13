@@ -18,6 +18,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import DEFAULT_EXCLUDED, is_hidden  # noqa: E402
+from vault_lib import vault_path  # noqa: E402
 
 MAX_LISTED = 20
 
@@ -51,7 +52,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     old, new = args.old.strip().strip("[]"), args.new.strip().strip("[]")

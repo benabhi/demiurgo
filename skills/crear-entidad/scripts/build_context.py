@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (OPEN_QUESTIONS, calendar_summary, describe_expected, find_gaps, first,  # noqa: E402
                        format_year, index_vault, int_value, link_exists, load_calendars, load_index,
                        place_types, read_world, reference_calendar, split_note, strip_links)
+from vault_lib import vault_path  # noqa: E402
 
 REGION_PROPS = ("region", "region_padre", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento")
 PLACE_TYPES = place_types()
@@ -84,7 +85,7 @@ def main():
     parser.add_argument("--index", action="store_true", help="Imprime el índice compacto de todas las entidades (en un mundo grande es largo: para buscar, mejor search_vault.py)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     index = load_index(vault)

@@ -44,6 +44,21 @@ HOME_MOC = "00_Sistema/MOC_Inicio.md"
 DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", "00_Sistema/03_Archivados", PENDING_NOTE, CHRONICLE)
 
 
+# --- Bóveda ------------------------------------------------------------------
+
+def vault_path(name):
+    """La carpeta de la bóveda: la ruta dada si existe; si es relativa y no existe desde aquí, la misma
+    carpeta en el directorio superior más cercano que la tenga. Así los scripts encuentran la bóveda
+    aunque se ejecuten desde la carpeta de una skill. Si no aparece, la ruta tal cual (el script avisa)."""
+    path = Path(name)
+    if path.is_dir() or path.is_absolute():
+        return path
+    for parent in Path.cwd().resolve().parents:
+        if (parent / path).is_dir():
+            return parent / path
+    return path
+
+
 # --- Módulos -----------------------------------------------------------------
 
 def load_modules():

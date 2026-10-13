@@ -16,6 +16,7 @@ from pathlib import Path
 # La lógica vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import DEFAULT_EXCLUDED, describe_expected, find_gaps  # noqa: E402
+from vault_lib import vault_path  # noqa: E402
 
 TYPED_BY = {"propiedad": "por su propiedad", "registro": "por el registro"}
 
@@ -34,7 +35,7 @@ def main():
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
 

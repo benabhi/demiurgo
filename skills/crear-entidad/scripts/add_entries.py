@@ -22,6 +22,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (CELL_SPLIT_RE, GLOSSARY, OPEN_QUESTIONS, glossary_table, normalize,  # noqa: E402
                        split_terms)
+from vault_lib import vault_path  # noqa: E402
 
 EMPTY_ROW_RE = re.compile(r"^\|(\s*\|)+\s*$")
 OTHER_QUESTIONS = "## Otras preguntas"
@@ -116,7 +117,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     if not (args.glossary or args.question or args.confirm):

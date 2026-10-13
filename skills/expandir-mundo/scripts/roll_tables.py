@@ -28,6 +28,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py, en los scripts de crear-entidad
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
 from vault_lib import load_index, load_modules, normalize  # noqa: E402
+from vault_lib import vault_path  # noqa: E402
 
 ASSET_TABLES = Path(__file__).resolve().parent.parent / "assets" / "Tablas"
 VAULT_TABLES = "00_Sistema/06_Generacion/Tablas"
@@ -90,7 +91,7 @@ def main():
     parser.add_argument("--list", action="store_true", help="Lista los archivos y tablas disponibles")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if args.list:
         seen = set()
         for folder, origin in ((vault / VAULT_TABLES, "bóveda"), (ASSET_TABLES, "skill")):

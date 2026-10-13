@@ -54,6 +54,7 @@ from build_context import region_chain  # noqa: E402
 from vault_lib import (SKILL_DIR, WORLD_SHEET, blocked_links, describe_expected, find_gaps,  # noqa: E402
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
                        omitted_sections, parse_map_key, read_world, split_note, template_sections)
+from vault_lib import vault_path  # noqa: E402
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 VAULT_PACKAGES = "00_Sistema/06_Generacion/Paquetes.md"
@@ -240,7 +241,7 @@ def main():
     parser.add_argument("--json", action="store_true", help="Salida en JSON")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     seed = args.seed if args.seed is not None else random.SystemRandom().randrange(10 ** 9)

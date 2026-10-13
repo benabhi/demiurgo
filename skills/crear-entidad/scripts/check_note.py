@@ -56,6 +56,7 @@ from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LIN
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
                        reference_calendar, resolve_note, section_table, split_note, table_cell,
                        unlinked_entities, unlinked_mentions, unlinked_names, unquote)
+from vault_lib import vault_path  # noqa: E402
 
 MAX_LOOSE = 10
 
@@ -546,7 +547,7 @@ def main():
     if not args.notes:
         parser.error("indica las notas a validar, o --depth <tipo>:<relevancia>")
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     modules = load_modules()

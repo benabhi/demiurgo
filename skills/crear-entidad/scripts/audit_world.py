@@ -48,6 +48,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (DEFAULT_EXCLUDED, bare_name, date_keys, find_gaps, first, glossary_rows,  # noqa: E402
                        glossary_terms, int_value, is_entity_kind, is_hidden, known_types, load_calendars,
                        load_index, load_modules, normalize, note_link_labels, read_registry, read_world)
+from vault_lib import vault_path  # noqa: E402
 
 MIN_PARENT_AGE = 12
 LONGEVITY_MARGIN = 1.25
@@ -504,7 +505,7 @@ def main():
                              "mundo en general; del resto, el recuento")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     report = run_audit(vault)

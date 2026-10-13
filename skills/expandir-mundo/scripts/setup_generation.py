@@ -12,6 +12,10 @@ import shutil
 import sys
 from pathlib import Path
 
+# La lógica común vive en vault_lib.py, en los scripts de crear-entidad
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"))
+from vault_lib import vault_path  # noqa: E402
+
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
 GENERATION_DIR = "00_Sistema/06_Generacion"
 GUIDE = "00_Sistema/04_Convenciones/Guia_de_Organizacion.md"
@@ -70,7 +74,7 @@ def main():
     parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
     args = parser.parse_args()
 
-    vault = Path(args.vault)
+    vault = vault_path(args.vault)
     if not vault.is_dir():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     target = vault / GENERATION_DIR
