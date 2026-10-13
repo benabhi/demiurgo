@@ -158,11 +158,11 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 
 **Pruebas pendientes:**
 - [ ] `ruta` (#21): una región y una ruta entre dos de sus asentamientos (el itinerario y el bloque «Rutas» de la leyenda de la región), y la acción `conectar` en una tanda del motor.
-- [ ] `material` (#22): un material de relevancia 3 con su yacimiento (una mina, que lleva mapa interior) y la reciprocidad con la región y los objetos.
+- [ ] `material` (#22): un recurso que la región ya nombra, de relevancia 3, y después su mina (categoría `explotacion`, con mapa interior); la reciprocidad con la región.
 - [ ] `flora` (#23): una planta de relevancia 3 que cura una afección y se confunde con una gemela, con su hábitat y su material.
 - [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
-- [ ] `ecosistema` (#25): un ecosistema de relevancia 3 con su pieza clave, su flora y sus criaturas, y la reciprocidad con sus zonas.
-- [ ] `astro` (#26): una luna de relevancia 4 que rige el calendario de referencia y que una deidad encarna.
+- [ ] `ecosistema` (#25): un ecosistema de relevancia 3 donde crece la planta de la prueba de flora, con su pieza clave y la reciprocidad con sus zonas y su flora.
+- [ ] `astro` (#26): un cometa de relevancia 3 que los pueblos tienen por presagio (`situacion: por_venir`), sin tocar el calendario mientras sea un pilar por definir.
 - [ ] El grafo de Obsidian con sus colores, en un mundo con entidades de varios tipos.
 
 ### Fase 1 — Lugares base
