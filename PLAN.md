@@ -98,7 +98,7 @@ La prueba se hace en una sesión nueva abierta en la raíz. Para un mundo extra 
 - [x] **Bitácora del mundo** (`00_Sistema/Bitacora.md`), probada con una mazmorra: la crónica para el autor, de lo más reciente a lo más antiguo. La crea `inicializar-mundo` con la creación del mundo; `report.py --log` añade la entrada de cada creación, profundización o tanda (con sus ciclos y la remisión al Registro de Generación); `log_entry.py`, las sueltas (una imagen o un mapa aparte, un cambio pedido fuera de las skills). Las notas que existen van enlazadas y los enlaces pendientes, como texto; la Bitácora no cuenta para los enlaces pendientes y la IA nunca la lee.
 - [x] **Imágenes con Gemini en Chrome:** `generar-imagen` genera con Gemini en el navegador del usuario y mueve la descarga a la bóveda con `fetch_download.py`. Se probó Puter por API y se descartó por su límite mensual.
 - [ ] **Imágenes por API:** reemplazar la vía del navegador por una API u otra vía más eficiente, que genere por script.
-- [x] **Grafo de Obsidian:** `inicializar-mundo` deja `.obsidian/graph.json` con un grupo de color por tipo (`tag:#<tipo>`, con el `color` de cada módulo), un filtro sin 00_Sistema, los README ni los MOC, y sin adjuntos ni etiquetas como nodos; los enlaces pendientes, en gris. `graph_colors.py` lo aplica a un mundo existente o con tipos nuevos, conservando los grupos y el filtro propios del usuario. `check_note.py` avisa si una nota pierde la etiqueta de su tipo.
+- [x] **Grafo de Obsidian:** `inicializar-mundo` deja `.obsidian/graph.json` con un grupo de color por tipo (`tag:#<tipo>`, con el `color` de cada módulo), un filtro sin 00_Sistema, los README ni los MOC, y sin adjuntos ni etiquetas como nodos; los enlaces pendientes, en gris. Con flechas y los nombres visibles desde más lejos (`textFadeMultiplier` -1), y dos marcadores de grafo en `.obsidian/bookmarks.json`: «Grafo sin secretos» (sin la carpeta ni la etiqueta del módulo `secreto`, para enseñar el mundo sin spoilers) y «Grafo completo». `graph_colors.py` lo aplica a un mundo existente o con tipos nuevos, conservando los grupos y el filtro propios del usuario. `check_note.py` avisa si una nota pierde la etiqueta de su tipo.
 - [x] **Notas internas** (`tipo: meta`): Preguntas Abiertas y los registros no son entidades, y el validador las salta.
 
 ## Motor de generación
@@ -163,7 +163,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [ ] `obra` (#24): un cantar de relevancia 3 que cuenta un hecho a su manera, con su fragmento, su autor atribuido y su versión enfrentada.
 - [ ] `ecosistema` (#25): un ecosistema de relevancia 3 donde crece la planta de la prueba de flora, con su pieza clave y la reciprocidad con sus zonas y su flora.
 - [ ] `astro` (#26): un cometa de relevancia 3 que los pueblos tienen por presagio (`situacion: por_venir`), sin tocar el calendario mientras sea un pilar por definir.
-- [ ] El grafo de Obsidian con sus colores, en un mundo con entidades de varios tipos.
+- [ ] El grafo de Obsidian con sus colores, en un mundo con entidades de varios tipos; sus flechas, los nombres desde lejos y los marcadores «Grafo sin secretos» y «Grafo completo».
 
 ### Fase 1 — Lugares base
 - [x] **1. `region` 🗺️ — grandes regiones, territorios políticos y planos.**
