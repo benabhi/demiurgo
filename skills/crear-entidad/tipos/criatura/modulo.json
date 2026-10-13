@@ -2,6 +2,7 @@
   "tipo": "criatura",
   "familia": "criatura",
   "emoji": "🐺",
+  "color": "#6D4C41",
   "huecos_propios": {
     "min": 2,
     "max": 8

@@ -272,6 +272,19 @@ def world_sheet(world, questionnaire, results, today):
     return "\n".join(lines)
 
 
+def setup_graph(vault, warnings):
+    """El grafo de Obsidian, con el script de crear-entidad: un color por tipo de entidad y un filtro sin las
+    notas del sistema. Devuelve las líneas del resumen; si crear-entidad no está, avisa."""
+    scripts = Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"
+    if not (scripts / "graph_colors.py").is_file():
+        warnings.append("no encuentro la skill crear-entidad: el grafo de Obsidian queda sin colores por tipo "
+                        "(ejecuta su graph_colors.py cuando esté)")
+        return []
+    sys.path.insert(0, str(scripts))
+    from graph_colors import configure_graph
+    return configure_graph(vault)
+
+
 def add_chronicle_entry(path, title, lines, today):
     """Añade la entrada arriba de la Bitácora (la crea si no existe). No sobrescribe nada: solo inserta."""
     text = path.read_text(encoding="utf-8") if path.exists() else CHRONICLE_HEADER
@@ -360,6 +373,7 @@ def main():
                    fill_placeholders(source.read_text(encoding="utf-8"), placeholders, source.name))
     write_file(root / "CLAUDE.md",
                fill_placeholders((ASSETS / "CLAUDE.md.tpl").read_text(encoding="utf-8"), placeholders, "CLAUDE.md.tpl"))
+    graph = setup_graph(vault, warnings)
 
     files = [p for p in created if p.is_file()]
     # Bitácora: la creación del mundo es su primera entrada; si la bóveda ya existía, se anota lo que se completó
@@ -392,6 +406,8 @@ def main():
         print("  = " + str(path.relative_to(root)))
     print(f"Reglas de contenido: {len(rules)}")
     print("Pilares por definir: " + (", ".join(undefined) if undefined else "ninguno"))
+    for line in graph:
+        print(line)
     for warning in warnings:
         print("AVISO: " + warning)
 

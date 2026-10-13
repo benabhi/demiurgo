@@ -2,6 +2,7 @@
   "tipo": "especie",
   "familia": "especie",
   "emoji": "🧬",
+  "color": "#8E24AA",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 3,

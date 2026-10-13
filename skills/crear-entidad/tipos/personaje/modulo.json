@@ -2,6 +2,7 @@
   "tipo": "personaje",
   "familia": "personaje",
   "emoji": "👤",
+  "color": "#1E88E5",
   "huecos_propios": {
     "min": 3,
     "max": 8

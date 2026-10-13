@@ -20,6 +20,7 @@
     "yacimientos"
   ],
   "emoji": "📍",
+  "color": "#66BB6A",
   "huecos_propios": {
     "min": 2,
     "max": 6

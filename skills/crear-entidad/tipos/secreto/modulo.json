@@ -2,6 +2,7 @@
   "tipo": "secreto",
   "familia": "secreto",
   "emoji": "🔒",
+  "color": "#880E4F",
   "huecos_propios": {
     "min": 0,
     "max": 3

@@ -2,6 +2,7 @@
   "tipo": "sistema",
   "familia": "sistema",
   "emoji": "⚙️",
+  "color": "#00ACC1",
   "huecos_propios": {
     "min": 2,
     "max": 7

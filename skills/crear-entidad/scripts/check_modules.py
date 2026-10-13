@@ -14,7 +14,8 @@ Comprueba en cada módulo:
     mínima del 1 al 5, y que la plantilla tenga la sección Mapa y las propiedades `mapa`,
     `mapa_edicion` y `mapa_zonas`;
   - que las recíprocas sean relaciones del módulo y que la regla de tiempo use valores permitidos
-    y una sección que exista.
+    y una sección que exista;
+  - que su `color` (el del grafo de Obsidian) sea «#RRGGBB».
 Y entre módulos:
   - que cada relación con un tipo o una familia que ya tiene módulos la pueda completar alguno
     (si no, sus huecos no se completarían nunca: falta la propiedad en algún `completa`);
@@ -113,6 +114,12 @@ def main():
             for key in ("mapa", "mapa_edicion", "mapa_zonas"):
                 if key not in props:
                     errors.append(f"{where}: tiene `mapa` pero a la plantilla le falta la propiedad `{key}`")
+        # `color`: el del grafo de Obsidian (graph_colors.py), «#RRGGBB»
+        color = module.get("color")
+        if color is None:
+            warnings.append(f"{where}: sin `color` en modulo.json: el grafo le dará uno sacado de su nombre")
+        elif not re.match(r"^#[0-9A-Fa-f]{6}$", str(color)):
+            errors.append(f"{where}: `color` debe ser «#RRGGBB» (encontrado: {color})")
         heading = next((line for line in body if line.startswith("# ")), "")
         if module.get("emoji") and not heading.startswith(f"# {module['emoji']} "):
             errors.append(f"{where}: el título de la plantilla debe empezar por `# {module['emoji']} `")

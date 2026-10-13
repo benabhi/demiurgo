@@ -2,6 +2,7 @@
   "tipo": "deidad",
   "familia": "deidad",
   "emoji": "✨",
+  "color": "#FDD835",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 2,

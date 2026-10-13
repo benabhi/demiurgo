@@ -2,6 +2,7 @@
   "tipo": "fenomeno",
   "familia": "fenomeno",
   "emoji": "🌫️",
+  "color": "#607D8B",
   "huecos_propios": {
     "min": 3,
     "max": 8

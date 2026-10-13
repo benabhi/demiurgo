@@ -2,6 +2,7 @@
   "tipo": "linaje",
   "familia": "linaje",
   "emoji": "🌳",
+  "color": "#0D47A1",
   "huecos_propios": {
     "min": 3,
     "max": 10

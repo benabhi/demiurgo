@@ -2,6 +2,7 @@
   "tipo": "afeccion",
   "familia": "afeccion",
   "emoji": "🦠",
+  "color": "#827717",
   "huecos_propios": {
     "min": 2,
     "max": 8

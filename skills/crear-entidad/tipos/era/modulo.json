@@ -2,6 +2,7 @@
   "tipo": "era",
   "familia": "era",
   "emoji": "⏳",
+  "color": "#757575",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 2,

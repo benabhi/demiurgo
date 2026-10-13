@@ -71,6 +71,7 @@ El usuario tiene que ver con claridad qué se creó. Con la salida del script y 
 - **Mundo:** nombre y premisa en una línea, con enlace a la Ficha del Mundo.
 - **Estructura:** cuántos archivos y carpetas se crearon y cuántos ya existían (sin tocar), con enlaces a `MOC_Inicio`, la Guía de Organización y `CLAUDE.md`.
 - **Bitácora:** el script la crea (`00_Sistema/Bitacora.md`) con la entrada de la creación del mundo; desde ahí, cada skill anota en ella lo que crea. Enlázala.
+- **Grafo:** el script deja configurado el grafo de Obsidian (`.obsidian/graph.json`): cada tipo de entidad con su color y sin las notas del sistema, los README ni los MOC, que enredan el grafo. Los enlaces pendientes salen en gris. En un mundo creado antes, o cuando lleguen tipos nuevos, lo hace `crear-entidad/scripts/graph_colors.py`.
 - **Pilares:** una tabla breve pilar → respuesta, marcando "(elegido por Claude)" lo que decidiste tú.
 - **Reglas de `CLAUDE.md`:** cuántas se añadieron y las que más pesan (contenido, tono, poderes, sistema de rol).
 - **Por definir:** los pilares que quedaron en `Preguntas_Abiertas`, con enlace.

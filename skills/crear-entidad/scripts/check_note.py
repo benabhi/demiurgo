@@ -289,6 +289,10 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
         if key not in expected:
             warnings.append(f"propiedad que no está en la plantilla: `{key}`")
 
+    # La etiqueta del tipo: el grafo de Obsidian colorea las notas por ella (graph_colors.py)
+    if note_type not in [unquote(t).lstrip("#") for t in props.get("tags", [])]:
+        warnings.append(f"falta la etiqueta del tipo en `tags` (`- {note_type}`): el grafo colorea las notas por ella")
+
     state = (props.get("estado") or [""])[0]
     if state not in STATES:
         errors.append(f"`estado` debe ser borrador, canon o archivado (encontrado: {state or 'vacío'})")

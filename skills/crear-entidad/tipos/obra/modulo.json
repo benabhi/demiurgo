@@ -2,6 +2,7 @@
   "tipo": "obra",
   "familia": "obra",
   "emoji": "🎨",
+  "color": "#D81B60",
   "huecos_propios": {
     "min": 1,
     "max": 6

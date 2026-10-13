@@ -2,6 +2,7 @@
   "tipo": "flora",
   "familia": "flora",
   "emoji": "🌿",
+  "color": "#C0CA33",
   "huecos_propios": {
     "min": 1,
     "max": 6

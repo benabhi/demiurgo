@@ -2,6 +2,7 @@
   "tipo": "creencia",
   "familia": "creencia",
   "emoji": "🕯️",
+  "color": "#FB8C00",
   "huecos_propios": {
     "min": 3,
     "max": 8

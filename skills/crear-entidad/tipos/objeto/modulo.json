@@ -2,6 +2,7 @@
   "tipo": "objeto",
   "familia": "objeto",
   "emoji": "🗝️",
+  "color": "#4DD0E1",
   "huecos_propios": {
     "min": 1,
     "max": 5

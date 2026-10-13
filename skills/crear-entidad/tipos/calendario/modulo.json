@@ -2,6 +2,7 @@
   "tipo": "calendario",
   "familia": "calendario",
   "emoji": "📅",
+  "color": "#E0E0E0",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 1,

@@ -2,6 +2,7 @@
   "tipo": "evento",
   "familia": "evento",
   "emoji": "📜",
+  "color": "#BDBDBD",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 2,

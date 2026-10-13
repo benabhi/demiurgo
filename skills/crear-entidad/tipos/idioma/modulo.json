@@ -2,6 +2,7 @@
   "tipo": "idioma",
   "familia": "idioma",
   "emoji": "🗣️",
+  "color": "#B39DDB",
   "crear_desde_cero": false,
   "huecos_propios": {
     "min": 2,

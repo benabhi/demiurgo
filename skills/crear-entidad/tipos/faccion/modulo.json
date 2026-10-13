@@ -2,6 +2,7 @@
   "tipo": "faccion",
   "familia": "faccion",
   "emoji": "🛡️",
+  "color": "#E53935",
   "huecos_propios": {
     "min": 3,
     "max": 8
