@@ -10,8 +10,10 @@
   - Los adjuntos (las imágenes) y las etiquetas no salen como nodos. Los enlaces pendientes sí: son los
     nodos grises, las entidades que el mundo ya nombra y aún no existen.
 Lo demás (las fuerzas, el zoom, las flechas) se queda como esté. Es idempotente: se puede volver a ejecutar
-cuando llegan tipos nuevos. Obsidian lee el archivo al abrir el grafo; si está abierto, recárgalo sin guardar
-(paleta de comandos: «Reload app without saving») para verlo.
+cuando llegan tipos nuevos.
+Ojo con Obsidian abierto: guarda su grafo al cerrarse y pisaría el nuevo. Ejecútalo con Obsidian cerrado o,
+si está abierto, recárgalo enseguida sin guardar (paleta de comandos: «Reload app without saving» /
+«Recargar la aplicación sin guardar»), sin cerrarlo antes.
 
 Ejemplos:  graph_colors.py   graph_colors.py --filter   graph_colors.py --list"""
 import argparse
@@ -100,7 +102,8 @@ def main():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
     for line in configure_graph(vault, replace_filter=args.filter):
         print(line)
-    print("Si Obsidian está abierto, recárgalo sin guardar («Reload app without saving») para ver el grafo nuevo.")
+    print("Si Obsidian está abierto, NO lo cierres: recárgalo ya sin guardar (Ctrl+P → «Reload app without saving» / "
+          "«Recargar la aplicación sin guardar»). Al cerrarse, guarda su grafo y pisaría este.")
 
 
 if __name__ == "__main__":
