@@ -22,6 +22,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Pregúntale al mundo:** `/consultar-mundo` responde con lo que dice la bóveda (qué es algo, qué hay en un lugar, cuánto se tarda de un sitio a otro, qué pasó y cuándo), cita sus notas, distingue el canon de los borradores y aparta los secretos, o los oculta para enseñar el mundo sin spoilers.
 - **Cuéntalo:** `/narrar` escribe relatos, escenas, crónicas y documentos (cartas, diarios, canciones) ambientados en el mundo. Antes reúne lo que necesita y comprueba fechas, lugares y quién vive en cada momento; lo que inventa se queda en la narración, no usa los secretos salvo que lo pidas, y al final te ofrece ilustrar el momento clave.
 - **Un mundo que se termina:** `/finalizar-mundo` lo cierra sin cabos sueltos. Por fases y contigo, decide los pilares y las preguntas que faltan (o los deja como misterios a propósito), crea, disuelve o fusiona cada enlace pendiente, revisa todos los borradores y completa imágenes y mapas, hasta que cada nota pasa la validación sin anotaciones de trabajo. Mientras tanto el mundo deja de crecer; cerrado, ya no se crea nada (sí se consulta, se narra y se ilustra), y se puede reabrir.
+- **Un chequeo de la bóveda:** `/diagnosticar-mundo` dice qué está mal, qué se quedó atrás al actualizar las skills (el `CLAUDE.md`, las guías y las plantillas, las propiedades nuevas de cada tipo, el grafo, las notas del sistema) y qué pide atención, con la skill que lo resuelve. Arregla solo lo seguro y te propone el resto.
 - **Tú decides qué es canon:** todo nace como borrador. `/revisar-mundo` te los muestra por tandas, de lo que más pesa a lo que menos, y cada uno pasa a canon, sigue en borrador o se archiva, con sus imágenes, sus secretos y su sitio en los mapas. Nada se borra.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
@@ -36,8 +37,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | `consultar-mundo` | Responde preguntas sobre el mundo con lo que dice la bóveda (`/consultar-mundo ¿quién gobierna el puerto?`), citando sus notas, sin leerla entera. |
 | `narrar` | Relatos, escenas, crónicas y documentos ambientados en el mundo, coherentes con su canon (`/narrar escena la noche en que volvió el cometa`), en `90_Narrativa`. |
 | `finalizar-mundo` | Cierra el mundo sin cabos sueltos (`/finalizar-mundo`): lo deja impecable por fases, con el usuario, y lo cierra; o lo reabre. |
+| `diagnosticar-mundo` | La salud de la bóveda y si está al día con las skills (`/diagnosticar-mundo`): arregla lo seguro, propone lo demás y dice qué pide atención. |
 
-Las ocho van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narrar` y `finalizar-mundo` usan los scripts de `crear-entidad`.
+Las nueve van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narrar`, `finalizar-mundo` y `diagnosticar-mundo` usan los scripts de `crear-entidad`.
 
 ## Requisitos
 - **Claude Code.**
@@ -55,11 +57,11 @@ Las ocho van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narr
    ```bash
    git clone https://github.com/benabhi/skills-world-building.git
    ```
-2. Pon las ocho carpetas de `skills/` donde Claude Code busca las skills:
+2. Pon las nueve carpetas de `skills/` donde Claude Code busca las skills:
    - en `~/.claude/skills/`, para tenerlas en todos tus proyectos;
    - o en `<tu proyecto>/.claude/skills/`, solo para un mundo.
 
-   Mejor enlazarlas que copiarlas: así se actualizan con `git pull`.
+   Mejor enlazarlas que copiarlas: así se actualizan con `git pull`. Después de actualizarlas, `/diagnosticar-mundo` dice qué cambió para tu bóveda y la pone al día.
    - **Windows**, con PowerShell y sin permisos de administrador (un *junction* por skill):
      ```powershell
      New-Item -ItemType Junction -Path "$HOME\.claude\skills\crear-entidad" -Target "C:\ruta\skills-world-building\skills\crear-entidad"
@@ -95,7 +97,7 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 En desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
 - la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
-- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo), `narrar` (relatos y escenas) y `finalizar-mundo` (cerrar el mundo) están hechas y esperan su prueba;
+- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo), `narrar` (relatos y escenas), `finalizar-mundo` (cerrar el mundo) y `diagnosticar-mundo` (la salud de la bóveda) están hechas y esperan su prueba;
 - faltan las imágenes por API.
 
 El plan está en [PLAN.md](PLAN.md).

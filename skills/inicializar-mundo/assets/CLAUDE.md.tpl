@@ -27,6 +27,7 @@ La bóveda crece sin límite. No la recorras ni leas carpetas enteras, y no leas
 - para añadir al Glosario o a Preguntas Abiertas, `add_entries.py`.
 
 Para responder una pregunta sobre el mundo, `/consultar-mundo` (su `query_world.py`: qué es algo, qué hay en un lugar, la cronología y una sección de una nota).
+Para saber cómo está la bóveda (qué está mal, qué se quedó atrás al actualizar las skills y qué pide atención), `/diagnosticar-mundo`.
 
 Lee entera solo la nota que necesites y, de una nota larga, solo la sección que te hace falta.
 

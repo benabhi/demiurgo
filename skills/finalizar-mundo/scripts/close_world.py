@@ -38,37 +38,19 @@ from pathlib import Path
 SKILLS = Path(__file__).resolve().parents[2]
 # La lógica común vive en los scripts de crear-entidad
 sys.path.insert(0, str(SKILLS / "crear-entidad" / "scripts"))
-from audit_world import run_audit  # noqa: E402
-from check_note import checker  # noqa: E402
+from health import (Health, drafts, inbox, loose_images, map_states, missing_images,  # noqa: E402
+                    open_questions, pending, tidy_images, undefined_pillars, work_notes)
 from map_key import frontmatter_end, set_property  # noqa: E402
-from vault_lib import (CONTAINMENT_PROPS, LINK_RE, OPEN_QUESTIONS, OUTSIDE_TYPE, SECRET_TYPE,  # noqa: E402
-                       WORLD_CLOSED, WORLD_CLOSING, WORLD_OPEN, WORLD_SHEET, add_canon_log, add_chronicle_entry,
-                       blocked_links, find_gaps, first, index_vault, int_value, is_confirmation, is_hidden,
-                       link_value, load_index, load_modules, map_applies, map_status, normalize, parse_map_key,
-                       parse_map_routes, place_types, read_world, split_note, strip_links, world_state)
-from vault_lib import CANON_LOG, STATS_NOTE  # noqa: E402
+from vault_lib import (CANON_LOG, OPEN_QUESTIONS, SECRET_TYPE, STATS_NOTE, WORLD_CLOSED, WORLD_CLOSING,  # noqa: E402
+                       WORLD_OPEN, WORLD_SHEET, add_canon_log, add_chronicle_entry, load_index, normalize,
+                       strip_links, world_state)
 from vault_lib import vault_path  # noqa: E402
 from world_stats import write_stats  # noqa: E402
 
-ASSETS = "00_Sistema/02_Activos"
-ARCHIVE_IMAGES = f"{ASSETS}/Anteriores"
-INBOX = "00_Sistema/05_Bandeja_de_Entrada"
-IMAGE_RE = re.compile(r"\.(png|jpe?g|webp|gif|svg|bmp)$", re.IGNORECASE)
 UNDEFINED = "Por definir."
 MYSTERY_PILLAR = "Sin definir, a propósito."
 RESOLUTIONS = ("confirmado", "rechazado", "respondida", "misterio")
 STATE_TEXT = {WORLD_OPEN: "abierto", WORLD_CLOSING: "en cierre", WORLD_CLOSED: "cerrado"}
-# Anotaciones de trabajo que no pueden quedar en un mundo cerrado
-WORK_NOTES = [(re.compile(r"\bpor definir\b", re.IGNORECASE), "«por definir»"),
-              (re.compile(r"\bpor confirmar\b", re.IGNORECASE), "«por confirmar»"),
-              (re.compile(r"\bpor decidir\b", re.IGNORECASE), "«por decidir»"),
-              (re.compile(r"\*Sin cartografiar\.\*"), "«sin cartografiar»"),
-              (re.compile(r"\*Se quita en la edición siguiente\.\*"), "«se quita en la edición siguiente»"),
-              (re.compile(r"\(espera confirmación\)|sin módulo todavía"), "una marca del registro"),
-              (re.compile(r"\{\{|\bTODO\b"), "un resto de plantilla")]
-# Menor: lo nombra una sola nota, que no pesa mucho, y pocas veces
-MINOR_RELEVANCE = 3
-MINOR_MENTIONS = 2
 MAX_SHOWN = 8
 
 
@@ -76,31 +58,10 @@ def listed(items, limit=MAX_SHOWN):
     return ", ".join(items[:limit]) + (f" y {len(items) - limit} más" if len(items) > limit else "")
 
 
-def open_questions(vault):
-    """(preguntas sin cerrar, en su orden), cada una (línea, si es confirmación, si es un pilar)."""
-    path = vault / OPEN_QUESTIONS
-    found, section = [], ""
-    for line in (path.read_text(encoding="utf-8").splitlines() if path.is_file() else []):
-        if line.startswith("## "):
-            section = normalize(line[3:])
-        if re.match(r"^\s*-\s*\[ \]", line):
-            found.append((line.strip(), is_confirmation(line), section.startswith("pilares por definir")))
-    return found
-
-
-def undefined_pillars(vault):
-    _, body = split_note((vault / WORLD_SHEET).read_text(encoding="utf-8"))
-    return [m.group(1) for line in body for m in [re.match(r"^- \*\*(.+?):\*\*\s*Por definir\.\s*$", line)] if m]
-
-
 def diagnose(vault):
-    """Cada criterio del cierre: (nombre, cumplido, detalle) y lo siguiente que toca."""
-    modules = load_modules()
-    index = load_index(vault)
-    by_name = {e["name"].lower(): e for e in index}
-    names, _ = index_vault(vault)
-    world = read_world(vault)
-    sheet_text = normalize((vault / WORLD_SHEET).read_text(encoding="utf-8"))
+    """Cada criterio del cierre: (nombre, cumplido, detalle), con las comprobaciones comunes (health.py) en su
+    nivel estricto."""
+    health = Health(vault)
     rows = []
 
     pillars = undefined_pillars(vault)
@@ -113,76 +74,37 @@ def diagnose(vault):
                  f"{len(questions)} ({len(confirmations)} confirmaciones)" + (f": {listed(shown, 3)}" if shown else "")
                  if questions else "ninguna"))
 
-    gaps = [g for g in find_gaps(vault)[0] if g["expected_type"] != OUTSIDE_TYPE]
-    blocked = blocked_links(vault)
-    ready = [g for g in gaps if g["expected_modules"] and g["link"].lower() not in blocked]
-    waiting = [g for g in gaps if g["link"].lower() in blocked]
-    untyped = [g for g in gaps if not g["expected_type"]]
-    no_module = [g for g in gaps if g["expected_type"] and not g["expected_modules"]]
-    minor = []
-    for gap in ready:
-        linker = by_name.get(Path(gap["notes"][0]).stem.lower()) if len(gap["notes"]) == 1 else None
-        if linker and (linker["relevancia"] or 0) <= MINOR_RELEVANCE and len(gap["occurrences"]) <= MINOR_MENTIONS \
-                and normalize(gap["link"]) not in sheet_text:
-            minor.append(gap["link"])
-    detail = (f"{len(gaps)}: {len(ready)} se pueden crear, {len(waiting)} esperan una confirmación, {len(untyped)} sin "
-              f"tipo, {len(no_module)} sin módulo" + (f"; menores, para proponer disolverlos ({len(minor)}): "
-                                                    f"{listed([m.replace('_', ' ') for m in minor])}" if minor else "")
-              ) if gaps else "ninguno"
+    links = pending(health)
+    gaps, minor = links["all"], [g["link"] for g in links["minor"]]
+    detail = (f"{len(gaps)}: {len(links['ready'])} se pueden crear, {len(links['waiting'])} esperan una confirmación, "
+              f"{len(links['untyped'])} sin tipo, {len(links['no_module'])} sin módulo"
+              + (f"; menores, para proponer disolverlos ({len(minor)}): {listed([m.replace('_', ' ') for m in minor])}"
+                 if minor else "")) if gaps else "ninguno"
     rows.append(("Enlaces pendientes", not gaps, detail))
 
-    drafts = [e for e in index if e["estado"] == "borrador"]
-    rows.append(("Borradores", not drafts, f"{len(drafts)} ({sum(1 for e in drafts if e['origen'] == 'procedural')} "
-                                           f"del motor)" if drafts else "ninguno"))
+    unrevised = drafts(health)
+    rows.append(("Borradores", not unrevised,
+                 f"{len(unrevised)} ({sum(1 for e in unrevised if e['origen'] == 'procedural')} del motor)"
+                 if unrevised else "ninguno"))
 
-    run = checker(vault)
-    flawed, annotated = [], []
-    for entry in index:
-        errors, warnings, _ = run(vault / entry["path"])
-        if errors or warnings:
-            flawed.append(f"{entry['name']} ({len(errors)} errores, {len(warnings)} avisos)")
-        text = (vault / entry["path"]).read_text(encoding="utf-8")
-        hits = [label for pattern, label in WORK_NOTES if pattern.search(text)]
-        if hits:
-            annotated.append(f"{entry['name']} ({', '.join(hits)})")
-    glossary = vault / "00_Sistema/04_Convenciones/Glosario.md"
-    if glossary.is_file():
-        hits = [label for pattern, label in WORK_NOTES[:3] if pattern.search(glossary.read_text(encoding="utf-8"))]
-        if hits:
-            annotated.append(f"el Glosario ({', '.join(hits)})")
+    flawed = [f"{entry['name']} ({len(errors)} errores, {len(warnings)} avisos)"
+              for entry, errors, warnings in health.note_checks() if errors or warnings]
+    annotated = [f"{name} ({', '.join(labels)})" for name, labels in work_notes(health)]
     rows.append(("Notas impecables", not flawed and not annotated,
                  "; ".join(part for part in (f"check_note: {listed(flawed, 4)}" if flawed else "",
                                              f"anotaciones de trabajo: {listed(annotated, 4)}" if annotated else "")
                            if part) or "todas"))
 
-    audit = run_audit(vault)
+    audit = health.audit()
     rows.append(("Auditor", not audit["errores"] and not audit["avisos"],
                  f"{len(audit['errores'])} errores, {len(audit['avisos'])} avisos"))
 
-    missing = [e["name"] for e in index if e["tipo"] != SECRET_TYPE
-               and (link_value(first(e["props"].get("imagen")) or "") or "").lower() not in names]
+    missing = missing_images(health)
     rows.append(("Imágenes", not missing, f"faltan {len(missing)}: {listed(missing)}" if missing else "todas"))
 
-    stale, tops = [], []
-    containers = set(place_types(modules))
-    for entry in index:
-        module = modules.get(entry["tipo"], {})
-        rule = map_applies(module, entry["props"], entry["relevancia"]) if module.get("mapa") else None
-        if rule:
-            _, body = split_note((vault / entry["path"]).read_text(encoding="utf-8"))
-            zones, _ = parse_map_key(body)
-            routes, _ = parse_map_routes(body)
-            if zones is None:
-                stale.append(f"{entry['name']} (sin sección Mapa)")
-            else:
-                status = map_status(module, entry["props"], zones, entry["relevancia"], routes, complete=True)
-                if status["toca"]:
-                    stale.append(f"{entry['name']} ({status['razon']})")
-        ups = [t for key in CONTAINMENT_PROPS for t in entry["relaciones"].get(key, []) if t.lower() in by_name]
-        if entry["tipo"] in containers and not ups:
-            edition = int_value(first(entry["props"].get("mapa_edicion"))) or 0
-            tops.append((entry["name"], edition, bool(rule)))
-    rows.append(("Mapas al día", not stale, f"{len(stale)}: {listed(stale, 4)}" if stale else "todos"))
+    stale, tops = map_states(health, complete=True)
+    rows.append(("Mapas al día", not stale,
+                 f"{len(stale)}: {listed([f'{name} ({why})' for name, why in stale], 4)}" if stale else "todos"))
     unmapped = [f"{name} ({'sin dibujar' if rule else 'no le toca mapa por su categoría o su relevancia'})"
                 for name, edition, rule in tops if not edition]
     rows.append(("Lo más alto del mapa", bool(tops) and not unmapped,
@@ -192,10 +114,9 @@ def diagnose(vault):
     orphans = loose_images(vault)
     rows.append(("Imágenes sueltas", not orphans,
                  f"{len(orphans)}: {listed([p.name for p in orphans], 5)} (tidy las aparta)" if orphans else "ninguna"))
-    inbox = [p.name for p in (vault / INBOX).glob("*") if p.is_file() and p.name != "README.md"] \
-        if (vault / INBOX).is_dir() else []
-    rows.append(("Bandeja de Entrada", not inbox, f"{len(inbox)}: {listed(inbox, 5)}" if inbox else "vacía"))
-    return rows, world
+    box = inbox(vault)
+    rows.append(("Bandeja de Entrada", not box, f"{len(box)}: {listed(box, 5)}" if box else "vacía"))
+    return rows, health.world
 
 
 NEXT = [("Pilares por definir", "decidir los pilares por definir con el usuario, o dejarlos como misterio"),
@@ -211,18 +132,6 @@ NEXT = [("Pilares por definir", "decidir los pilares por definir con el usuario,
         ("Lo más alto del mapa", "dibujar el mapa de lo más alto del mapa"),
         ("Imágenes sueltas", "apartar las imágenes sueltas (close_world.py tidy)"),
         ("Bandeja de Entrada", "procesar la Bandeja de Entrada: lo que sirve, a su nota; lo demás, al archivo")]
-
-
-def loose_images(vault):
-    """Imágenes de 02_Activos (fuera de Anteriores) que ninguna nota usa."""
-    used = set()
-    for path in vault.rglob("*.md"):
-        if not is_hidden(path.relative_to(vault)):
-            used |= {m.group(1).strip().lower() for m in LINK_RE.finditer(path.read_text(encoding="utf-8"))}
-    folder = vault / ASSETS
-    return [p for p in sorted(folder.rglob("*")) if p.is_file() and IMAGE_RE.search(p.name)
-            and ARCHIVE_IMAGES not in p.relative_to(vault).as_posix() and p.name.lower() not in used] \
-        if folder.is_dir() else []
 
 
 def status(vault, quiet=False):
@@ -327,26 +236,7 @@ def resolve(vault, text, outcome, note, today):
 
 
 def tidy(vault):
-    orphans = loose_images(vault)
-    if not orphans:
-        print("No hay imágenes sueltas.")
-        return
-    try:
-        sys.path.insert(0, str(SKILLS / "generar-imagen" / "scripts"))
-        from fetch_download import archive_folder
-        folder, created = archive_folder(vault / ASSETS)
-    except ImportError:
-        folder, created = vault / ARCHIVE_IMAGES, not (vault / ARCHIVE_IMAGES).is_dir()
-        folder.mkdir(parents=True, exist_ok=True)
-    for image in orphans:
-        target, number = folder / f"{image.stem}_suelta{image.suffix}", 2
-        while target.exists():
-            target, number = folder / f"{image.stem}_suelta_{number}{image.suffix}", number + 1
-        image.replace(target)
-        print(f"Apartada: {image.relative_to(vault).as_posix()} → {target.relative_to(vault).as_posix()}")
-    if created:
-        print(f"AVISO: se creó {ARCHIVE_IMAGES}: regístrala en «Carpetas añadidas por skills» de la Guía de "
-              f"Organización, como dice generar-imagen.")
+    print("\n".join(tidy_images(vault)))
 
 
 def main():

@@ -909,15 +909,34 @@ Cómo ha ido creciendo el mundo: qué se creó y qué cambió en cada tarea, de 
 """
 
 
+def ensure_chronicle(vault):
+    """Crea la Bitácora, si no existe, y la enlaza desde MOC_Inicio. Devuelve los avisos."""
+    path = vault / CHRONICLE
+    if path.is_file():
+        return []
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(CHRONICLE_HEADER, encoding="utf-8", newline="\n")
+    home = vault / HOME_MOC
+    if not home.is_file():
+        return []
+    home_rows = home.read_text(encoding="utf-8").splitlines()
+    if any("[[Bitacora" in line for line in home_rows):
+        return []
+    anchor = next((i for i, line in enumerate(home_rows) if "[[Preguntas_Abiertas" in line), None)
+    if anchor is None:
+        return [f"no encuentro dónde enlazar la Bitácora en MOC_Inicio; añádelo a mano: {CHRONICLE_HOME_LINE}"]
+    home_rows.insert(anchor + 1, CHRONICLE_HOME_LINE)
+    home.write_text("\n".join(home_rows) + "\n", encoding="utf-8", newline="\n")
+    return []
+
+
 def add_chronicle_entry(vault, title, lines, date=None):
     """Añade una entrada arriba de la Bitácora, debajo de su marca: `## <fecha> · <título>` y sus líneas.
     Si la Bitácora no existe, la crea y la enlaza desde MOC_Inicio. Devuelve los avisos."""
-    warnings = []
+    warnings = ensure_chronicle(vault)
     path = vault / CHRONICLE
-    text = path.read_text(encoding="utf-8") if path.is_file() else CHRONICLE_HEADER
-    created = not path.is_file()
     entry = [f"## {date or datetime.date.today().isoformat()} · {title}", *lines, ""]
-    rows = text.splitlines()
+    rows = path.read_text(encoding="utf-8").splitlines()
     at = next((i + 1 for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), None)
     if at is None:
         # Sin la marca (se borró a mano): tras el título y su presentación, antes de la primera entrada
@@ -930,20 +949,7 @@ def add_chronicle_entry(vault, title, lines, date=None):
     marker = next((i for i, line in enumerate(rows) if line.strip() == CHRONICLE_MARKER), None)
     if marker is not None and marker + 1 < len(rows) and rows[marker + 1].strip():
         rows.insert(marker + 1, "")
-    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(rows).rstrip("\n") + "\n", encoding="utf-8", newline="\n")
-    if created:
-        home = vault / HOME_MOC
-        if home.is_file():
-            home_rows = home.read_text(encoding="utf-8").splitlines()
-            if not any("[[Bitacora" in line for line in home_rows):
-                anchor = next((i for i, line in enumerate(home_rows) if "[[Preguntas_Abiertas" in line), None)
-                if anchor is None:
-                    warnings.append(f"no encuentro dónde enlazar la Bitácora en MOC_Inicio; añádelo a mano: "
-                                    f"{CHRONICLE_HOME_LINE}")
-                else:
-                    home_rows.insert(anchor + 1, CHRONICLE_HOME_LINE)
-                    home.write_text("\n".join(home_rows) + "\n", encoding="utf-8", newline="\n")
     return warnings
 
 
