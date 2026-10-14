@@ -18,7 +18,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (PENDING_NOTE, blocked_links, find_gaps, known_types, load_index,  # noqa: E402
+from vault_lib import (PENDING_NOTE, blocked_links, find_gaps, gap_kind, known_types, load_index,  # noqa: E402
                        load_modules, load_pending_types, split_note, strip_links)
 from vault_lib import vault_path  # noqa: E402
 
@@ -44,13 +44,6 @@ def density_text(ready, entities):
     if not entities:
         return "todavía no hay entidades"
     return f"{ready / entities:.1f} enlaces pendientes que se pueden crear por cada entidad"
-
-
-def kind_of(gap):
-    """El tipo con que se agrupa y se muestra un enlace pendiente: el módulo que lo creará si solo
-    hay uno (un asentamiento, no «lugar»), o su tipo."""
-    modules = gap["expected_modules"]
-    return modules[0] if len(modules) == 1 else (gap["expected_type"] or "")
 
 
 def first_mention(vault, notes, gap):
@@ -79,7 +72,7 @@ def build(vault, gaps, modules, index):
     blocked = blocked_links(vault)
     by_kind, untyped = {}, []
     for gap in gaps:
-        (by_kind.setdefault(kind_of(gap), []) if gap["expected_type"] else untyped).append(gap)
+        (by_kind.setdefault(gap_kind(gap), []) if gap["expected_type"] else untyped).append(gap)
     ready = [g for g in gaps if g["expected_modules"] and g["link"].lower() not in blocked]
     waiting = {k: len(items) for k, items in by_kind.items() if not items[0]["expected_modules"]}
     confirming = sum(1 for g in gaps if g["link"].lower() in blocked)
@@ -100,7 +93,7 @@ def build(vault, gaps, modules, index):
         for gap in sorted(items, key=lambda g: (-len(g["notes"]), g["link"].lower())):
             notes = gap["notes"] or sorted({o["note"] for o in gap["occurrences"]})
             named = ", ".join(f"[[{Path(n).stem}]]" for n in notes[:4]) + (" …" if len(notes) > 4 else "")
-            kind = kind_of(gap) or "?"
+            kind = gap_kind(gap) or "?"
             if len(gap["expected_modules"]) > 1:
                 kind += f" ({', '.join(gap['expected_modules'])})"
             if gap["link"].lower() in blocked:

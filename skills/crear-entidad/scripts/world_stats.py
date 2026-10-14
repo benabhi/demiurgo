@@ -22,9 +22,9 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, OPEN_QUESTIONS, PENDING_NOTE, SECRET_TYPE,  # noqa: E402
-                       SECRETS_FOLDER, STATS_HOME_LINE, STATS_NOTE, blocked_links, find_gaps, glossary_table,
-                       is_confirmation, load_index, load_modules, map_applies, map_status, parse_map_key,
-                       parse_map_routes, split_note)
+                       SECRETS_FOLDER, STATS_HOME_LINE, STATS_NOTE, blocked_links, find_gaps, gap_kind,
+                       glossary_table, is_confirmation, load_index, load_modules, map_applies, map_status,
+                       parse_map_key, parse_map_routes, split_note)
 from vault_lib import vault_path  # noqa: E402
 
 TOP = 10
@@ -158,7 +158,7 @@ def build_note(data, today):
     lines += ["", "## Lo más nombrado que falta"]
     if data["ready"]:
         lines += ["| Enlace pendiente | Tipo | Notas que lo nombran |", "|---|---|---|"]
-        lines += [f"| {g['link'].replace('_', ' ')} | {g['expected_type']} | {len(g['notes'])} |" for g in data["ready"][:TOP]]
+        lines += [f"| {g['link'].replace('_', ' ')} | {gap_kind(g)} | {len(g['notes'])} |" for g in data["ready"][:TOP]]
     else:
         lines.append("- Nada que se pueda crear ya.")
 

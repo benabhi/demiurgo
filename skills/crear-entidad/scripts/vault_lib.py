@@ -736,6 +736,13 @@ def find_gaps(vault, excluded=DEFAULT_EXCLUDED, pending_types=None):
     return sorted(gaps.values(), key=lambda g: g["link"].lower()), malformed
 
 
+def gap_kind(gap):
+    """El tipo con que se muestra un enlace pendiente: el módulo que lo creará si solo hay uno (un
+    asentamiento, no «lugar»), o su tipo."""
+    modules = gap["expected_modules"]
+    return modules[0] if len(modules) == 1 else (gap["expected_type"] or "")
+
+
 def describe_expected(gap):
     """Texto del tipo esperado y de los módulos que pueden completarlo."""
     expected = gap["expected_type"]

@@ -90,14 +90,14 @@ En modo mapa, el prompt es el de «La plantilla del prompt» de `mapas.md`, uno 
 
 ## Paso 3c: comprobar la imagen
 Toda imagen se comprueba, no solo los mapas. Mira la imagen guardada (léela con la herramienta de lectura de archivos) y compárala con lo que se pidió:
-- **Toda imagen:** repasa uno por uno los elementos de su «Descripción visual» (el sujeto y los rasgos que lo definen: «sin ojos», «la corona partida en dos», «el viejo y el niño en el tejado»); en un retrato, una sola figura; ningún texto, marco ni firma (tampoco un recuadro dibujado alrededor; la marca de agua de Gemini no cuenta); nada que rompa los pilares de la Ficha (una técnica o una época que no tocan); la técnica y la paleta de la Guía; el formato pedido.
+- **Toda imagen:** repasa uno por uno los elementos de su «Descripción visual» (el sujeto y los rasgos que lo definen: «sin ojos», «la corona partida en dos», «la mujer de la capa roja en el puente»); en un retrato, una sola figura; ningún texto, marco ni firma (tampoco un recuadro dibujado alrededor; la marca de agua de Gemini no cuenta); nada que rompa los pilares de la Ficha (una técnica o una época que no tocan); la técnica y la paleta de la Guía; el formato pedido.
 - **Un mapa,** además, lo que dice «Comprobación» en `mapas.md`. Lo primero son los marcadores: todos, una vez cada uno.
 
 Si algo falla, pide la corrección **en el mismo chat de Gemini**, nombrando el problema exacto y pidiendo que no cambie nada más. Descarga y guarda la imagen corregida (Paso 3b) y vuelve a comprobar. Como mucho dos correcciones: después, quédate con la mejor, enlázala y anota lo que quedó mal en las incidencias. Los intentos descartados no se borran: los archiva `keep` (Paso 4).
 
 Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle pequeño menos logrado no es un fallo.
 
-**El resultado queda en la nota:** en la línea del prompt de la imagen, ` · comprobada: <lo que se comprobó, en pocas palabras>` o, si algo quedó mal tras las correcciones, ` · comprobada, con fallos: <lo que quedó mal>`; en un mapa, en la línea de su edición (`comprobado: 12/12 marcadores, sin repetidos`).
+**El resultado queda en la nota:** en la línea del prompt de la imagen, ` · comprobada: <lo que se comprobó, en pocas palabras>` y, si algo quedó mal tras las correcciones, detrás, ` · con fallos: <solo lo que quedó mal>` (` · comprobada: la mujer de la capa roja, el puente de cuerdas, el río en el fondo · con fallos: el escudo del fondo lleva unos trazos que parecen letras`); en un mapa, en la línea de su edición (`comprobado: 12/12 marcadores, sin repetidos`).
 
 ## Paso 4: enlazar en la nota
 - **Primero, deja la aceptada con su nombre** y archiva lo demás, sin borrar nada:
@@ -111,7 +111,7 @@ Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle p
 - **Lo anterior, enlazado:** si `keep` archivó una imagen que no era un descarte, la nota la enlaza para poder volver a ella: en la sección Imagen, `- **Versiones anteriores:** [[Retrato_X_v1.jpg|versión 1]]` (cada una se añade a la lista); en un mapa, en su sección Mapa (ver «Guardar y enlazar» en `mapas.md`). Para volver a una anterior, muévela de `Anteriores` a su carpeta con un nombre `_v<n>` y pásala a `keep` como aceptada: la vigente se archiva a su vez.
 - Propiedad `imagen: "[[<nombre final>]]"`, con su extensión real.
 - Embed justo debajo del resumen en cita: `![[<nombre final>|300]]` para retratos y otras imágenes cuadradas, `![[<nombre final>|600]]` para las apaisadas. Sustituye al anterior si regeneras.
-- En la sección Imagen, `**Prompt:**` con la fecha de generación, la técnica, el modelo y la comprobación (`2026-10-10 · técnica: Boceto en acuarela (acuarela) · modelo: Gemini (navegador) · comprobada: el cometa con su cola de velo, el valle con lámparas, el viejo y el niño en el tejado`) y, debajo, el prompt en un bloque de código, tal cual se generó pero **sin** la orden `Generate an image:`, que es para Gemini. Así se puede reutilizar.
+- En la sección Imagen, `**Prompt:**` con la fecha de generación, la técnica, el modelo y la comprobación (`2026-10-10 · técnica: Boceto en acuarela (acuarela) · modelo: Gemini (navegador) · comprobada: la mujer de la capa roja, el puente de cuerdas, el río en el fondo`) y, debajo, el prompt en un bloque de código, tal cual se generó pero **sin** la orden `Generate an image:`, que es para Gemini. Así se puede reutilizar.
 - Actualiza `ultima_revision` (sin comillas).
 - **Un mapa** se enlaza como dice «Guardar y enlazar» en `mapas.md`: la propiedad `mapa`, el mapa embebido y la línea de la edición en la sección Mapa, el prompt del mapa en la sección Imagen y, al final, `map_key.py <Nota> --charted`.
 

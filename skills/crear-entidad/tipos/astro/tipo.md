@@ -73,7 +73,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `fenomenos` que provoca o que se le atribuyen;
   - `sistemas` que lo usan o que explican lo que hace (una astrología, una navegación, un poder que crece con su luz);
   - `pueblos` que lo miran, lo nombran o lo siguen;
-  - `obras` que lo describen (un tratado, un mapa del cielo);
+  - `obras` que lo describen (un tratado, un mapa del cielo): cada una lo tiene en su `trata_de`;
   - `relacionados`: otros astros con los que va de la mano (las estrellas de una constelación, el astro que lo eclipsa); recíproca;
   - `era` en que apareció o cambió.
 - `fuentes`: los textos o relatos de donde se sabe (imprescindible en uno oculto o desaparecido).

@@ -95,7 +95,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **La Ficha:** la técnica decide cómo se hizo y cuántas copias puede haber; los poderes, si la obra puede tener alguno (un texto que hace algo es también un objeto o la regla de un sistema); el conflicto central se nota en lo que cuenta o en lo que le pasó.
 - **Lo que ya existe:** las notas que ya la nombran (como enlace pendiente: la fuente de una ruta perdida, el cantar de un mito, el libro de un sistema) cuentan cosas de ella. Léelas (`build_context.py`) y no las contradigas: si un mito dice que su cantar se perdió, se perdió.
 - **Su versión de los hechos:** si cuenta un evento que ya existe, su relato puede diferir del de la nota del evento, y la diferencia se dice («la crónica calla la matanza del puerto»).
-- **Reciprocidad:** sus autores la listan en `obras`; sus creencias, en `textos`; sus mitos, sus idiomas y sus sistemas, en `obras`; sus obras relacionadas, en `relacionadas`.
+- **Reciprocidad:** sus autores la listan en `obras`; sus creencias, en `textos`; sus mitos, sus idiomas y sus sistemas, en `obras`; sus obras relacionadas, en `relacionadas`. De lo que trata (`trata_de`), solo la lista quien tiene unas `obras` que lo describen (un astro); nunca un personaje, cuyas `obras` son las que hizo.
 - **Glosario:** registra su título (como obra), sus otros títulos y los términos que nacen de ella (un verso que se volvió dicho, un personaje que se volvió insulto).
 
 ## Enlaces pendientes
