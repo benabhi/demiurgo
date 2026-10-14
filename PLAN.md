@@ -36,6 +36,12 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
   - `--in`: lo que hay dentro de un lugar (también en sus barrios, lugares y comarcas), por tipo y con cómo se relaciona con él, y lo que se nombra dentro y aún no tiene nota;
   - `--timeline`: lo que tiene fecha, en orden, con los años del calendario y la marca de hoy;
   - `--outline` y `--section`: las secciones de una nota y el texto de las que hacen falta.
+- [ ] **`narrar`.** Hecha; se tilda cuando se pruebe. Relatos, escenas, crónicas y documentos ambientados en el mundo, en `90_Narrativa` (el espacio que la Guía reserva para los usos del mundo), una subcarpeta por forma, con su índice y su plantilla, creados la primera vez. Las decisiones del usuario:
+  - **No son entidades:** cuentan el mundo, no lo cambian. Fuera del índice y de los enlaces pendientes, y contadas aparte en las Estadísticas; en el grafo, con su color.
+  - **Lo inventado se queda en la narración:** solo se enlaza lo que ya tiene nota; lo demás va sin enlace, en «Inventado aquí», y se ofrece crearlo como entidad.
+  - **Los secretos, solo si se piden:** entonces la narración lleva `usa_secretos` y la etiqueta `secreto`, y queda fuera del «Grafo sin secretos».
+  - **La ilustración, ofrecida al final:** `generar-imagen` tiene el tipo `narracion` (su momento clave, en `Escenas`, con el prefijo `Narracion_`).
+  - Antes de escribir reúne el contexto con `consultar-mundo` (sin secretos, salvo que se pidan), comprueba fechas, viajes y quién vive en cada momento, y avisa si la idea choca con el canon. `narrative.py` prepara la estructura, comprueba cada narración (enlaces, secretos, quién vive y qué existe en su fecha, resumen y notas; cuenta las palabras) y lista las narraciones por entidad o por serie.
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
@@ -169,6 +175,7 @@ Etapas:
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
+- [ ] `narrar` con un mundo con contenido: una escena y un relato con personajes y lugares que existen, una crónica que siga a otra en una serie, una que pida usar un secreto, una que choque con el canon (debe avisar) y su ilustración.
 - [ ] `consultar-mundo` con un mundo con contenido: preguntas de cada fila de su tabla, una sobre algo pendiente, otra que toque un secreto (con y sin spoilers) y una que no conste.
 - [ ] `revisar-mundo` con borradores reales (los de una tanda del motor): una tanda con las cuatro decisiones, una corrección por «Other», un lugar con mapa quitado del mundo (su zona retirada y sus menciones reescritas) y otro archivado para rehacerlo, y el motor creándolo de nuevo.
 - [ ] `inicializar-mundo` con un mundo nuevo (en `pruebas/<nombre>/`): uno que sea una sola ciudad, con algo que ya tenga nombre propio, y una tanda corta del motor: el foco como asentamiento completando su enlace, sus barrios y lo de fuera marcado `fuera` sin crearse.
@@ -353,7 +360,6 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 
   Queda por decidir cómo se reparte en tandas (con presupuesto y por prioridad, como el motor) y si ofrece un modo de solo revisión.
 - **Ideas para más adelante** (sin decidir):
-  - `narrar`: relatos, escenas o crónicas ambientados en el mundo, coherentes con el canon;
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;
   - `exportar-mundo`: un compendio del mundo (PDF, web o wiki);
   - cronologías y genealogías generadas a partir de eventos, linajes y personajes.

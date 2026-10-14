@@ -116,7 +116,7 @@ Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle p
 - **Un mapa** se enlaza como dice «Guardar y enlazar» en `mapas.md`: la propiedad `mapa`, el mapa embebido y la línea de la edición en la sección Mapa, el prompt del mapa en la sección Imagen y, al final, `map_key.py <Nota> --charted`.
 
 ## Paso 5: informe
-Si la invocó `crear-entidad` o `expandir-mundo`, devuélveles el nombre del archivo, la técnica usada y las incidencias: la imagen sale en su informe final y en su entrada de la Bitácora. Si se invocó sola, añade una entrada a la **Bitácora** (`00_Sistema/Bitacora.md`):
+Si la invocó `crear-entidad`, `expandir-mundo` o `narrar`, devuélveles el nombre del archivo, la técnica usada y las incidencias: la imagen sale en su informe final y en su entrada de la Bitácora. Si se invocó sola, añade una entrada a la **Bitácora** (`00_Sistema/Bitacora.md`):
 ```bash
 python <crear-entidad>/scripts/log_entry.py --title "Imagen: <Nombre>" --line "**Nueva imagen** de [[<Nota>|<Nombre>]] en <técnica> (<versión>)."
 ```

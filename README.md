@@ -20,6 +20,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Una bitácora del mundo** (`00_Sistema/Bitacora.md`): cada creación, entidad, tanda del motor, imagen o mapa deja una entrada breve con su fecha, lo creado y lo modificado, para ver de un vistazo cómo fue creciendo el mundo.
 - **Estadísticas del mundo** (`00_Sistema/Estadisticas.md`): cuántas entidades hay por tipo y por relevancia, los enlaces pendientes, las imágenes y los mapas que toca redibujar, lo más nombrado que falta y lo más enlazado. Se rehace sola al terminar cada tarea, y sus cifras van también en el frontmatter, para un tablero.
 - **Pregúntale al mundo:** `/consultar-mundo` responde con lo que dice la bóveda (qué es algo, qué hay en un lugar, cuánto se tarda de un sitio a otro, qué pasó y cuándo), cita sus notas, distingue el canon de los borradores y aparta los secretos, o los oculta para enseñar el mundo sin spoilers.
+- **Cuéntalo:** `/narrar` escribe relatos, escenas, crónicas y documentos (cartas, diarios, canciones) ambientados en el mundo. Antes reúne lo que necesita y comprueba fechas, lugares y quién vive en cada momento; lo que inventa se queda en la narración, no usa los secretos salvo que lo pidas, y al final te ofrece ilustrar el momento clave.
 - **Tú decides qué es canon:** todo nace como borrador. `/revisar-mundo` te los muestra por tandas, de lo que más pesa a lo que menos, y cada uno pasa a canon, sigue en borrador o se archiva, con sus imágenes, sus secretos y su sitio en los mapas. Nada se borra.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
@@ -32,8 +33,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | `generar-imagen` | La imagen de una entidad y el mapa de un lugar. La invoca `crear-entidad` sola; también sirve para regenerarla (`/generar-imagen Nombre_de_la_Nota acuarela`) o para dibujar un mapa (`/generar-imagen Nombre_de_la_Nota mapa`). |
 | `revisar-mundo` | Repasa los borradores por tandas (`/revisar-mundo`): cada uno pasa a canon, sigue en borrador o se archiva, para rehacerlo o para quitarlo del mundo. |
 | `consultar-mundo` | Responde preguntas sobre el mundo con lo que dice la bóveda (`/consultar-mundo ¿quién gobierna el puerto?`), citando sus notas, sin leerla entera. |
+| `narrar` | Relatos, escenas, crónicas y documentos ambientados en el mundo, coherentes con su canon (`/narrar escena la noche en que volvió el cometa`), en `90_Narrativa`. |
 
-Las seis van juntas: `expandir-mundo`, `revisar-mundo` y `consultar-mundo` usan los scripts de `crear-entidad`.
+Las siete van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo` y `narrar` usan los scripts de `crear-entidad`.
 
 ## Requisitos
 - **Claude Code.**
@@ -51,7 +53,7 @@ Las seis van juntas: `expandir-mundo`, `revisar-mundo` y `consultar-mundo` usan 
    ```bash
    git clone https://github.com/benabhi/skills-world-building.git
    ```
-2. Pon las seis carpetas de `skills/` donde Claude Code busca las skills:
+2. Pon las siete carpetas de `skills/` donde Claude Code busca las skills:
    - en `~/.claude/skills/`, para tenerlas en todos tus proyectos;
    - o en `<tu proyecto>/.claude/skills/`, solo para un mundo.
 
@@ -91,7 +93,7 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 En desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
 - la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
-- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos) y `consultar-mundo` (preguntas sobre el mundo) están hechas y esperan su prueba;
+- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo) y `narrar` (relatos y escenas) están hechas y esperan su prueba;
 - faltan las imágenes por API y la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
 
 El plan está en [PLAN.md](PLAN.md).

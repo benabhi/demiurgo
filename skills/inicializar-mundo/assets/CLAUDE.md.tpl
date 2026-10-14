@@ -14,6 +14,7 @@ La identidad y los pilares del mundo están en la Ficha, que se carga a continua
 - Mapa: `{{BOVEDA}}/00_Sistema/MOC_Inicio.md` y el `README.md` de cada carpeta (qué va y qué no).
 - Convenciones: `{{BOVEDA}}/00_Sistema/04_Convenciones/` (Organización, Nombres, Canon, Estilo y Tono, Glosario, Registro de Canon).
 - Cada nota vive en una sola carpeta, según qué es; las relaciones se expresan con enlaces.
+- Las narraciones (relatos, escenas, crónicas y documentos, con `/narrar`) van en `90_Narrativa`: no son entidades; cuentan el mundo, no lo cambian.
 - No crees, renombres ni muevas carpetas sin que se pida. Las skills que añadan estructura la registran en la Guía de Organización.
 - Grafo de Obsidian: un color por tipo de entidad (por la etiqueta del tipo en `tags`), los nombres visibles desde lejos y sin las notas del sistema (las flechas, a mano: ensucian); en Marcadores, «Grafo sin secretos» (para enseñar el mundo sin spoilers) y «Grafo completo», que además repone la configuración si se pierde. Lo aplica `graph_colors.py` de `crear-entidad`: vuelve a ejecutarlo si llega un tipo nuevo, sin un grafo abierto en Obsidian (uno abierto guarda el suyo encima).
 

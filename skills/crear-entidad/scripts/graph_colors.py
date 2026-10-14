@@ -34,7 +34,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import load_modules  # noqa: E402
+from vault_lib import NARRATIVE_TYPE, load_modules  # noqa: E402
 from vault_lib import vault_path  # noqa: E402
 
 GRAPH_FILE = ".obsidian/graph.json"
@@ -46,6 +46,8 @@ FULL_VIEW = "Grafo completo"
 SAFE_VIEW = "Grafo sin secretos"
 TYPE_GROUP_RE = re.compile(r"^tag:#([\w-]+)$")
 COLOR_RE = re.compile(r"^#[0-9A-Fa-f]{6}$")
+# Las narraciones, en un color de tinta, distinto de los de las entidades
+NARRATIVE_COLOR = "#3E2723"
 # Lo que se muestra: ni los adjuntos ni las etiquetas como nodos; sí los enlaces pendientes y las notas sueltas.
 # Los nombres se borran al alejar el zoom: con el valor de Obsidian (textFadeMultiplier 0), al bajar de la
 # mitad; con -1, al bajar de un cuarto. Las flechas no se tocan: ensucian el grafo y se activan a mano.
@@ -61,12 +63,15 @@ def fallback_color(name):
 
 
 def type_colors(modules=None):
-    """[(tipo, color «#RRGGBB»)] de todos los módulos, en orden alfabético."""
+    """[(tipo, color «#RRGGBB»)] de todos los módulos, en orden alfabético, y el de las narraciones (narrar), que
+    no son un módulo pero se ven en el grafo enlazadas a lo que cuentan."""
     modules = modules if modules is not None else load_modules()
     pairs = []
     for tipo in sorted(modules):
         color = modules[tipo].get("color", "")
         pairs.append((tipo, color if COLOR_RE.match(color) else fallback_color(tipo)))
+    if NARRATIVE_TYPE not in modules:
+        pairs.append((NARRATIVE_TYPE, NARRATIVE_COLOR))
     return pairs
 
 

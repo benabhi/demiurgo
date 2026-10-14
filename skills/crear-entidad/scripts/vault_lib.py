@@ -64,7 +64,11 @@ CANON_LOG = "00_Sistema/04_Convenciones/Registro_de_Canon.md"
 OPTIONAL_PROPS = ("revisado",)
 # Ni el registro de pendientes, ni la Bitácora, ni las Estadísticas cuentan como notas que nombran entidades:
 # un enlace que solo quedara en ellas no debe seguir pendiente
-DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", ARCHIVED_FOLDER, PENDING_NOTE, CHRONICLE, STATS_NOTE)
+# Las narraciones (narrar) no son entidades: cuentan el mundo, no lo cambian. No entran en el índice, y sus
+# enlaces (solo a lo que ya tiene nota) no abren enlaces pendientes
+NARRATIVE_FOLDER = "90_Narrativa"
+NARRATIVE_TYPE = "narracion"
+DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", ARCHIVED_FOLDER, PENDING_NOTE, CHRONICLE, STATS_NOTE, NARRATIVE_FOLDER)
 
 
 # --- Bóveda ------------------------------------------------------------------

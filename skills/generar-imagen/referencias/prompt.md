@@ -48,6 +48,7 @@ Cada tipo define lo que muestra, el formato, la carpeta (dentro de `00_Sistema/0
 | evento | escena dramática del momento clave | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Evento_` |
 | astro | el astro sobre un paisaje del mundo, como se ve desde él | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Astro_` |
 | secreto | no lleva imagen | — | — | — |
+| narracion | el momento clave de la narración (no es una entidad: la ofrece `narrar` al terminar) | `Wide 16:9 landscape format` | `Ilustraciones/Escenas` | `Narracion_` |
 
 Si el tipo de la nota no figura en esta tabla, el módulo todavía no tiene imagen: dilo y detente. Cada módulo nuevo añade aquí su fila y su sección.
 
@@ -527,3 +528,19 @@ La obra es el sujeto: lo que muestra o lo que se canta se entiende sin palabras.
 | LUZ | La luz y el ánimo | `a red dawn behind the giant, awe and dread` |
 
 **Un relato, no una crónica:** la escena se ve como la imaginan quienes lo cuentan, con la escala y los símbolos del mito (figuras enormes, gestos solemnes, señales en el cielo), no como pasó: la verdad no se ve. Una profecía se muestra como la imaginan quienes la esperan. Las figuras son tipos, sin nombres. **Técnicas sugeridas:** `tapiz` o `manuscrito`; si el usuario las quiere para todos sus mitos, van en la tabla "Técnica por tipo" de su Guía Visual.
+
+## narracion — el momento clave de la narración
+```
+{ESTILO}. A wide illustration of a scene from a story set in an invented world, {ENCUADRE}. Moment: {MOMENTO}. Figures: {FIGURAS}. Setting: {ESCENARIO}. Focal detail: {DETALLE}. Lighting and mood: {LUZ}. {ACABADO}. {RESTRICCIONES}. Wide 16:9 landscape format.
+```
+
+| Campo | Fuente en la narración | Ejemplo |
+|---|---|---|
+| ENCUADRE | Desde dónde se ve el momento, según la voz que lo cuenta | `seen from the doorway of a crowded common room` |
+| MOMENTO | El momento clave, congelado: el de su «Descripción visual» | `the instant a soaked messenger bursts in and every head turns` |
+| FIGURAS | Quiénes están, sin nombres: tipos, gestos y lo que los distingue en la narración | `a young miner with a lantern, an old woman frozen with a cup halfway to her mouth` |
+| ESCENARIO | Dónde ocurre, con lo que la narración cuenta del lugar (y su nota, si lo tiene) | `a low smoky tavern with a single hearth and nets hung from the beams` |
+| DETALLE | Un objeto o un gesto que cuente la historia sin palabras | `a sealed letter on the floor, its wax still soft` |
+| LUZ | La luz y el ánimo de la escena | `cold blue light from the open door against warm firelight, dread` |
+
+**Lo que cuenta la narración, no el mundo entero:** la imagen ilustra su momento clave con los detalles que da el texto, y lo que el texto no cuenta sale de las notas del mundo que usa. Las figuras, sin nombres; si un personaje con nota tiene retrato, se le describe igual que en él, para que se le reconozca. Nada gráfico: lo duro se sugiere. Una narración que usa secretos no muestra la verdad oculta salvo que el usuario lo pida.

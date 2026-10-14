@@ -17,6 +17,7 @@ Uso: `/consultar-mundo <pregunta>`, o cualquier pregunta sobre el mundo.
 - **Los secretos:** el usuario es el autor y puede saber la verdad, pero esta va aparte, al final y marcada 🔒. Si pide la respuesta «sin spoilers», «como jugador», «lo que sabe un habitante» o para enseñarla a otros, usa `--no-secrets` en todas las consultas y no digas que hay secretos.
 - **Contradicciones:** si dos notas no coinciden, dilo, y di cuál es canon. Manda la canon más reciente, según la Guía de Canon.
 - **Lo pendiente:** algo que se nombra y aún no tiene nota se responde con lo que dicen de ello las notas que lo nombran, avisando de que no tiene nota.
+- **Las narraciones** (`90_Narrativa`) no son fuente del mundo: lo que cuentan o inventan no consta como hecho. Se citan solo si se pregunta por ellas.
 - **En el chat,** los enlaces van en Markdown con la ruta del archivo, tal como los dan los scripts; nunca `[[...]]`.
 
 ## Qué consulta responde cada pregunta
@@ -34,6 +35,7 @@ Las consultas son de esta skill (`<directorio de esta skill>/scripts/query_world
 | ¿Cuántos hay? ¿Qué falta? ¿Qué es lo más nombrado sin nota? | `world_stats.py --print` y `search_vault.py --type <tipo>` |
 | ¿Qué hay en el mapa de un lugar? | `map_key.py <Lugar>` |
 | ¿Qué está por decidir? | `search_vault.py "<tema>" --in preguntas` |
+| ¿Qué narraciones hay de algo? ¿Cómo sigue una serie? | `<narrar>/scripts/narrative.py list --about <Nombre>` o `--serie <Serie>` |
 
 Los nombres valen como nombre de archivo, como título o como alias. Si una consulta no encuentra algo, prueba con `search_vault.py`, que mira también los resúmenes y los nombres parecidos.
 

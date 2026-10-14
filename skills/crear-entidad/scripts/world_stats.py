@@ -21,7 +21,8 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, OPEN_QUESTIONS, OUTSIDE_TYPE, PENDING_NOTE, SECRET_TYPE,  # noqa: E402
+from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, NARRATIVE_FOLDER, OPEN_QUESTIONS, OUTSIDE_TYPE, PENDING_NOTE,  # noqa: E402
+                       SECRET_TYPE,
                        SECRETS_FOLDER, STATS_HOME_LINE, STATS_NOTE, blocked_links, find_gaps, gap_kind,
                        glossary_table, is_confirmation, load_index, load_modules, map_applies, map_status,
                        parse_map_key, parse_map_routes, split_note)
@@ -54,6 +55,9 @@ def collect(vault):
     entities = [e for e in index if e["tipo"] != SECRET_TYPE]
     archive = vault / ARCHIVED_FOLDER
     archived = [p for p in archive.rglob("*.md") if p.name != "README.md"] if archive.is_dir() else []
+    stories = vault / NARRATIVE_FOLDER
+    narratives = [p for p in stories.rglob("*.md") if p.name != "README.md" and not p.name.startswith("MOC_")] \
+        if stories.is_dir() else []
     gaps, _ = find_gaps(vault)
     blocked = blocked_links(vault)
     ready = sorted((g for g in gaps if g["expected_modules"] and g["link"].lower() not in blocked),
@@ -79,7 +83,8 @@ def collect(vault):
     questions_path = vault / OPEN_QUESTIONS
     questions = [line.strip() for line in questions_path.read_text(encoding="utf-8").splitlines()
                  if line.strip().startswith("- [ ]")] if questions_path.is_file() else []
-    return {"modules": modules, "entities": entities, "secrets": secrets, "archived": archived, "gaps": gaps,
+    return {"modules": modules, "entities": entities, "secrets": secrets, "archived": archived,
+            "narratives": narratives, "gaps": gaps,
             "ready": ready, "waiting": waiting, "untyped": untyped, "outside": outside, "linkers": linkers,
             "maps": maps,
             "glossary": glossary_table(vault), "questions": questions, "registry": (vault / PENDING_NOTE).is_file(),
@@ -100,7 +105,8 @@ def build_note(data, today):
         by_type[entry["tipo"]].append(entry)
 
     numbers = {"entidades": len(entities), "borradores": drafts, "canon": canon, "secretos": len(data["secrets"]),
-               "archivadas": len(data["archived"]), "enlaces_pendientes": len(data["gaps"]),
+               "archivadas": len(data["archived"]), "narraciones": len(data["narratives"]),
+               "enlaces_pendientes": len(data["gaps"]),
                "pendientes_listos": len(data["ready"]), "pendientes_por_confirmar": len(data["waiting"]),
                "con_imagen": len(with_image), "mapas": len(maps), "mapas_por_dibujar": len(to_draw),
                "terminos_glosario": len(data["glossary"]), "preguntas_abiertas": len(data["questions"]),
@@ -114,7 +120,9 @@ def build_note(data, today):
                     + (f" · relevancia media {decimal(sum(relevances) / len(relevances))}" if relevances else "")
                     if entities else ""))
     lines.append(f"- **Secretos:** {len(data['secrets'])} (en `{SECRETS_FOLDER}`) · "
-                 f"**archivadas:** {len(data['archived'])} (en `{ARCHIVED_FOLDER}`)")
+                 f"**archivadas:** {len(data['archived'])} (en `{ARCHIVED_FOLDER}`)"
+                 + (f" · **narraciones:** {len(data['narratives'])} (en `{NARRATIVE_FOLDER}`)"
+                    if data["narratives"] else ""))
     density = len(data["ready"]) / max(len(entities), 1)
     lines.append(f"- **Enlaces pendientes:** {len(data['gaps'])} · {len(data['ready'])} se pueden crear ya "
                  f"({decimal(density)} por entidad), {len(data['waiting'])} "
