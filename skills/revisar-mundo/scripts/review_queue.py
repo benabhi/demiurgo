@@ -14,7 +14,12 @@ canon); sus secretos; su imagen y su mapa; los enlaces pendientes que solo nombr
 desaparecen) y los avisos del auditor sobre ella. Los enlaces van en Markdown, con la ruta del archivo,
 para mostrarlos en el chat.
 
-Ejemplos:  review_queue.py                    (la tanda siguiente, de 8)
+Con --summary, solo el recuento, para que el usuario elija cuántos revisar: cuántos borradores hay (del motor y
+a mano), los secretos, los ya revisados, cuántos hay de cada tipo, los que más pesan y cuánto le falta al motor
+para detenerse.
+
+Ejemplos:  review_queue.py --summary          (cuántos hay, sin fichas)
+           review_queue.py                    (la tanda siguiente, de 8)
            review_queue.py --limit 4 --type personaje
            review_queue.py --origin procedural
            review_queue.py --skip Aldric_Voss --skip Puerto_Gris"""
@@ -32,6 +37,9 @@ from vault_lib import (OPEN_QUESTIONS, SECRET_TYPE, find_gaps, first, is_confirm
 from vault_lib import vault_path  # noqa: E402
 
 DEFAULT_LIMIT = 8
+# El motor se detiene con tantos borradores suyos sin revisar (el `--review-limit` por defecto de select_target)
+MOTOR_LIMIT = 20
+TOP_WEIGHT = 3
 MAX_LINKERS = 4
 MAX_OWN_LINKS = 5
 PROPOSED_RE = re.compile(r"propuesto al crear \[\[([^\]|#^\\]+)", re.IGNORECASE)
@@ -114,6 +122,33 @@ def card(vault, number, entry, data):
     return lines
 
 
+def summary(index, weight):
+    """El recuento de los borradores, para elegir cuántos revisar."""
+    drafts = [e for e in index if e["estado"] == "borrador"]
+    if not drafts:
+        print("No hay borradores que revisar.")
+        return
+    procedural = sum(1 for e in drafts if e["origen"] == "procedural")
+    secrets = [e for e in drafts if e["tipo"] == SECRET_TYPE]
+    reviewed = sum(1 for e in drafts if e["revisado"])
+    print(f"Borradores por revisar: {len(drafts)} · {procedural} del motor y {len(drafts) - procedural} a mano"
+          + (f" · {len(secrets)} {'es secreto' if len(secrets) == 1 else 'son secretos'}" if secrets else "")
+          + (f" · {reviewed} ya {'revisado que sigue' if reviewed == 1 else 'revisados que siguen'} en borrador"
+             if reviewed else ""))
+    kinds = {}
+    for entry in drafts:
+        if entry["tipo"] != SECRET_TYPE:
+            kinds[entry["tipo"]] = kinds.get(entry["tipo"], 0) + 1
+    print("Por tipo: " + ", ".join(f"{kind} {count}" for kind, count in
+                                   sorted(kinds.items(), key=lambda item: (-item[1], item[0]))))
+    fresh = sorted((e for e in drafts if not e["revisado"] and e["tipo"] != SECRET_TYPE),
+                   key=lambda e: (-weight(e), e["fecha"]))
+    if fresh:
+        print("Lo que más pesa: " + ", ".join(f"{e['titulo'] or e['name']} ({e['tipo']})" for e in fresh[:TOP_WEIGHT]))
+    print(f"En canon: {sum(1 for e in index if e['estado'] == 'canon')} · el motor se detiene con {MOTOR_LIMIT} "
+          f"borradores suyos sin revisar, y tiene {procedural}")
+
+
 def main():
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -125,6 +160,8 @@ def main():
     parser.add_argument("--origin", choices=("procedural", "manual"), help="Solo los del motor o solo los hechos a mano")
     parser.add_argument("--skip", action="append", default=[], metavar="NOTA",
                         help="Un borrador que no debe salir en esta tanda (repetible)")
+    parser.add_argument("--summary", action="store_true",
+                        help="Solo el recuento (cuántos hay, por origen y por tipo), sin fichas")
     args = parser.parse_args()
 
     vault = vault_path(args.vault)
@@ -139,6 +176,10 @@ def main():
         for target in entry["enlaces"]:
             if target.lower() != entry["name"].lower():
                 linkers.setdefault(target.lower(), []).append(entry)
+    weight = lambda e: 2 * (e["relevancia"] or 0) + len(linkers.get(e["name"].lower(), []))
+    if args.summary:
+        summary(index, weight)
+        return
     secrets = {}
     for entry in index:
         if entry["tipo"] == SECRET_TYPE:
@@ -160,7 +201,7 @@ def main():
     skipped = {name.strip().strip("[]").lower() for name in args.skip}
     drafts = [e for e in index if e["estado"] == "borrador" and e["name"].lower() not in skipped
               and (not args.type or e["tipo"] == args.type) and (not args.origin or e["origen"] == args.origin)]
-    queue = order(drafts, lambda e: 2 * (e["relevancia"] or 0) + len(linkers.get(e["name"].lower(), [])))
+    queue = order(drafts, weight)
     batch = queue[:max(args.limit, 1)]
 
     all_drafts = [e for e in index if e["estado"] == "borrador"]

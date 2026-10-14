@@ -1,24 +1,39 @@
 ---
 name: revisar-mundo
-description: Repasa con el usuario, por tandas, los borradores del mundo (lo que crearon crear-entidad y el motor) y aplica lo que decide de cada uno: pasa a canon, sigue en borrador, se archiva para rehacerlo o se quita del mundo, con sus imágenes, sus secretos, su zona en los mapas y las notas que lo nombran. Úsala para "revisa los borradores", "/revisar-mundo", "pasa a canon…", "archiva…" o cuando el motor se detiene por tener demasiados borradores sin revisar.
+description: Repasa con el usuario los borradores del mundo (lo que crearon crear-entidad y el motor): le dice cuántos hay, él elige cuántos revisar, y aplica lo que decide de cada uno: pasa a canon, sigue en borrador, se archiva para rehacerlo o se quita del mundo, con sus imágenes, sus secretos, su zona en los mapas y las notas que lo nombran. Úsala para "revisa los borradores", "/revisar-mundo", "pasa a canon…", "archiva…" o cuando el motor se detiene por tener demasiados borradores sin revisar.
 ---
 
 # Revisar el mundo
 
-Todo lo que crean `crear-entidad` y el motor nace como `borrador`; solo el usuario lo hace canon. Esta skill repasa los borradores por tandas, de lo que más pesa a lo que menos, y aplica lo que el usuario decide de cada uno.
+Todo lo que crean `crear-entidad` y el motor nace como `borrador`; solo el usuario lo hace canon. Esta skill le dice cuántos borradores hay, le deja elegir cuántos revisar y los repasa de lo que más pesa a lo que menos, en pantallas de 4, aplicando lo que decide de cada uno.
 
-Uso: `/revisar-mundo [N] [tipo]`: N borradores por tanda (8 por defecto, en pantallas de 4), y solo los de un tipo si se indica. «Solo lo del motor» o «solo lo mío» filtran por origen.
+Uso: `/revisar-mundo`, y te dice cuántos hay y te pregunta cuántos revisar. Si lo dices al pedirlo, no pregunta: `/revisar-mundo 12`, `/revisar-mundo personajes`, «solo lo del motor», «solo lo mío».
 
 ## Leer sin gastar tokens
 - La cola y la ficha de cada borrador las da un script: no leas las notas enteras para presentarlas.
 - Lee una nota solo para cotejarla (Paso 2) o para aplicar una corrección.
 - Para lo demás, los scripts de `crear-entidad`: `search_vault.py`, `build_context.py`, `audit_world.py --focus`.
 
-## Paso 1: la tanda
+## Paso 1: cuántos
 ```bash
-python <directorio de esta skill>/scripts/review_queue.py [--limit 8] [--type <tipo>] [--origin procedural|manual]
+python <directorio de esta skill>/scripts/review_queue.py --summary
 ```
-Dice cuántos borradores hay y cuáles entran en la tanda. De cada uno da una ficha:
+Da el recuento, sin fichas: cuántos borradores hay (del motor y a mano), los secretos, los ya revisados que siguen en borrador, cuántos hay de cada tipo, los que más pesan y cuánto le falta al motor para detenerse. Muéstralo en pocas líneas.
+
+Si el usuario no dijo cuántos revisar, pregúntalo con AskUserQuestion: «¿Cuántos revisamos ahora?». Las opciones dependen de cuántos hay:
+- **4:** una pantalla.
+- **8:** dos pantallas; solo si hay más de 8 (si no, «Todos» ya los cubre).
+- **Todos:** con el número (por ejemplo, «Todos (23)»), en pantallas de 4.
+- **Solo los del motor:** con el número; solo si hay borradores de los dos orígenes.
+- **«Other»:** un número, un tipo («los personajes»), o lo que el usuario quiera.
+
+Si hay 4 o menos, no preguntes: revísalos todos.
+
+## Paso 1b: la tanda
+```bash
+python <directorio de esta skill>/scripts/review_queue.py --limit <los que eligió> [--type <tipo>] [--origin procedural|manual]
+```
+Dice cuáles entran en la tanda. De cada uno da una ficha:
 - su tipo, relevancia, origen y fecha, y su resumen;
 - quién lo enlaza, y cuántas de esas notas están en canon;
 - lo que propuso al crearse y espera confirmación en Preguntas Abiertas;
@@ -73,7 +88,7 @@ Cada nota, por su nombre de archivo sin `.md`. `--reason` lleva el motivo que di
 - **Carpeta nueva:** si el script avisa de que creó `02_Activos/Anteriores`, regístrala en la Guía de Organización.
 
 ## Paso 6: siguiente pantalla y cierre
-- Sigue con la pantalla siguiente hasta completar la tanda.
+- Sigue con la pantalla siguiente hasta completar los que eligió el usuario.
 - Al terminar, una sola entrada en la Bitácora para toda la tanda, con las líneas que propuso el script en cada pantalla, juntas:
   ```bash
   python <crear-entidad>/scripts/log_entry.py --title "Revisión de borradores" --line "…" --line "…"
@@ -86,7 +101,7 @@ Cada nota, por su nombre de archivo sin `.md`. `--reason` lleva el motivo que di
   - qué menciones se reescribieron;
   - cuántos borradores quedan, y si el motor ya puede seguir (se detiene con 20 borradores suyos sin revisar).
 
-  Ofrece la tanda siguiente.
+  Dile cuántos quedan y pregúntale si sigue con otra tanda, y de cuántos.
 
 ## Reglas
 - Solo el usuario decide: nunca pases nada a canon ni lo archives sin su respuesta.
