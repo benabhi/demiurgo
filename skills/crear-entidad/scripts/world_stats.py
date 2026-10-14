@@ -153,7 +153,9 @@ def build_note(data, today):
         for entry, status in sorted(maps, key=lambda item: (not item[1]["toca"], item[0]["name"].lower())):
             missing = [part for part in (plural(status["sin_cartografiar"], "zona") if status["sin_cartografiar"] else "",
                                          plural(status["rutas_sin_cartografiar"], "ruta")
-                                         if status["rutas_sin_cartografiar"] else "") if part]
+                                         if status["rutas_sin_cartografiar"] else "",
+                                         f"{plural(status['por_quitar'], 'zona')} por quitar"
+                                         if status.get("por_quitar") else "") if part]
             draw = {"primera": "sí, la primera", "nueva": "sí, una edición nueva"}.get(status["toca"], "no")
             lines.append(f"| {wiki(entry, in_table=True)} | {status['clase']} | {status['edicion'] or '—'} | "
                          f"{status['zonas']} | {', '.join(missing) or '—'} | {draw} |")

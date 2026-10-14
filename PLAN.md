@@ -25,6 +25,12 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
   - **los barrios:** el asentamiento gana la categoría `barrio`, con su `ciudad` y los `barrios` de la ciudad (recíprocas), su mapa urbano desde relevancia 4, y la cadena de lugares (el contexto, los mapas y las rutas) sube del barrio a su ciudad. Antes, un barrio con nombre propio iba al módulo `lugar`, que no tenía categoría para él;
   - **lo que ya tiene nombre:** una ronda para lo que el usuario ya tiene con nombre propio. Claude identifica cada entidad y su tipo (el foco, el primero, en un mundo local; lo más alto del mapa en uno mundial), el usuario lo confirma, y la Ficha nace con ellos enlazados, con su tipo en el registro de enlaces pendientes: el motor empieza por ellos (canon de base) y crea el foco completando su enlace;
   - la estructura de carpetas sigue igual en todas las escalas: es neutra, y las carpetas que una escala no usa quedan vacías. Las reglas de la escala van al `CLAUDE.md` que se genera.
+- [ ] **`revisar-mundo`.** Hecha; se tilda cuando se pruebe con borradores reales. Repasa los borradores por tandas (8, en pantallas de 4), de lo que más pesa a lo que menos (relevancia y notas que los enlazan; cada secreto, detrás de su entidad; al final, lo ya revisado que siguió en borrador). Una ficha corta por borrador (`review_queue.py`): quién lo enlaza y cuántas en canon, lo que propuso, sus secretos, su imagen y su mapa, los enlaces pendientes que solo nombra él y los avisos del auditor; Claude lo coteja con la Ficha y con el canon que toca. Cuatro decisiones (`review_apply.py`):
+  - **canon:** `estado: canon`; lo que propuso, o de lo que es sujeto, en Preguntas Abiertas queda confirmado; una línea en el Registro de Canon;
+  - **sigue en borrador:** `revisado` con la fecha (propiedad opcional, que `check_note` acepta);
+  - **archivar y rehacer:** la nota va a `03_Archivados` como `<Nota>_archivada`, así sus menciones vuelven a ser enlaces pendientes con su tipo y se crea de nuevo con el mismo nombre;
+  - **quitar del mundo:** va a `03_Archivados` con su nombre (nada queda pendiente ni se recrea), el auditor avisa de cada mención hasta que Claude la reescribe, y su zona en el mapa se retira (`map_key.py --retire`: «se quita en la edición siguiente» y, al dibujarla, «retirada»; el dibujo la omite y la edición nueva la borra).
+  - Al archivar, de las dos formas: sus imágenes van a `02_Activos/Anteriores` con `_archivada` (la nota archivada las sigue enlazando, y la imagen de la entidad rehecha no choca con la vieja), y los secretos que solo afectan a lo archivado van con ello. Las Estadísticas lo cuentan como archivado.
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
@@ -158,6 +164,7 @@ Etapas:
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
+- [ ] `revisar-mundo` con borradores reales (los de una tanda del motor): una tanda con las cuatro decisiones, una corrección por «Other», un lugar con mapa quitado del mundo (su zona retirada y sus menciones reescritas) y otro archivado para rehacerlo, y el motor creándolo de nuevo.
 - [ ] `inicializar-mundo` con un mundo nuevo (en `pruebas/<nombre>/`): uno que sea una sola ciudad, con algo que ya tenga nombre propio, y una tanda corta del motor: el foco como asentamiento completando su enlace, sus barrios y lo de fuera marcado `fuera` sin crearse.
 - [x] `ruta` (#21): una región y una ruta entre su capital y otro asentamiento, con el bloque «Rutas» en la leyenda de la región. Tras la prueba, la ruta dejó de tener mapa propio (el itinerario sobraba): se ve en los mapas de lo que cruza, y sus puntos con peso entran en la leyenda de su región.
 - [x] `material` (#22): un recurso que la región ya nombra y su mina (categoría `explotacion`, con mapa interior).
@@ -340,7 +347,6 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 
   Queda por decidir cómo se reparte en tandas (con presupuesto y por prioridad, como el motor) y si ofrece un modo de solo revisión.
 - **Ideas para más adelante** (sin decidir):
-  - `revisar-mundo`: repasar los borradores con el usuario, por tandas, y promoverlos a canon o archivarlos. Al archivar una entidad decidirá qué pasa con lo suyo: sus imágenes (a `02_Activos/Anteriores`, como las reemplazadas), su zona en las leyendas de los mapas, las notas que la enlazan y sus secretos;
   - `consultar-mundo`: responder preguntas sobre el mundo con los scripts de consulta, sin leer la bóveda;
   - `narrar`: relatos, escenas o crónicas ambientados en el mundo, coherentes con el canon;
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;

@@ -46,9 +46,9 @@ Lee entera solo la nota que necesites y, de una nota larga, solo la sección que
 
 ## Flujo de trabajo
 1. Antes de crear, busca duplicados en la bóveda y en el Glosario (con `search_vault.py`).
-2. Toda nota nace como `borrador`; solo el usuario la promueve a `canon`.
+2. Toda nota nace como `borrador`; solo el usuario la promueve a `canon`, por tandas, con `/revisar-mundo`.
 3. Registra los términos nuevos en el Glosario y los cambios de canon en el Registro de Canon.
-4. Nunca borres ni sobrescribas notas: lo obsoleto se mueve a `03_Archivados`.
+4. Nunca borres ni sobrescribas notas: lo obsoleto se mueve a `03_Archivados` (lo hace `/revisar-mundo`, con sus imágenes, que van a `02_Activos/Anteriores`).
 5. Si una petición contradice la Ficha o una nota `canon`, avisa antes de escribir.
 6. Lo no decidido va a `Preguntas_Abiertas`; no decidas tú los pilares por definir.
 7. Al terminar de generar, da siempre un informe claro: lo creado y lo modificado (con enlaces que se abran), lo que inventaste, lo que queda por confirmar y los enlaces pendientes. En el chat, los enlaces van en Markdown con la ruta del archivo (`[Nombre]({{BOVEDA}}/<carpeta>/Nota.md)`), que se abren con un clic; nunca `[[...]]`, que solo funciona dentro de Obsidian. Lo que aún no tiene nota (un enlace pendiente) va en texto. Y deja constancia en la Bitácora (`00_Sistema/Bitacora.md`): las skills la escriben solas con `report.py --log`; un cambio suelto que pida el usuario fuera de las skills se anota con `log_entry.py` de `crear-entidad`.

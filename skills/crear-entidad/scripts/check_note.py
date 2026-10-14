@@ -50,7 +50,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, QUOTED_LINK_RE, ROUTE_TYPE,  # noqa: E402
+from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, OPTIONAL_PROPS, QUOTED_LINK_RE, ROUTE_TYPE,  # noqa: E402
                        SKILL_DIR, VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, days_value,
                        display_title, format_days, link_value, route_segments,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
@@ -286,7 +286,7 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
         if key not in props:
             errors.append(f"falta la propiedad `{key}`")
     for key in props:
-        if key not in expected:
+        if key not in expected and key not in OPTIONAL_PROPS:
             warnings.append(f"propiedad que no está en la plantilla: `{key}`")
 
     # La etiqueta del tipo: el grafo de Obsidian colorea las notas por ella (graph_colors.py)

@@ -19,7 +19,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
 - **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
-- **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
+- **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona, `--retire` retira la de un lugar que salió del mundo y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
 - **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
 - **Cuánto hay en el mundo** (entidades por tipo y relevancia, enlaces pendientes, imágenes, mapas por dibujar, lo más nombrado que falta): `world_stats.py --print`. La nota `00_Sistema/Estadisticas.md` la rehacen solas `report.py --log` y `log_entry.py`: no la edites ni la leas entera.
 - **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.

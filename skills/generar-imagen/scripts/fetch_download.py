@@ -31,6 +31,7 @@ Las imágenes que se reemplazaron, para volver a ellas si la nueva no gusta. Las
 - `<nombre>_ed<n>`: una edición anterior de un mapa. La nota la enlaza en su sección Mapa («Ediciones anteriores»).
 - `<nombre>_v<n>`: una versión anterior de la imagen de una entidad. La nota la enlaza en su sección Imagen («Versiones anteriores»).
 - `<nombre>_descartada`: un intento que no pasó la comprobación (un número repetido en un mapa, un rasgo que faltaba). Nadie la enlaza.
+- `<nombre>_archivada`: una imagen de una entidad que se archivó al revisar los borradores (`revisar-mundo`). La enlaza su nota archivada.
 
 Para volver a una anterior, pídelo: «vuelve a la edición 1 del mapa de…».
 """

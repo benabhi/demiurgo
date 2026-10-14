@@ -305,7 +305,7 @@ def main():
     if pending > args.review_limit:
         finish({"accion": "detener", "borradores_pendientes": pending,
                 "resumen": f"DETENER: hay {pending} borradores procedurales sin revisar "
-                           f"(límite {args.review_limit}). Revísalos antes de seguir generando."}, 2)
+                           f"(límite {args.review_limit}). Revísalos con /revisar-mundo antes de seguir generando."}, 2)
 
     blocked = blocked_links(vault)
     excluded = {name.strip().strip("[]").lower() for name in args.skip}

@@ -45,7 +45,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (DEFAULT_EXCLUDED, bare_name, date_keys, find_gaps, first, glossary_rows,  # noqa: E402
+from vault_lib import (ARCHIVED_FOLDER, DEFAULT_EXCLUDED, bare_name, date_keys, find_gaps, first, glossary_rows,  # noqa: E402
                        glossary_terms, int_value, is_entity_kind, is_hidden, known_types, load_calendars,
                        load_index, load_modules, normalize, note_link_labels, read_registry, read_world,
                        without_secrets)
@@ -389,6 +389,19 @@ def check_names(index, report):
                                             f"y «{name_b}» ([[{owner_b}]])")
 
 
+def check_archived_links(vault, index, report):
+    """Menciones de una nota archivada con su nombre: una entidad que se quitó del mundo (revisar-mundo) y que
+    otra nota todavía nombra. Hay que reescribir esas menciones. Una archivada para rehacerla cambia de nombre al
+    archivarse, y sus menciones son enlaces pendientes: no avisan."""
+    folder = vault / ARCHIVED_FOLDER
+    archived = {p.stem.lower() for p in folder.rglob("*.md") if p.name != "README.md"} if folder.is_dir() else set()
+    for entry in index:
+        for target in entry["enlaces"]:
+            if target.lower() in archived:
+                report["avisos"].append(f"[[{entry['name']}]] nombra a [[{target}]], que se quitó del mundo (está "
+                                        f"archivada): reescribe esa mención")
+
+
 def check_orphans(index, report):
     linked = set()
     for entry in index:
@@ -485,6 +498,7 @@ def run_audit(vault):
     check_pending(vault, gaps, modules, report)
     check_glossary(vault, index, modules, report)
     check_orphans(index, report)
+    check_archived_links(vault, index, report)
     drafts = [e for e in index if e["estado"] == "borrador"]
     report["entidades"] = len(without_secrets(index))
     report["secretos"] = len(index) - report["entidades"]

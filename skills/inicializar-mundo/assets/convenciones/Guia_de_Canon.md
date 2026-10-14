@@ -7,6 +7,8 @@
 | `canon` | Verdad establecida; no se contradice sin registrarlo. |
 | `archivado` | Descartado o reemplazado; se conserva en `03_Archivados`. |
 
+Los borradores se revisan por tandas con `/revisar-mundo`: cada uno pasa a canon, sigue en borrador, se archiva para rehacerlo (vuelve a ser un enlace pendiente) o se quita del mundo (se reescriben sus menciones). Cada decisión deja su línea en el [[Registro_de_Canon]].
+
 ## Reglas
 1. La [[Ficha_del_Mundo]] es la fuente de verdad de los pilares: ninguna nota la contradice.
 2. Una nota `canon` solo cambia dejando constancia en el [[Registro_de_Canon]].

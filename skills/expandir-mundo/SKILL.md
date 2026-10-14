@@ -63,7 +63,7 @@ Toda elección, salvo `detener`, trae además:
 - **`enlaces_nuevos`:** cuántos enlaces pendientes nuevos debe abrir cada nota, por tipo (por ejemplo `personaje: 3–5`). Respétalo al componer (Paso 4).
 
 El resultado dice qué hacer:
-- **`detener`:** hay demasiados borradores procedurales sin revisar. Para la tanda y avisa al usuario.
+- **`detener`:** hay demasiados borradores procedurales sin revisar. Para la tanda y avisa al usuario: se revisan con `/revisar-mundo`, que los pasa a canon o los archiva.
 - **`crear_foco`:** la Ficha nombra un foco (`foco_texto`) que aún no existe como lugar. Se crea antes que nada, porque lo demás se generará dentro de él:
   - usa el módulo de `modulos` que encaje con el texto del foco (un continente, una cordillera o un territorio es una `region`), con relevancia alta;
   - si su nombre no aparece en el texto del foco, añade ese texto a sus `aliases`: así el selector lo reconoce como foco;

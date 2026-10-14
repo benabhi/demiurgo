@@ -16,7 +16,13 @@ relevancia), la edición, las zonas sin cartografiar y si toca dibujar la primer
       añade y sale con código 3.
   --charted
       Tras dibujar una edición: suma una a `mapa_edicion`, pone `mapa_zonas` en el último número y
-      quita las marcas «sin cartografiar» (también las de las rutas).
+      quita las marcas «sin cartografiar» (también las de las rutas); las zonas que «se quitan en la
+      edición siguiente» quedan «retiradas».
+  --retire NOMBRE
+      Retira la zona de un lugar que sale del mundo (NOMBRE es su enlace o su nombre en la leyenda). No se
+      borra: su número no se reutiliza. Pierde el enlace y sus conexiones (también en las otras zonas) y
+      queda «se quita en la edición siguiente» si ya estaba dibujada (cuenta para la edición nueva, que
+      la borra) o «retirada» si no. El dibujo no la incluye.
   --sync-routes
       Rehace el bloque «Rutas» de la leyenda a partir de las notas de las rutas: las que pasan por sus
       zonas, en orden, con «sigue» donde continúan fuera del mapa y «se pierde» donde acaban en nada; y
@@ -30,6 +36,7 @@ Ejemplos:  map_key.py Puerto_Gris
            map_key.py Cripta_Honda --add "las celdas" --position oeste --level 2 --desc "Cuatro celdas con rejas." --connects 9
            map_key.py Cripta_Honda --add "la capilla" --position norte --desc "Altar tallado." --connects 2 --hidden 5 --trap "una losa que se hunde bajo el altar"
            map_key.py Puerto_Gris --charted
+           map_key.py Puerto_Gris --retire Torre_Hendida
            map_key.py --sync-routes"""
 import argparse
 import json
@@ -40,7 +47,8 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (CONNECTS_RE, KEY_LINE_RE, LINK_RE, MAP_ITEM_EMPTY_RE, MAP_ROUTES_HEADING,  # noqa: E402
-                       MAP_SECTION, MAX_MARKERS, HIDDEN_RE, ORIENTATION_SYNONYMS, ORIENTATIONS, UNCHARTED_MARK,
+                       MAP_SECTION, MAX_MARKERS, HIDDEN_RE, ORIENTATION_SYNONYMS, ORIENTATIONS, RETIRED_MARK,
+                       RETIRING_MARK, UNCHARTED_MARK, strip_links,
                        compute_map_routes, first, format_connections, format_hidden, format_map_route, int_value,
                        load_index, load_modules, map_key_problems, map_status, normalize, parse_frontmatter,
                        parse_map_key, parse_map_routes, resolve_note, zones_per_level)
@@ -85,6 +93,51 @@ def add_connection(line, number, pattern=CONNECTS_RE, formatter=format_connectio
     return f"{line.rstrip()} {phrase}"
 
 
+def remove_connection(line, number, pattern=CONNECTS_RE, formatter=format_connections):
+    """La línea de una zona sin `number` en sus conexiones (o en sus pasos ocultos)."""
+    match = pattern.search(line)
+    if not match:
+        return line
+    rest = [n for n in (int(x) for x in re.findall(r"\d+", match.group(1))) if n != number]
+    phrase = formatter(rest)
+    return re.sub(r"\s{2,}", " ", line[:match.start()] + phrase + line[match.end():]).rstrip()
+
+
+def retire_zone(path, target):
+    """Retira de la leyenda de `path` la zona que enlaza `target` (o que se llama así): un lugar que sale del
+    mundo. Conserva su número, quita su enlace y sus conexiones (también las de las otras zonas hacia ella) y la
+    marca «se quita en la edición siguiente» si ya estaba dibujada, o «retirada» si no. Devuelve la línea del
+    resumen, o None si la zona no está."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    end = frontmatter_end(lines)
+    if end is None:
+        return None
+    props = parse_frontmatter(lines[1:end], [])
+    zones, _ = parse_map_key(lines[end + 1:])
+    key = normalize(target.strip().strip("[]"))
+    zone = next((z for z in zones or [] if not z["retirada"]
+                 and key in (normalize(z["enlace"] or ""), normalize(z["nombre"]))), None)
+    if not zone:
+        return None
+    offset = section_start(lines, end) + 1
+    edition = int_value(first(props.get("mapa_edicion"))) or 0
+    drawn = bool(edition) and zone["numero"] <= (int_value(first(props.get("mapa_zonas"))) or 0)
+    row = offset + zone["linea"]
+    line = lines[row]
+    for pattern in (CONNECTS_RE, HIDDEN_RE):
+        line = pattern.sub("", line)
+    line = strip_links(line.replace(f" {UNCHARTED_MARK}", "").replace(UNCHARTED_MARK, ""))
+    lines[row] = re.sub(r"\s{2,}", " ", line).rstrip() + f" {RETIRING_MARK if drawn else RETIRED_MARK}"
+    for other in zones:
+        if other["numero"] != zone["numero"]:
+            row = offset + other["linea"]
+            lines[row] = remove_connection(lines[row], zone["numero"])
+            lines[row] = remove_connection(lines[row], zone["numero"], HIDDEN_RE, format_hidden)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return (f"{path.name} — zona {zone['numero']} ({zone['nombre']}) retirada de la leyenda"
+            + (": se quita en la edición siguiente" if drawn else ""))
+
+
 def show(path, status, zones, routes, problems, as_json):
     if as_json:
         print(json.dumps({"nota": path.stem, **status, "leyenda": zones or [], "rutas": routes,
@@ -109,7 +162,8 @@ def show(path, status, zones, routes, problems, as_json):
     levels = len(zones_per_level(zones)) > 1
     for zone in zones:
         where = (f"nivel {zone['nivel']}, " if levels else "") + zone["orientacion"]
-        extra = " · sin cartografiar" if zone["sin_cartografiar"] else ""
+        extra = (" · se quita en la edición siguiente" if zone["por_quitar"] else " · retirada" if zone["retirada"]
+                 else " · sin cartografiar" if zone["sin_cartografiar"] else "")
         link = f" → [[{zone['enlace']}]]" if zone["enlace"] else ""
         connects = f" · conecta con {', '.join(map(str, zone['conecta']))}" if zone["conecta"] else ""
         hidden = f" · paso oculto a {', '.join(map(str, zone['ocultos']))}" if zone["ocultos"] else ""
@@ -217,6 +271,7 @@ def main():
     parser.add_argument("--hidden", default="", help="Zonas a las que lleva un paso oculto que la nota conoce: 7")
     parser.add_argument("--trap", default="", help="La trampa de la zona, si la nota la conoce (una línea)")
     parser.add_argument("--charted", action="store_true", help="Marca la leyenda como cartografiada tras una edición")
+    parser.add_argument("--retire", metavar="NOMBRE", help="Retira la zona de un lugar que sale del mundo")
     parser.add_argument("--sync-routes", action="store_true",
                         help="Rehace el bloque «Rutas» de la leyenda (sin nota: el de todas las leyendas)")
     args = parser.parse_args()
@@ -248,6 +303,10 @@ def main():
     problems += route_problems
     relevance = int_value(first(props.get("relevancia")))
 
+    if args.retire:
+        result = retire_zone(path, args.retire)
+        print(result or f"{path.name} — «{args.retire}» no está en la leyenda (o ya estaba retirada).")
+        return
     if args.sync_routes and not args.add and not args.charted:
         changes = sync_routes(path, vault, load_index(vault))
         print("\n".join(changes) if changes else f"{path.name} — rutas del mapa: sin cambios.")
@@ -268,6 +327,7 @@ def main():
         for item in zones + routes:
             row = offset + item["linea"]
             lines[row] = lines[row].replace(f" {UNCHARTED_MARK}", "").replace(UNCHARTED_MARK, "").rstrip()
+            lines[row] = lines[row].replace(RETIRING_MARK, RETIRED_MARK)
         edition = (int_value(first(props.get("mapa_edicion"))) or 0) + 1
         last = max(zone["numero"] for zone in zones)
         end = set_property(lines, end, "mapa_edicion", edition)
@@ -290,7 +350,7 @@ def main():
         sys.exit(f"Error: --position debe ser una de: {', '.join(ORIENTATIONS)}.")
     if args.level < 1:
         sys.exit("Error: --level empieza en 1.")
-    if zones_per_level(zones).get(args.level, 0) >= MAX_MARKERS:
+    if zones_per_level([z for z in zones if not z["retirada"]]).get(args.level, 0) >= MAX_MARKERS:
         where = f"el nivel {args.level}" if args.level > 1 else "la leyenda"
         print(f"{path.name} — {where} ya tiene {MAX_MARKERS} zonas, el máximo de un mapa: no la añado. Sitúa el "
               f"lugar en una zona más concreta con mapa propio (un barrio, una subregión) o anota la pregunta "

@@ -58,6 +58,10 @@ STATS_NOTE = "00_Sistema/Estadisticas.md"
 STATS_HOME_LINE = ("- [[Estadisticas|Estadísticas]] — cuánto hay en el mundo y qué falta: entidades, enlaces "
                    "pendientes, imágenes y mapas.")
 ARCHIVED_FOLDER = "00_Sistema/03_Archivados"
+CANON_LOG = "00_Sistema/04_Convenciones/Registro_de_Canon.md"
+# Propiedades que cualquier nota puede llevar aunque su plantilla no las tenga: `revisado`, la fecha en que
+# el usuario la revisó y la dejó en borrador (revisar-mundo la pone al final de la cola)
+OPTIONAL_PROPS = ("revisado",)
 # Ni el registro de pendientes, ni la Bitácora, ni las Estadísticas cuentan como notas que nombran entidades:
 # un enlace que solo quedara en ellas no debe seguir pendiente
 DEFAULT_EXCLUDED = ("00_Sistema/01_Plantillas", ARCHIVED_FOLDER, PENDING_NOTE, CHRONICLE, STATS_NOTE)
@@ -144,6 +148,11 @@ MAP_CLASSES = ("interior", "urbano", "paraje", "territorio")
 ORIENTATIONS = ("noroeste", "norte", "noreste", "oeste", "centro", "este", "suroeste", "sur", "sureste")
 ORIENTATION_SYNONYMS = {"sudoeste": "suroeste", "sudeste": "sureste"}
 UNCHARTED_MARK = "*Sin cartografiar.*"
+# Una zona que sale del mundo (un lugar que se quitó) no se borra de la leyenda: su número no se reutiliza. Se
+# marca «se quita en la edición siguiente» si ya estaba dibujada (cuenta para redibujar, y la edición nueva la
+# borra), y «retirada» cuando ya no está en el mapa (o si nunca se dibujó). El dibujo no la incluye
+RETIRING_MARK = "*Se quita en la edición siguiente.*"
+RETIRED_MARK = "*Retirada.*"
 # Edición nueva con tantas zonas sin cartografiar, o con un cuarto de las cartografiadas
 NEW_EDITION_ZONES = 3
 # Cada zona, una viñeta con su número en negrita: `- **9.** **Nombre** · orientación — descripción.` No es
@@ -246,6 +255,8 @@ def parse_map_key(body):
                       "ocultos": [int(n) for n in re.findall(r"\d+", hidden.group(1))] if hidden else [],
                       "trampa": trap.group(1).strip() if trap else None,
                       "sin_cartografiar": "sin cartografiar" in normalize(rest),
+                      "por_quitar": RETIRING_MARK in rest,
+                      "retirada": RETIRING_MARK in rest or RETIRED_MARK in rest,
                       "descripcion": rest.strip()})
     return zones, problems
 
@@ -273,9 +284,10 @@ def map_key_problems(zones):
                     warnings.append(f"leyenda del mapa: la zona {zone['numero']} {what} {other}, pero {other} no lo "
                                     f"anota hacia {zone['numero']} (los pasos, también los ocultos, van en los dos "
                                     f"sentidos)")
-    for level, count in sorted(zones_per_level(zones).items()):
+    active = [z for z in zones if not z.get("retirada")]
+    for level, count in sorted(zones_per_level(active).items()):
         if count > MAX_MARKERS:
-            where = f"el nivel {level}" if len(zones_per_level(zones)) > 1 else "la leyenda"
+            where = f"el nivel {level}" if len(zones_per_level(active)) > 1 else "la leyenda"
             warnings.append(f"{where} tiene {count} zonas y un mapa admite {MAX_MARKERS}: divídela en niveles, o "
                             f"agrupa lugares en una zona con mapa propio (un barrio, una subregión)")
     return errors, warnings
@@ -293,41 +305,47 @@ def map_status(module, props, zones, relevance, routes=None):
     """Estado del mapa de una nota: si le toca leyenda, su clase, la edición, cuántas zonas hay y cuántas
     faltan por cartografiar, y si toca dibujar (`toca`: "primera", "nueva" o None, con su razón y
     los niveles que hay que dibujar). Las rutas nuevas o cambiadas del bloque «Rutas» (`routes`, de
-    parse_map_routes) cuentan para la edición nueva como una zona sin cartografiar cada una."""
+    parse_map_routes) cuentan para la edición nueva como una zona sin cartografiar cada una, y también las zonas
+    por quitar (las de un lugar que salió del mundo y sigue dibujado). Las retiradas no cuentan como zonas."""
     rule = map_applies(module, props, relevance)
     zones = zones or []
+    active = [z for z in zones if not z.get("retirada")]
     edition = int_value(first(props.get("mapa_edicion"))) or 0
     charted = int_value(first(props.get("mapa_zonas"))) or 0
-    uncharted = [z for z in zones if z["numero"] > charted] if edition else list(zones)
+    uncharted = [z for z in active if z["numero"] > charted] if edition else list(active)
+    retiring = [z for z in zones if z.get("por_quitar") and z["numero"] <= charted] if edition else []
     new_routes = [r for r in routes or [] if r["sin_cartografiar"]] if edition else []
-    pending = len(uncharted) + len(new_routes) if edition else 0
+    pending = len(uncharted) + len(new_routes) + len(retiring) if edition else 0
     status = {"aplica": bool(rule), "clase": rule["clase"] if rule else None,
-              "desde": rule["desde"] if rule else None, "edicion": edition, "zonas": len(zones),
-              "cartografiadas": len(zones) - len(uncharted) if edition else 0,
-              "sin_cartografiar": len(uncharted) if edition else 0, "rutas": len(routes or []),
-              "rutas_sin_cartografiar": len(new_routes), "toca": None, "niveles": [], "razon": ""}
+              "desde": rule["desde"] if rule else None, "edicion": edition, "zonas": len(active),
+              "cartografiadas": len(active) - len(uncharted) if edition else 0,
+              "sin_cartografiar": len(uncharted) if edition else 0, "por_quitar": len(retiring),
+              "rutas": len(routes or []), "rutas_sin_cartografiar": len(new_routes), "toca": None,
+              "niveles": [], "razon": ""}
     if not rule:
         return status
-    per_level = zones_per_level(zones)
+    per_level = zones_per_level(active)
     minimum = rule.get("zonas_minimas", 1)
     if any(count > MAX_MARKERS for count in per_level.values()):
         status["razon"] = f"un nivel pasa de {MAX_MARKERS} zonas: hay que dividir la leyenda antes de dibujarla"
     elif not edition:
-        if len(zones) >= minimum:
+        if len(active) >= minimum:
             status.update(toca="primera", niveles=sorted(per_level), razon="aún no tiene mapa")
         else:
-            status["razon"] = f"tiene {len(zones)} zona(s); el mapa se dibuja desde {minimum}"
+            status["razon"] = f"tiene {len(active)} zona(s); el mapa se dibuja desde {minimum}"
     else:
         what = ", ".join(part for part in (f"{len(uncharted)} zona(s)" if uncharted else "",
                                            f"{len(new_routes)} ruta(s)" if new_routes else "") if part)
+        what = " y ".join(part for part in (f"{what} sin cartografiar" if what else "",
+                                         f"{len(retiring)} zona(s) por quitar" if retiring else "") if part)
         if pending and (pending >= NEW_EDITION_ZONES or 4 * pending >= max(charted, 1)):
             # Los niveles que se redibujan: los de las zonas nuevas y los que cruzan las rutas nuevas
-            levels = {z["nivel"] for z in uncharted}
+            levels = {z["nivel"] for z in uncharted + retiring}
             by_number = {z["numero"]: z["nivel"] for z in zones}
             levels |= {by_number[n] for r in new_routes for n in r["recorrido"] if n in by_number}
-            status.update(toca="nueva", niveles=sorted(levels), razon=f"{what} sin cartografiar")
+            status.update(toca="nueva", niveles=sorted(levels), razon=what)
         elif pending:
-            status["razon"] = (f"{what} sin cartografiar; la edición nueva toca con {NEW_EDITION_ZONES} "
+            status["razon"] = (f"{what}; la edición nueva toca con {NEW_EDITION_ZONES} "
                                f"o con un cuarto de las zonas cartografiadas")
     return status
 
