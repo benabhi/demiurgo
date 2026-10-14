@@ -21,6 +21,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Estadísticas del mundo** (`00_Sistema/Estadisticas.md`): cuántas entidades hay por tipo y por relevancia, los enlaces pendientes, las imágenes y los mapas que toca redibujar, lo más nombrado que falta y lo más enlazado. Se rehace sola al terminar cada tarea, y sus cifras van también en el frontmatter, para un tablero.
 - **Pregúntale al mundo:** `/consultar-mundo` responde con lo que dice la bóveda (qué es algo, qué hay en un lugar, cuánto se tarda de un sitio a otro, qué pasó y cuándo), cita sus notas, distingue el canon de los borradores y aparta los secretos, o los oculta para enseñar el mundo sin spoilers.
 - **Cuéntalo:** `/narrar` escribe relatos, escenas, crónicas y documentos (cartas, diarios, canciones) ambientados en el mundo. Antes reúne lo que necesita y comprueba fechas, lugares y quién vive en cada momento; lo que inventa se queda en la narración, no usa los secretos salvo que lo pidas, y al final te ofrece ilustrar el momento clave.
+- **Un mundo que se termina:** `/finalizar-mundo` lo cierra sin cabos sueltos. Por fases y contigo, decide los pilares y las preguntas que faltan (o los deja como misterios a propósito), crea, disuelve o fusiona cada enlace pendiente, revisa todos los borradores y completa imágenes y mapas, hasta que cada nota pasa la validación sin anotaciones de trabajo. Mientras tanto el mundo deja de crecer; cerrado, ya no se crea nada (sí se consulta, se narra y se ilustra), y se puede reabrir.
 - **Tú decides qué es canon:** todo nace como borrador. `/revisar-mundo` te los muestra por tandas, de lo que más pesa a lo que menos, y cada uno pasa a canon, sigue en borrador o se archiva, con sus imágenes, sus secretos y su sitio en los mapas. Nada se borra.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
@@ -34,8 +35,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | `revisar-mundo` | Repasa los borradores por tandas (`/revisar-mundo`): cada uno pasa a canon, sigue en borrador o se archiva, para rehacerlo o para quitarlo del mundo. |
 | `consultar-mundo` | Responde preguntas sobre el mundo con lo que dice la bóveda (`/consultar-mundo ¿quién gobierna el puerto?`), citando sus notas, sin leerla entera. |
 | `narrar` | Relatos, escenas, crónicas y documentos ambientados en el mundo, coherentes con su canon (`/narrar escena la noche en que volvió el cometa`), en `90_Narrativa`. |
+| `finalizar-mundo` | Cierra el mundo sin cabos sueltos (`/finalizar-mundo`): lo deja impecable por fases, con el usuario, y lo cierra; o lo reabre. |
 
-Las siete van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo` y `narrar` usan los scripts de `crear-entidad`.
+Las ocho van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narrar` y `finalizar-mundo` usan los scripts de `crear-entidad`.
 
 ## Requisitos
 - **Claude Code.**
@@ -53,7 +55,7 @@ Las siete van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo` y `na
    ```bash
    git clone https://github.com/benabhi/skills-world-building.git
    ```
-2. Pon las siete carpetas de `skills/` donde Claude Code busca las skills:
+2. Pon las ocho carpetas de `skills/` donde Claude Code busca las skills:
    - en `~/.claude/skills/`, para tenerlas en todos tus proyectos;
    - o en `<tu proyecto>/.claude/skills/`, solo para un mundo.
 
@@ -93,8 +95,8 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 En desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
 - la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
-- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo) y `narrar` (relatos y escenas) están hechas y esperan su prueba;
-- faltan las imágenes por API y la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
+- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo), `narrar` (relatos y escenas) y `finalizar-mundo` (cerrar el mundo) están hechas y esperan su prueba;
+- faltan las imágenes por API.
 
 El plan está en [PLAN.md](PLAN.md).
 

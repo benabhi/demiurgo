@@ -18,6 +18,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **Añadir** al Glosario y a Preguntas Abiertas sin leerlos: `add_entries.py --glossary <Término> <Tipo> "[[Nota]]" <Definición>`, `--question <texto>` y `--confirm <texto>`.
 - **Vínculos inversos** en otras notas, sin leerlas: `add_relation.py <Nota> <propiedad> <Destino>`.
 - **Cambiar un enlace** en toda la bóveda (un nombre de rol por el definitivo): `rename_link.py <Viejo> <Nuevo>`.
+- **Disolver un enlace pendiente** que no merece nota (queda como texto en todas las notas, o como término del Glosario con `--term`): `dissolve_link.py <Enlace>`.
 - **La Bitácora** (`00_Sistema/Bitacora.md`, la crónica del mundo para su autor), sin leerla: al terminar, `report.py --log` (Paso 7); para una entrada suelta, `log_entry.py --title <título> --line <línea>`.
 - **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona, `--retire` retira la de un lugar que salió del mundo y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
 - **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
@@ -82,6 +83,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Si la relación de un mó
 
 ## Paso 0: preparar
 1. Localiza la bóveda (por defecto `World_Building/`). `CLAUDE.md` y la Ficha del Mundo son la fuente de verdad.
+   - **El estado del mundo** (`estado_mundo`, en la Ficha): si es `cerrado`, no se crea nada (el `--snapshot` del paso 3 se niega): dilo, y que se reabre con `/finalizar-mundo reabrir`. Si es `en_cierre`, solo se completan enlaces pendientes (`hueco=`) o se corrige lo que pide el cierre, y ninguna nota abre enlaces pendientes nuevos: lo menor, sin nombre propio (`check_note.py --depth` dice «ninguno», y el informe da error si se abre alguno).
 2. Lee `tipos/<tipo>/tipo.md`, `tipos/<tipo>/plantilla.md` y `referencias/huecos.md`.
 3. **Instantánea para el informe final:** antes de escribir nada en la bóveda, ejecuta `python <directorio de esta skill>/scripts/report.py --snapshot` y guarda la ruta que imprime. Así el informe distingue lo que crea esta skill de los cambios que el usuario ya tenía sin confirmar.
 4. **Primer uso del tipo en la bóveda** (no figura en la tabla "Tipos registrados" de la Guía de Organización):

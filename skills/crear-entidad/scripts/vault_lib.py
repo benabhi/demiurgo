@@ -59,6 +59,14 @@ STATS_HOME_LINE = ("- [[Estadisticas|Estadísticas]] — cuánto hay en el mundo
                    "pendientes, imágenes y mapas.")
 ARCHIVED_FOLDER = "00_Sistema/03_Archivados"
 CANON_LOG = "00_Sistema/04_Convenciones/Registro_de_Canon.md"
+# El estado del mundo, en la Ficha (`estado_mundo`): abierto (se crea de todo), en cierre (finalizar-mundo: solo se
+# cierran cabos, y ninguna nota abre enlaces pendientes nuevos) y cerrado (no se crea nada; se puede consultar,
+# narrar e ilustrar). Sin la propiedad, abierto
+WORLD_OPEN, WORLD_CLOSING, WORLD_CLOSED = "abierto", "en_cierre", "cerrado"
+WORLD_STATES = (WORLD_OPEN, WORLD_CLOSING, WORLD_CLOSED)
+CLOSED_MESSAGE = ("El mundo está cerrado (estado_mundo: cerrado, en la Ficha): no se crea nada. Se puede consultar, "
+                  "narrar e ilustrar; para crear, reábrelo con /finalizar-mundo reabrir.")
+CLOSING_NOTE = "el mundo está en cierre: ninguna nota abre enlaces pendientes nuevos"
 # Propiedades que cualquier nota puede llevar aunque su plantilla no las tenga: `revisado`, la fecha en que
 # el usuario la revisó y la dejó en borrador (revisar-mundo la pone al final de la cola)
 OPTIONAL_PROPS = ("revisado",)
@@ -305,12 +313,13 @@ def zones_per_level(zones):
     return counts
 
 
-def map_status(module, props, zones, relevance, routes=None):
+def map_status(module, props, zones, relevance, routes=None, complete=False):
     """Estado del mapa de una nota: si le toca leyenda, su clase, la edición, cuántas zonas hay y cuántas
     faltan por cartografiar, y si toca dibujar (`toca`: "primera", "nueva" o None, con su razón y
     los niveles que hay que dibujar). Las rutas nuevas o cambiadas del bloque «Rutas» (`routes`, de
     parse_map_routes) cuentan para la edición nueva como una zona sin cartografiar cada una, y también las zonas
-    por quitar (las de un lugar que salió del mundo y sigue dibujado). Las retiradas no cuentan como zonas."""
+    por quitar (las de un lugar que salió del mundo y sigue dibujado). Las retiradas no cuentan como zonas. Con
+    `complete` (al cerrar el mundo), toca una edición nueva con cualquier cambio sin dibujar, por pequeño que sea."""
     rule = map_applies(module, props, relevance)
     zones = zones or []
     active = [z for z in zones if not z.get("retirada")]
@@ -342,7 +351,7 @@ def map_status(module, props, zones, relevance, routes=None):
                                            f"{len(new_routes)} ruta(s)" if new_routes else "") if part)
         what = " y ".join(part for part in (f"{what} sin cartografiar" if what else "",
                                          f"{len(retiring)} zona(s) por quitar" if retiring else "") if part)
-        if pending and (pending >= NEW_EDITION_ZONES or 4 * pending >= max(charted, 1)):
+        if pending and (complete or pending >= NEW_EDITION_ZONES or 4 * pending >= max(charted, 1)):
             # Los niveles que se redibujan: los de las zonas nuevas y los que cruzan las rutas nuevas
             levels = {z["nivel"] for z in uncharted + retiring}
             by_number = {z["numero"]: z["nivel"] for z in zones}
@@ -987,6 +996,29 @@ def read_world(vault):
     return {"props": props, "ano_actual": int_value(props.get("ano_actual")),
             "foco": body_field("Foco inicial"), "calendario": body_field("Calendario", "Presente y calendario"),
             "escala": str(props.get("escala") or "").strip().strip('"').lower()}
+
+
+def world_state(vault):
+    """El estado del mundo, de su Ficha: abierto, en_cierre o cerrado (abierto si no lo dice)."""
+    value = str(read_world(vault)["props"].get("estado_mundo") or "").strip().strip('"').lower()
+    return value if value in WORLD_STATES else WORLD_OPEN
+
+
+def add_canon_log(vault, rows):
+    """Añade filas arriba de la tabla del Registro de Canon (la más reciente, arriba). False si no encuentra
+    la tabla."""
+    if not rows:
+        return True
+    path = vault / CANON_LOG
+    if not path.is_file():
+        return False
+    lines = path.read_text(encoding="utf-8").splitlines()
+    at = next((i + 1 for i, line in enumerate(lines) if re.match(r"^\|\s*-+\s*\|", line.strip())), None)
+    if at is None:
+        return False
+    lines[at:at] = rows
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    return True
 
 
 def is_system_note(relative, note_type):

@@ -310,7 +310,8 @@ def named_lines(named):
 
 
 def world_sheet(world, questionnaire, results, today, named=()):
-    lines = ["---", "tipo: ficha_mundo", "estado: canon", f"mundo: {json.dumps(world, ensure_ascii=False)}"]
+    lines = ["---", "tipo: ficha_mundo", "estado: canon", f"mundo: {json.dumps(world, ensure_ascii=False)}",
+             "estado_mundo: abierto"]
     for q in questionnaire["preguntas"]:
         if q["id"] not in results or (q["formato"] == "texto" and not q.get("en_frontmatter")):
             continue

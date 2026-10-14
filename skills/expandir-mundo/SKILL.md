@@ -35,6 +35,7 @@ Además, el mundo crece **en profundidad** (las notas que ganan peso se profundi
 
 ## Paso 0: preparar (una vez por tanda)
 1. **Bóveda:** por defecto `World_Building/`. La Ficha del Mundo y `CLAUDE.md` mandan.
+   - **El estado del mundo** (`estado_mundo`, en la Ficha): `cerrado`, el motor no genera (el selector se detiene); `en_cierre` (`/finalizar-mundo`), entra en **modo cierre**: solo completa enlaces pendientes, sin abrir ninguno nuevo (`enlaces_nuevos` 0–0), y dibuja los mapas con cualquier cambio sin dibujar; nada nuevo, ni rutas, ni profundizar. Cuando no queda nada que pueda crear, se detiene y remite a `/finalizar-mundo`.
 2. **Instantánea para el informe:** antes de tocar nada, ejecuta `python <crear-entidad>/scripts/report.py --snapshot` y guarda la ruta que imprime. Con ella, el informe final junta todos los ciclos y no confunde lo generado con cambios del usuario sin confirmar.
 3. **Carpeta de generación:** ejecuta `python <directorio de esta skill>/scripts/setup_generation.py`. Crea lo que falte en `06_Generacion`, la registra en la Guía de Organización y enlaza el registro desde `MOC_Inicio`.
 4. **Git:** el repositorio del mundo es el que contiene la bóveda. Todos los comandos git del motor van con `git -C <bóveda>` (por defecto `git -C World_Building`) y con rutas relativas a la bóveda, así funciona tanto si la bóveda está dentro del repositorio del proyecto como si tiene uno propio. Si no está en ningún repositorio, avisa: sin git no hay commits por ciclo ni modo prueba.

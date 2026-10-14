@@ -55,6 +55,7 @@ Lee entera solo la nota que necesites y, de una nota larga, solo la sección que
 5. Si una petición contradice la Ficha o una nota `canon`, avisa antes de escribir.
 6. Lo no decidido va a `Preguntas_Abiertas`; no decidas tú los pilares por definir.
 7. Al terminar de generar, da siempre un informe claro: lo creado y lo modificado (con enlaces que se abran), lo que inventaste, lo que queda por confirmar y los enlaces pendientes. En el chat, los enlaces van en Markdown con la ruta del archivo (`[Nombre]({{BOVEDA}}/<carpeta>/Nota.md)`), que se abren con un clic; nunca `[[...]]`, que solo funciona dentro de Obsidian. Lo que aún no tiene nota (un enlace pendiente) va en texto. Y deja constancia en la Bitácora (`00_Sistema/Bitacora.md`): las skills la escriben solas con `report.py --log`; un cambio suelto que pida el usuario fuera de las skills se anota con `log_entry.py` de `crear-entidad`.
+8. El estado del mundo está en la Ficha (`estado_mundo`): en cierre (`/finalizar-mundo`), solo se cierran cabos y ninguna nota abre enlaces pendientes nuevos; cerrado, no se crea nada (sí se puede consultar, narrar e ilustrar).
 
 ## Código y scripts
 - Los scripts (de las skills o del proyecto) se escriben en inglés: nombres de archivo, funciones, variables y opciones de línea de comandos (`find_gaps.py --note`).

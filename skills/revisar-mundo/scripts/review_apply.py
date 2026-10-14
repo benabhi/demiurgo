@@ -38,14 +38,14 @@ sys.path.insert(0, str(SKILLS / "crear-entidad" / "scripts"))
 from map_key import frontmatter_end, legends, retire_zone, set_property  # noqa: E402
 from pending_links import build  # noqa: E402
 from vault_lib import (ARCHIVED_FOLDER, ATTACHMENT_RE, CANON_LOG, LINK_RE, OPEN_QUESTIONS, PENDING_NOTE,  # noqa: E402
-                       SECRET_TYPE, find_gaps, first, is_confirmation, is_hidden, load_index, load_modules,
+                       SECRET_TYPE, add_canon_log, find_gaps, first, is_confirmation, is_hidden, load_index,
+                       load_modules,
                        load_pending_types, resolve_note, strip_links)
 from vault_lib import vault_path  # noqa: E402
 
 ASSETS = "00_Sistema/02_Activos"
 ARCHIVE_IMAGES = "00_Sistema/02_Activos/Anteriores"
 DEFAULT_REASON = "Revisión de borradores"
-LOG_SEPARATOR_RE = re.compile(r"^\|\s*-+\s*\|")
 MAX_MENTION_LINES = 2
 
 
@@ -142,23 +142,6 @@ def confirm_proposals(vault, names, today):
     if counts:
         path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     return counts
-
-
-def log_rows(vault, rows):
-    """Añade las filas arriba de la tabla del Registro de Canon (la más reciente, arriba). False si no
-    encuentra la tabla."""
-    if not rows:
-        return True
-    path = vault / CANON_LOG
-    if not path.is_file():
-        return False
-    lines = path.read_text(encoding="utf-8").splitlines()
-    at = next((i + 1 for i, line in enumerate(lines) if LOG_SEPARATOR_RE.match(line.strip())), None)
-    if at is None:
-        return False
-    lines[at:at] = rows
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
-    return True
 
 
 def mentions(vault, index, name):
@@ -297,7 +280,7 @@ def main():
                 if len(lines) > MAX_MENTION_LINES:
                     out.append(f"    … y {len(lines) - MAX_MENTION_LINES} línea(s) más")
 
-    if not log_rows(vault, log):
+    if not add_canon_log(vault, log):
         out.append(f"AVISO: no encuentro la tabla de {CANON_LOG}; las líneas no se añadieron.")
     if archiving:
         gaps, _ = find_gaps(vault, pending_types=types)

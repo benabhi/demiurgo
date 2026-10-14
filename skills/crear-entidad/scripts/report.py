@@ -50,7 +50,9 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py y audit_world.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_world import run_audit  # noqa: E402
-from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, OUTSIDE_TYPE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
+from vault_lib import (CHRONICLE, CLOSED_MESSAGE, LINK_WITH_ALIAS_RE, OUTSIDE_TYPE, PENDING_NOTE, WORLD_CLOSED,  # noqa: E402
+                       WORLD_CLOSING,
+                       add_chronicle_entry, world_state,
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
                        normalize, parse_note, readable_links, without_secrets)
 from vault_lib import vault_path  # noqa: E402
@@ -415,6 +417,7 @@ def build_report(vault, prefix, changes):
         if before:
             named.append((entry, before))
     created_paths = {e["path"] for e in created}
+    introduced = []
 
     by_type = Counter(e["tipo"] for e in entities)
     created_text = ", ".join(plural(n, t) for t, n in sorted(by_type.items())) or "ninguna entidad"
@@ -450,6 +453,7 @@ def build_report(vault, prefix, changes):
             # Los que introduce: entidades que nombra y que solo nombra lo creado ahora
             mine = [g for g in gaps if entry["path"] in g["notes"]]
             own = [g for g in mine if set(g["notes"]) <= created_paths]
+            introduced += [g for g in own if g not in introduced]
             shown = [f"`{g['link']}` ({gap_label(g)})" for g in own]
             out.append(f"- **Enlaces pendientes que introduce ({len(own)}):** " + (", ".join(shown) or "ninguno"))
             # Entidades por crear que ya nombraban otras notas (la especie, la región…)
@@ -519,6 +523,10 @@ def build_report(vault, prefix, changes):
     untyped = [g for g in gaps if not g["expected_type"]]
     auditor = (f"- **Auditor:** {plural(len(audit['errores']), 'error', 'errores')}, "
                f"{plural(len(audit['avisos']), 'aviso')}")
+    if introduced and world_state(vault) == WORLD_CLOSING:
+        out += ["", f"**ERROR: el mundo está en cierre y se abrieron {len(introduced)} enlaces pendientes nuevos** "
+                f"({', '.join('`' + g['link'] + '`' for g in introduced)}). En cierre no se abre ninguno: quítales el "
+                f"nombre propio en la nota o disuélvelos (`dissolve_link.py`)."]
     out += ["", "## Estado del mundo",
             auditor + (f" ({len(own_warnings)} sobre lo generado)" if own_warnings else "")]
     out += [f"  - ERROR: {linkify(e)}" for e in audit["errores"][:MAX_ERRORS]]
@@ -637,6 +645,9 @@ def main():
         sys.exit(f"Error: no existe la bóveda '{vault}'.")
 
     if args.snapshot is not None:
+        # Todo generador empieza por aquí: con el mundo cerrado, no empieza ninguno
+        if world_state(vault) == WORLD_CLOSED:
+            sys.exit(CLOSED_MESSAGE)
         stamp = time.strftime("%Y%m%d_%H%M%S")
         target = Path(args.snapshot) if args.snapshot else \
             Path(tempfile.gettempdir()) / f"world_snapshot_{stamp}_{os.getpid()}.json"

@@ -61,6 +61,7 @@ from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, OPTIONAL_P
                        parse_exact_date, parse_frontmatter, parse_moment, parse_note, read_world,
                        reference_calendar, resolve_note, section_table, split_note, table_cell,
                        unlinked_entities, unlinked_mentions, unlinked_names, unquote)
+from vault_lib import CLOSING_NOTE, WORLD_CLOSED, WORLD_CLOSING, world_state  # noqa: E402
 from vault_lib import vault_path  # noqa: E402
 
 MAX_LOOSE = 10
@@ -503,6 +504,10 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     # Por encima del máximo es un error; por debajo del mínimo, un aviso: al completar un enlace
     # pendiente, la nota que lo nombraba se queda con menos, y está bien.
     low, high = own_gaps_range(module, relevance)
+    # Con el mundo en cierre o cerrado no se piden enlaces pendientes nuevos. Que no se abra ninguno lo comprueba
+    # el informe (report.py), que sabe qué es de esta vez: aquí, los de una nota anterior al cierre no son nuevos
+    if world_state(vault) in (WORLD_CLOSING, WORLD_CLOSED):
+        low = 0
     if len(own) > high:
         errors.append(f"enlaces pendientes nuevos: {len(own)} (con relevancia {relevance} el tipo admite entre {low} "
                       f"y {high}; deja sin nombre propio las entidades menos importantes)")
@@ -572,7 +577,7 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
     return errors, warnings, note_type
 
 
-def print_depth(spec):
+def print_depth(spec, vault=None):
     """Imprime la profundidad de una nota de un tipo, una relevancia y, si se da, una categoría;
     devuelve el código de salida."""
     tipo, _, rest = spec.partition(":")
@@ -592,7 +597,10 @@ def print_depth(spec):
     depth = module.get("profundidad", {})
     low, high = own_gaps_range(module, relevance)
     print(f"{tipo} con relevancia {relevance}:")
-    print(f"  Enlaces pendientes nuevos: entre {low} y {high}.")
+    if vault is not None and vault.is_dir() and world_state(vault) == WORLD_CLOSING:
+        print(f"  Enlaces pendientes nuevos: ninguno ({CLOSING_NOTE}: lo menor, sin nombre propio).")
+    else:
+        print(f"  Enlaces pendientes nuevos: entre {low} y {high}.")
     optional = [t for t in omitted if depth.get(t) == 0]
     left_out = [t for t in omitted if t not in optional]
     if left_out:
@@ -621,27 +629,9 @@ def print_depth(spec):
     return 0
 
 
-def main():
-    # UTF-8 antes de cualquier salida (incluida la ayuda de argparse)
-    for stream in (sys.stdout, sys.stderr):
-        if hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8")
-
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("notes", nargs="*", help="Ruta o nombre de cada nota a validar")
-    parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
-    parser.add_argument("--depth", metavar="TIPO:RELEVANCIA",
-                        help="Dice qué secciones lleva una nota de ese tipo y relevancia, y cuántos enlaces "
-                             "pendientes nuevos puede abrir (personaje:2)")
-    args = parser.parse_args()
-    if args.depth:
-        sys.exit(print_depth(args.depth))
-    if not args.notes:
-        parser.error("indica las notas a validar, o --depth <tipo>:<relevancia>")
-
-    vault = vault_path(args.vault)
-    if not vault.is_dir():
-        sys.exit(f"Error: no existe la bóveda '{vault}'.")
+def checker(vault):
+    """Prepara una vez lo que hace falta para validar notas de la bóveda y devuelve la función que valida una:
+    nota → (errores, avisos, tipo). La usan este script y finalizar-mundo, que valida el mundo entero."""
     modules = load_modules()
     names, paths = index_vault(vault)
     world = read_world(vault)
@@ -658,6 +648,35 @@ def main():
         known_terms.add(normalize(world["props"]["mundo"]))
     md_by_stem = {p.stem.lower(): p.relative_to(vault).as_posix().lower()
                   for p in vault.rglob("*.md") if not HIDDEN_DIRS & set(p.relative_to(vault).parts)}
+
+    def run(path):
+        return check(path, vault, modules, names, paths, md_by_stem, world_year, calendar, gaps, known_terms,
+                     glossary_entities, calendars)
+    return run
+
+
+def main():
+    # UTF-8 antes de cualquier salida (incluida la ayuda de argparse)
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
+
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("notes", nargs="*", help="Ruta o nombre de cada nota a validar")
+    parser.add_argument("--vault", default="World_Building", help="Carpeta de la bóveda (por defecto World_Building)")
+    parser.add_argument("--depth", metavar="TIPO:RELEVANCIA",
+                        help="Dice qué secciones lleva una nota de ese tipo y relevancia, y cuántos enlaces "
+                             "pendientes nuevos puede abrir (personaje:2)")
+    args = parser.parse_args()
+    if args.depth:
+        sys.exit(print_depth(args.depth, vault_path(args.vault)))
+    if not args.notes:
+        parser.error("indica las notas a validar, o --depth <tipo>:<relevancia>")
+
+    vault = vault_path(args.vault)
+    if not vault.is_dir():
+        sys.exit(f"Error: no existe la bóveda '{vault}'.")
+    run = checker(vault)
 
     total_errors = 0
     for argument in args.notes:
@@ -676,8 +695,7 @@ def main():
         if is_system_note(shown, note_type) or (shown.startswith("00_Sistema/") and not note_type):
             print(f"\n{shown} ({note_type or 'sin tipo'})\n  Nota interna (no es una entidad): no se valida.")
             continue
-        errors, warnings, note_type = check(path, vault, modules, names, paths, md_by_stem, world_year, calendar,
-                                            gaps, known_terms, glossary_entities, calendars)
+        errors, warnings, note_type = run(path)
         print(f"\n{shown} ({note_type or 'sin tipo'})")
         for error in errors:
             print(f"  ERROR: {error}")

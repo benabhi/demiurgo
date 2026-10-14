@@ -22,13 +22,15 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, NARRATIVE_FOLDER, OPEN_QUESTIONS, OUTSIDE_TYPE, PENDING_NOTE,  # noqa: E402
-                       SECRET_TYPE,
+                       SECRET_TYPE, world_state,
                        SECRETS_FOLDER, STATS_HOME_LINE, STATS_NOTE, blocked_links, find_gaps, gap_kind,
                        glossary_table, is_confirmation, load_index, load_modules, map_applies, map_status,
                        parse_map_key, parse_map_routes, split_note)
 from vault_lib import vault_path  # noqa: E402
 
 TOP = 10
+STATE_LABELS = {"abierto": "abierto", "en_cierre": "en cierre (`/finalizar-mundo`): solo se cierran cabos",
+                "cerrado": "cerrado: no se crea nada"}
 
 
 def plural(count, singular, plural_form=None):
@@ -84,7 +86,7 @@ def collect(vault):
     questions = [line.strip() for line in questions_path.read_text(encoding="utf-8").splitlines()
                  if line.strip().startswith("- [ ]")] if questions_path.is_file() else []
     return {"modules": modules, "entities": entities, "secrets": secrets, "archived": archived,
-            "narratives": narratives, "gaps": gaps,
+            "narratives": narratives, "gaps": gaps, "state": world_state(vault),
             "ready": ready, "waiting": waiting, "untyped": untyped, "outside": outside, "linkers": linkers,
             "maps": maps,
             "glossary": glossary_table(vault), "questions": questions, "registry": (vault / PENDING_NOTE).is_file(),
@@ -104,7 +106,8 @@ def build_note(data, today):
     for entry in entities:
         by_type[entry["tipo"]].append(entry)
 
-    numbers = {"entidades": len(entities), "borradores": drafts, "canon": canon, "secretos": len(data["secrets"]),
+    numbers = {"estado_mundo": data["state"], "entidades": len(entities), "borradores": drafts, "canon": canon,
+               "secretos": len(data["secrets"]),
                "archivadas": len(data["archived"]), "narraciones": len(data["narratives"]),
                "enlaces_pendientes": len(data["gaps"]),
                "pendientes_listos": len(data["ready"]), "pendientes_por_confirmar": len(data["waiting"]),
@@ -115,6 +118,7 @@ def build_note(data, today):
     lines += ["# Estadísticas del mundo", "",
               "> Cuánto hay en el mundo y qué falta. Las skills la rehacen al terminar cada tarea (`world_stats.py`): "
               "no la edites a mano.", "", f"*Actualizada el {today}.*", "", "## Resumen"]
+    lines.append(f"- **Estado del mundo:** {STATE_LABELS.get(data['state'], data['state'])}")
     lines.append(f"- **Entidades:** {len(entities)}"
                  + (f", de {plural(len(by_type), 'tipo')} · {drafts} en borrador y {canon} en canon"
                     + (f" · relevancia media {decimal(sum(relevances) / len(relevances))}" if relevances else "")

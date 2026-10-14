@@ -65,6 +65,7 @@ from vault_lib import (ROUTE_TYPE, SKILL_DIR, WORLD_SHEET, blocked_links, connec
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
                        omitted_sections, parse_map_key, parse_map_routes, read_world, split_note,
                        template_sections, without_secrets)
+from vault_lib import CLOSED_MESSAGE, WORLD_CLOSED, WORLD_CLOSING, world_state  # noqa: E402
 from vault_lib import vault_path  # noqa: E402
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
@@ -87,12 +88,15 @@ NEW_FLOOR = 0.4
 # De lo nuevo, la parte que va a paquetes (el resto, una entidad suelta)
 PACKAGE_SHARE = 0.6
 BUDGETS = ("justo", "medio", "amplio")
+# Con el mundo en cierre: ninguna nota abre enlaces pendientes nuevos
+CLOSING_BUDGET = "cierre"
 # Profundizar: cuántas notas que la nombran piden cada relevancia (de mayor a menor)
 RELEVANCE_BY_LINKERS = ((10, 5), (6, 4), (3, 3))
 
 
-def map_candidates(vault, index, modules):
-    """Lugares con leyenda a los que les toca dibujar el mapa: la primera edición o una nueva."""
+def map_candidates(vault, index, modules, complete=False):
+    """Lugares con leyenda a los que les toca dibujar el mapa: la primera edición o una nueva (con `complete`, en
+    cierre, una nueva con cualquier cambio sin dibujar)."""
     options = []
     for entry in index:
         module = modules.get(entry["tipo"])
@@ -105,7 +109,7 @@ def map_candidates(vault, index, modules):
         if zones is None or problems or map_key_problems(zones)[0]:
             continue
         routes, _ = parse_map_routes(body)
-        status = map_status(module, entry["props"], zones, relevance, routes)
+        status = map_status(module, entry["props"], zones, relevance, routes, complete=complete)
         if not status["toca"]:
             continue
         first_edition = status["toca"] == "primera"
@@ -284,8 +288,9 @@ def main():
 
     def finish(result, code=0, types=()):
         if "presupuesto" in result:
-            ranges = {t: new_links_range(modules[t], result["presupuesto"]) for t in dict.fromkeys(types)
-                      if t in modules}
+            # En cierre, ninguna nota abre enlaces pendientes nuevos
+            ranges = {t: (0, 0) if result["presupuesto"] == CLOSING_BUDGET else new_links_range(modules[t], result["presupuesto"])
+                      for t in dict.fromkeys(types) if t in modules}
             result["enlaces_nuevos"] = {t: f"{low}–{high}" for t, (low, high) in ranges.items()}
             if ranges:
                 result["detalle"].append("enlaces pendientes nuevos por nota: "
@@ -299,6 +304,12 @@ def main():
                 print(f"  {line}")
             print(f"  (semilla {seed})")
         sys.exit(code)
+
+    # El estado del mundo: cerrado, no se crea nada; en cierre, solo se cierran cabos (modo cierre)
+    state = world_state(vault)
+    if state == WORLD_CLOSED:
+        finish({"accion": "detener", "resumen": f"DETENER: {CLOSED_MESSAGE}"}, 2)
+    closing = state == WORLD_CLOSING
 
     # Límite de revisión: no construir sobre demasiados borradores sin revisar
     pending = sum(1 for e in index if e["estado"] == "borrador" and e["origen"] == "procedural")
@@ -376,6 +387,11 @@ def main():
     if skipped:
         balance.append(f"descartados: {len(skipped)} (sin tipo, sin módulo, pendientes de confirmar, "
                        f"alias o con --skip)")
+    if closing:
+        budget = CLOSING_BUDGET
+        balance[0] = (f"modo cierre (el mundo está en cierre): solo se completan los {len(references) + len(candidates)} "
+                      f"enlaces pendientes que se pueden crear, sin abrir ninguno nuevo; nada nuevo, ni rutas, ni "
+                      f"profundizar")
     common = {"densidad": round(density, 2), "presupuesto": budget, "borradores_pendientes": pending,
               "descartados": skipped[:MAX_SKIPPED], "descartados_total": len(skipped)}
 
@@ -397,19 +413,19 @@ def main():
     available = [p for p in parse_packages(vault)
                  if all(modules.get(i["tipo"], {}).get("crear_desde_cero", i["tipo"] in modules)
                         and i["tipo"] not in out_of_scale for i in p["composicion"])]
-    create_new = not candidates or rng.random() < new_chance
-    deepen = deepen_candidates(vault, index, modules)
+    create_new = not closing and (not candidates or rng.random() < new_chance)
+    deepen = [] if closing else deepen_candidates(vault, index, modules)
     shuffle_ties(deepen, rng)
     if deepen:
         balance.append(f"notas que piden más profundidad: {len(deepen)} · probabilidad de profundizar "
                        f"{args.deepen_chance:.0%}")
-    maps = [] if args.no_maps else map_candidates(vault, index, modules)
+    maps = [] if args.no_maps else map_candidates(vault, index, modules, complete=closing)
     shuffle_ties(maps, rng)
     if maps:
         balance.append(f"mapas por dibujar: {len(maps)} · probabilidad de cartografiar {args.map_chance:.0%}")
     # Lo que debería estar unido por una ruta y no lo está; lo del foco, antes
     connections = []
-    if ROUTE_TYPE in modules and modules[ROUTE_TYPE].get("crear_desde_cero", True):
+    if not closing and ROUTE_TYPE in modules and modules[ROUTE_TYPE].get("crear_desde_cero", True):
         connections = connection_candidates(vault, index)
         for option in connections:
             ends = [by_name.get(name.lower()) for name in (option["partida"], option["destino"]) if name]
@@ -422,6 +438,16 @@ def main():
     if connections:
         balance.append(f"lugares por unir con una ruta: {len(connections)} · probabilidad de conectar "
                        f"{connect_chance:.0%}")
+    # En cierre, sin enlaces pendientes que crear solo quedan los mapas; si tampoco, se para
+    if closing and not candidates and not (references and not args.skip_canon):
+        if maps:
+            args.map_chance = 1.0
+        else:
+            finish({"accion": "detener", **common,
+                    "resumen": "DETENER: el cierre no tiene enlaces pendientes que se puedan crear ni mapas por "
+                               "dibujar: los que quedan esperan una confirmación, no tienen tipo o no tienen módulo. "
+                               "Sigue con /finalizar-mundo, que los resuelve (confirmar, disolver o fusionar).",
+                    "detalle": balance}, 2)
     if references and not args.skip_canon:
         pool = references[:TOP_DRAW]
         chosen = rng.choices(pool, weights=[r["puntos"] for r in pool])[0]

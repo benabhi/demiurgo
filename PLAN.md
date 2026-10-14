@@ -175,6 +175,7 @@ Etapas:
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
+- [ ] `finalizar-mundo` con un mundo de verdad (el de una tanda del motor): el diagnóstico, empezar el cierre, un pilar como misterio, una confirmación rechazada, menores disueltos, el motor en modo cierre (y el error si una creación abre un pendiente), los borradores, un mapa atrasado por una sola zona, cerrar con su resumen, crear con el mundo cerrado (debe fallar) y reabrir.
 - [ ] `narrar` con un mundo con contenido: una escena y un relato con personajes y lugares que existen, una crónica que siga a otra en una serie, una que pida usar un secreto, una que choque con el canon (debe avisar) y su ilustración.
 - [ ] `consultar-mundo` con un mundo con contenido: preguntas de cada fila de su tabla, una sobre algo pendiente, otra que toque un secreto (con y sin spoilers) y una que no conste.
 - [ ] `revisar-mundo` con borradores reales (los de una tanda del motor): una tanda con las cuatro decisiones, una corrección por «Other», un lugar con mapa quitado del mundo (su zona retirada y sus menciones reescritas) y otro archivado para rehacerlo, y el motor creándolo de nuevo.
@@ -352,13 +353,13 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 - [x] `secreto` 🔒 — verdades ocultas (en `80_Secretos`).
 
 ## Skills futuras
-- [ ] **`finalizar-mundo`**, cuando estén todas las entidades. Lleva un mundo a un estado cerrado:
-  - recorre los enlaces pendientes y, en cada uno, crea la entidad o lo disuelve (si no merece nota, queda como texto o como término del Glosario) hasta que no quede ninguno;
-  - resuelve con el usuario las confirmaciones y las preguntas abiertas;
-  - completa las imágenes que falten y deja el auditor sin errores ni avisos;
-  - cierra con un informe del mundo terminado.
-
-  Queda por decidir cómo se reparte en tandas (con presupuesto y por prioridad, como el motor) y si ofrece un modo de solo revisión.
+- [ ] **`finalizar-mundo`.** Hecha; se tilda cuando se pruebe con un mundo de verdad. Lleva un mundo a su cierre y lo deja impecable. Las decisiones del usuario:
+  - **Tres estados** (`estado_mundo`, en la Ficha): `abierto`, `en_cierre` (el mundo ya no crece: ninguna nota abre enlaces pendientes nuevos, el motor solo completa y dibuja, `crear-entidad` solo completa) y `cerrado` (no se crea nada). El bloqueo va en el arranque de los generadores (`report.py --snapshot`) y en el selector; reabrir deja constancia.
+  - **Cerrado sigue permitiendo** consultar, narrar e ilustrar.
+  - **Los pendientes menores** (los nombra una sola nota, poco y sin peso) se proponen para disolver (`dissolve_link.py`: pasan a texto en todas las notas y salen de las propiedades; quedan como término del Glosario; una línea en el Registro de Canon); el resto se crea, y lo que es otro nombre se fusiona.
+  - **Para cerrar, todo** (`close_world.py`): sin pilares por definir ni preguntas abiertas (pueden quedar misterios a propósito), sin pendientes ni borradores, cada nota impecable (check_note sin errores ni avisos y sin anotaciones de trabajo: «por definir», «por confirmar», «sin cartografiar», restos de plantilla), el auditor limpio, todas las imágenes, todos los mapas al día (sin un solo cambio por dibujar, más estricto que la regla de siempre) y lo más alto del mapa con el suyo, sin imágenes sueltas (se apartan como `_suelta`) ni notas en la Bandeja de Entrada.
+  - **Al cerrar,** el resumen del mundo terminado (de las Estadísticas) y lo que hizo el cierre (lo que pasó a canon, se archivó, se quitó o se disolvió, y cómo se cerraron las preguntas).
+  - Las fases: el diagnóstico, los pilares, las confirmaciones y las preguntas, los pendientes, los borradores (`revisar-mundo`), las notas y el auditor, las imágenes y los mapas, lo suelto y el cierre. Siempre empieza por la lista y sigue por el primer criterio en rojo.
 - **Ideas para más adelante** (sin decidir):
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;
   - `exportar-mundo`: un compendio del mundo (PDF, web o wiki);
