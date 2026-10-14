@@ -19,6 +19,7 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 - **Un grafo que se lee de un vistazo:** al crear el mundo, el grafo de Obsidian queda configurado con un color por tipo de entidad (verdes los lugares, azules la gente, cálidos la fe y los relatos…), los nombres visibles desde lejos, sin las notas del sistema que lo enredan y con los enlaces pendientes en gris. En Marcadores quedan dos vistas: «Grafo sin secretos», para enseñar el mundo sin spoilers, y «Grafo completo».
 - **Una bitácora del mundo** (`00_Sistema/Bitacora.md`): cada creación, entidad, tanda del motor, imagen o mapa deja una entrada breve con su fecha, lo creado y lo modificado, para ver de un vistazo cómo fue creciendo el mundo.
 - **Estadísticas del mundo** (`00_Sistema/Estadisticas.md`): cuántas entidades hay por tipo y por relevancia, los enlaces pendientes, las imágenes y los mapas que toca redibujar, lo más nombrado que falta y lo más enlazado. Se rehace sola al terminar cada tarea, y sus cifras van también en el frontmatter, para un tablero.
+- **Pregúntale al mundo:** `/consultar-mundo` responde con lo que dice la bóveda (qué es algo, qué hay en un lugar, cuánto se tarda de un sitio a otro, qué pasó y cuándo), cita sus notas, distingue el canon de los borradores y aparta los secretos, o los oculta para enseñar el mundo sin spoilers.
 - **Tú decides qué es canon:** todo nace como borrador. `/revisar-mundo` te los muestra por tandas, de lo que más pesa a lo que menos, y cada uno pasa a canon, sigue en borrador o se archiva, con sus imágenes, sus secretos y su sitio en los mapas. Nada se borra.
 - **Lo que se sabe frente a lo que es:** las notas cuentan lo que el mundo sabe o cree, y la verdad oculta va aparte, en `80_Secretos`.
 
@@ -30,8 +31,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | `expandir-mundo` | Hace crecer el mundo por ciclos (`/expandir-mundo 3`), o en una rama aparte para revisarlo antes (`/expandir-mundo prueba`). |
 | `generar-imagen` | La imagen de una entidad y el mapa de un lugar. La invoca `crear-entidad` sola; también sirve para regenerarla (`/generar-imagen Nombre_de_la_Nota acuarela`) o para dibujar un mapa (`/generar-imagen Nombre_de_la_Nota mapa`). |
 | `revisar-mundo` | Repasa los borradores por tandas (`/revisar-mundo`): cada uno pasa a canon, sigue en borrador o se archiva, para rehacerlo o para quitarlo del mundo. |
+| `consultar-mundo` | Responde preguntas sobre el mundo con lo que dice la bóveda (`/consultar-mundo ¿quién gobierna el puerto?`), citando sus notas, sin leerla entera. |
 
-Las cinco van juntas: `expandir-mundo` y `revisar-mundo` usan los scripts de `crear-entidad`.
+Las seis van juntas: `expandir-mundo`, `revisar-mundo` y `consultar-mundo` usan los scripts de `crear-entidad`.
 
 ## Requisitos
 - **Claude Code.**
@@ -49,7 +51,7 @@ Las cinco van juntas: `expandir-mundo` y `revisar-mundo` usan los scripts de `cr
    ```bash
    git clone https://github.com/benabhi/skills-world-building.git
    ```
-2. Pon las cinco carpetas de `skills/` donde Claude Code busca las skills:
+2. Pon las seis carpetas de `skills/` donde Claude Code busca las skills:
    - en `~/.claude/skills/`, para tenerlas en todos tus proyectos;
    - o en `<tu proyecto>/.claude/skills/`, solo para un mundo.
 
@@ -89,7 +91,7 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 En desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
 - la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
-- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos) está hecha y espera su prueba;
+- `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos) y `consultar-mundo` (preguntas sobre el mundo) están hechas y esperan su prueba;
 - faltan las imágenes por API y la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
 
 El plan está en [PLAN.md](PLAN.md).

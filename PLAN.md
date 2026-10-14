@@ -31,6 +31,11 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
   - **archivar y rehacer:** la nota va a `03_Archivados` como `<Nota>_archivada`, así sus menciones vuelven a ser enlaces pendientes con su tipo y se crea de nuevo con el mismo nombre;
   - **quitar del mundo:** va a `03_Archivados` con su nombre (nada queda pendiente ni se recrea), el auditor avisa de cada mención hasta que Claude la reescribe, y su zona en el mapa se retira (`map_key.py --retire`: «se quita en la edición siguiente» y, al dibujarla, «retirada»; el dibujo la omite y la edición nueva la borra).
   - Al archivar, de las dos formas: sus imágenes van a `02_Activos/Anteriores` con `_archivada` (la nota archivada las sigue enlazando, y la imagen de la entidad rehecha no choca con la vieja), y los secretos que solo afectan a lo archivado van con ello. Las Estadísticas lo cuentan como archivado.
+- [ ] **`consultar-mundo`.** Hecha; se tilda cuando se pruebe. Responde preguntas sobre el mundo con lo que dice la bóveda, sin leerla entera ni inventar: cita las notas con su estado (canon o borrador), atribuye lo que se cree, aparta los secretos (🔒, solo para el autor) y, sin spoilers (`--no-secrets`), ni los muestra ni dice que existen. Una tabla le dice qué consulta responde cada pregunta: las de `crear-entidad` (`search_vault`, `routes`, `world_stats`, `map_key`) y `query_world.py`, nueva:
+  - `--about`: qué es algo, su estado, dónde está (aunque lo que lo contiene aún no tenga nota), sus fechas, sus relaciones con el estado de cada una, quién la tiene en sus relaciones y en qué propiedad, quién la nombra en su texto, sus secretos, lo que está por decidir y sus secciones; de un enlace pendiente, su tipo, si espera confirmación y lo que dicen de él las notas que lo nombran;
+  - `--in`: lo que hay dentro de un lugar (también en sus barrios, lugares y comarcas), por tipo y con cómo se relaciona con él, y lo que se nombra dentro y aún no tiene nota;
+  - `--timeline`: lo que tiene fecha, en orden, con los años del calendario y la marca de hoy;
+  - `--outline` y `--section`: las secciones de una nota y el texto de las que hacen falta.
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
@@ -164,6 +169,7 @@ Etapas:
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
+- [ ] `consultar-mundo` con un mundo con contenido: preguntas de cada fila de su tabla, una sobre algo pendiente, otra que toque un secreto (con y sin spoilers) y una que no conste.
 - [ ] `revisar-mundo` con borradores reales (los de una tanda del motor): una tanda con las cuatro decisiones, una corrección por «Other», un lugar con mapa quitado del mundo (su zona retirada y sus menciones reescritas) y otro archivado para rehacerlo, y el motor creándolo de nuevo.
 - [ ] `inicializar-mundo` con un mundo nuevo (en `pruebas/<nombre>/`): uno que sea una sola ciudad, con algo que ya tenga nombre propio, y una tanda corta del motor: el foco como asentamiento completando su enlace, sus barrios y lo de fuera marcado `fuera` sin crearse.
 - [x] `ruta` (#21): una región y una ruta entre su capital y otro asentamiento, con el bloque «Rutas» en la leyenda de la región. Tras la prueba, la ruta dejó de tener mapa propio (el itinerario sobraba): se ve en los mapas de lo que cruza, y sus puntos con peso entran en la leyenda de su región.
@@ -347,7 +353,6 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
 
   Queda por decidir cómo se reparte en tandas (con presupuesto y por prioridad, como el motor) y si ofrece un modo de solo revisión.
 - **Ideas para más adelante** (sin decidir):
-  - `consultar-mundo`: responder preguntas sobre el mundo con los scripts de consulta, sin leer la bóveda;
   - `narrar`: relatos, escenas o crónicas ambientados en el mundo, coherentes con el canon;
   - `preparar-partida`: material para rol (sesiones, encuentros, ganchos) si el mundo se usa para jugar;
   - `exportar-mundo`: un compendio del mundo (PDF, web o wiki);
