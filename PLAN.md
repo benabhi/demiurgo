@@ -20,12 +20,11 @@ Lo que falta de esta sección se hace después de terminar las entidades (de la 
   - `add_entries.py` (Glosario y Preguntas Abiertas), `add_relation.py` (vínculos inversos) y `rename_link.py` (un nombre de rol por el definitivo): escriben sin que la IA lea las notas.
   - `log_cycle.py` (registro de generación del motor); `audit_world.py --focus` (solo lo de las notas tocadas, y el recuento del resto); topes en la salida del selector.
   - La regla en las skills y en el `CLAUDE.md` de cada mundo, y la cabecera del Glosario, que ya no invita a leerlo entero.
-- [ ] **`inicializar-mundo` a fondo:**
-  - mejores preguntas, con una ronda para lo que el usuario ya tiene con nombre propio (especies, pueblos, lugares, facciones, dioses);
-  - identificar las entidades de sus respuestas y confirmarle el tipo de cada una;
-  - una Ficha que nazca con esas entidades enlazadas como enlaces pendientes con su tipo, para que el motor empiece por ellas;
-  - revisar la estructura y el `CLAUDE.md` que genera;
-  - **el alcance del mundo** (la Escala de la Ficha: una sola región, un continente, un mundo entero, varios planos) hecho estructura: la geografía de arriba (el mundo, sus continentes o la región única) como primeros enlaces pendientes, para que cada región cuelgue de algo, el foco se sitúe en ella y el mapa del mundo tenga qué dibujar. Por decidir con el usuario.
+- [ ] **`inicializar-mundo` a fondo.** Hecho; se tilda cuando se pruebe con un mundo nuevo:
+  - **el alcance:** la escala distingue una ciudad (o un sitio: una estación, un barco, una mazmorra), una región, un continente o un mundo, y varios mundos o planos. En una ciudad o una región, el foco es todo el mundo: el motor crea el foco con su tipo y todo dentro de él; lo de fuera se enlaza como referencia con el tipo `fuera`, que manda sobre el de la propiedad y el motor nunca crea; en un mundo-ciudad no se crean regiones. En uno mundial, lo más alto del mapa (el continente o el mundo) entra como enlace pendiente, para que cada región cuelgue de algo y el mapa del mundo tenga qué dibujar;
+  - **los barrios:** el asentamiento gana la categoría `barrio`, con su `ciudad` y los `barrios` de la ciudad (recíprocas), su mapa urbano desde relevancia 4, y la cadena de lugares (el contexto, los mapas y las rutas) sube del barrio a su ciudad. Antes, un barrio con nombre propio iba al módulo `lugar`, que no tenía categoría para él;
+  - **lo que ya tiene nombre:** una ronda para lo que el usuario ya tiene con nombre propio. Claude identifica cada entidad y su tipo (el foco, el primero, en un mundo local; lo más alto del mapa en uno mundial), el usuario lo confirma, y la Ficha nace con ellos enlazados, con su tipo en el registro de enlaces pendientes: el motor empieza por ellos (canon de base) y crea el foco completando su enlace;
+  - la estructura de carpetas sigue igual en todas las escalas: es neutra, y las carpetas que una escala no usa quedan vacías. Las reglas de la escala van al `CLAUDE.md` que se genera.
 
 ## Cómo funciona
 - Cada "skill de entidad" es un **módulo** de `crear-entidad`, en `tipos/<tipo>/`, con tres archivos: `tipo.md`, `plantilla.md` y `modulo.json`. Se usa con `/crear-entidad <tipo> …`.
@@ -159,6 +158,7 @@ Etapas:
 Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su prueba queda pendiente aparte, en esta lista, para hacerla cuando estén todas.
 
 **Pruebas pendientes:**
+- [ ] `inicializar-mundo` con un mundo nuevo (en `pruebas/<nombre>/`): uno que sea una sola ciudad, con algo que ya tenga nombre propio, y una tanda corta del motor: el foco como asentamiento completando su enlace, sus barrios y lo de fuera marcado `fuera` sin crearse.
 - [x] `ruta` (#21): una región y una ruta entre su capital y otro asentamiento, con el bloque «Rutas» en la leyenda de la región. Tras la prueba, la ruta dejó de tener mapa propio (el itinerario sobraba): se ve en los mapas de lo que cruza, y sus puntos con peso entran en la leyenda de su región.
 - [x] `material` (#22): un recurso que la región ya nombra y su mina (categoría `explotacion`, con mapa interior).
 - [x] `flora` (#23): una planta que calma una afección y se confunde con una gemela venenosa, con su hábitat y su secreto.

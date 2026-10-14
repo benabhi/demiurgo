@@ -6,9 +6,11 @@
     {"id": 3, "titulo": "Pilares", "modo": "opciones", "opcional": false},
     {"id": 4, "titulo": "Colaboración", "modo": "opciones", "opcional": false},
     {"id": 5, "titulo": "Detalle", "modo": "texto", "opcional": true,
-     "intro": "Última ronda, toda opcional: responde lo que tengas claro, deja el resto 'por definir' o escribe 'decide tú'."}
+     "intro": "Ronda opcional: responde lo que tengas claro, deja el resto 'por definir' o escribe 'decide tú'."},
+    {"id": 6, "titulo": "Lo que ya tiene nombre", "modo": "texto", "opcional": true,
+     "intro": "Última ronda, también opcional: lo que ya tengas con nombre propio entra en la Ficha, y el motor empezará por ello."}
   ],
-  "secciones_ficha": ["Identidad", "Tono y temas", "Pilares", "Lenguaje y tiempo", "Uso y colaboración"],
+  "secciones_ficha": ["Identidad", "Tono y temas", "Pilares", "Lenguaje y tiempo", "Uso y colaboración", "Lo que ya tiene nombre"],
   "opcion_decidir": {"etiqueta": "Decide tú", "descripcion": "Claude elige lo más coherente con lo que ya respondiste."},
   "preguntas": [
     {
@@ -39,19 +41,21 @@
     {
       "id": "foco", "ronda": 1, "seccion": "Identidad", "titulo": "Foco inicial", "encabezado": "Foco",
       "formato": "texto",
-      "pregunta": "¿Qué zona o ámbito se desarrolla primero?",
-      "ejemplo": "una región, una ciudad, un planeta, una estación",
+      "pregunta": "¿Dónde empieza el mundo? Si todo el mundo es una ciudad o una región, nómbrala; si es más grande, la zona que se desarrolla primero.",
+      "ejemplo": "la ciudad portuaria de Vel, el valle de Ord, el continente de Arn, una estación minera",
       "regla": "Foco actual: {valor}. Desarrolla primero lo que está dentro del foco; lo de fuera aparece como referencia o rumor salvo que se pida."
     },
     {
       "id": "escala", "ronda": 2, "seccion": "Identidad", "titulo": "Escala", "encabezado": "Escala",
-      "formato": "opcion",
-      "pregunta": "¿Qué escala abarca el mundo?",
+      "formato": "opcion", "permite_decidir": false,
+      "pregunta": "¿Qué abarca el mundo? (si quieres que lo decida yo, escríbelo en «Other»)",
       "opciones": [
-        {"valor": "local", "etiqueta": "Una ciudad o región", "descripcion": "Un asentamiento, una zona o un territorio acotado.",
-         "regla": "Escala local o regional: el detalle se concentra en un territorio acotado; lo exterior aparece solo como referencia."},
-        {"valor": "mundial", "etiqueta": "Un continente o mundo", "descripcion": "Varias naciones, culturas y geografías.",
-         "regla": "Escala continental o planetaria: mantén la coherencia geográfica y las distancias entre regiones."},
+        {"valor": "ciudad", "etiqueta": "Una ciudad o un lugar", "descripcion": "Todo ocurre en una ciudad o un sitio acotado: una estación, un barco, una mazmorra.",
+         "regla": "El mundo es una sola ciudad (o un sitio acotado: una estación, un barco, una mazmorra), la del foco: todo se crea dentro de ella, en sus barrios y sus lugares. Lo de fuera (otras ciudades, regiones o reinos) se enlaza solo como referencia o rumor, con el tipo `fuera` en el registro de enlaces pendientes (`pending_links.py --set <Enlace>=fuera`), y no se crea."},
+        {"valor": "region", "etiqueta": "Una región", "descripcion": "Un valle, una isla, un reino o una comarca, con sus pueblos y sus parajes.",
+         "regla": "El mundo es una sola región, la del foco (un valle, una isla, un reino): todo se crea dentro de ella, en sus asentamientos, sus lugares y sus comarcas. Lo de fuera (otras regiones, reinos o continentes) se enlaza solo como referencia o rumor, con el tipo `fuera` en el registro de enlaces pendientes (`pending_links.py --set <Enlace>=fuera`), y no se crea."},
+        {"valor": "mundial", "etiqueta": "Un continente o un mundo", "descripcion": "Varias regiones, naciones, culturas y geografías.",
+         "regla": "Escala continental o planetaria: mantén la coherencia geográfica y las distancias entre regiones; cada región cuelga de otra mayor (`region_padre`), hasta lo más alto del mapa."},
         {"valor": "multiple", "etiqueta": "Varios mundos o planos", "descripcion": "Planetas, dimensiones o planos conectados.",
          "regla": "Escala múltiple: cada mundo o plano tiene su propia coherencia interna; documenta cómo se conectan."}
       ]
@@ -248,6 +252,12 @@
       "formato": "texto",
       "pregunta": "¿Qué obras inspiran el mundo y qué hay que evitar (clichés, obras a no imitar)?",
       "ejemplo": "inspira: una saga, un videojuego, un periodo histórico; evitar: un cliché concreto"
+    },
+    {
+      "id": "nombrados", "ronda": 6, "seccion": "Lo que ya tiene nombre", "titulo": "Lo que ya tiene nombre", "encabezado": "Nombrados",
+      "formato": "entidades",
+      "pregunta": "¿Hay cosas del mundo que ya tengan nombre propio? Lugares, pueblos, especies, facciones, dioses, personajes, hechos… Una por línea, con qué es.",
+      "ejemplo": "Vel: la ciudad portuaria donde empieza todo · los Orun: pastores de la meseta · la Gran Sequía: el año en que se secó el río"
     }
   ]
 }

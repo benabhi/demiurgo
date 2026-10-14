@@ -86,7 +86,7 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - `ultima_revision` sin comillas.
 
 ## Coherencia
-- **Escala de la Ficha:** en un mundo de escala local, una región es pequeña; en uno de varios mundos, puede ser un planeta.
+- **Escala de la Ficha:** en un mundo que es una sola región, esa región es el mundo entero (el foco) y las que se crean dentro son sus comarcas, con ella en `region_padre`; en uno que es una sola ciudad no hay regiones dentro (las de fuera llevan el tipo `fuera`); en uno de varios mundos, una región puede ser un planeta.
 - **Vecinos:** el clima, la geografía y los pueblos deben encajar con las regiones vecinas que ya existan. Léelas antes de escribir.
 - **Pilares:** tecnología, poderes y especies según la Ficha. Una región no inventa una especie ni una civilización nueva por su cuenta: eso va como `Confirmar: …` en Preguntas Abiertas.
 

@@ -6,6 +6,7 @@ import datetime
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
@@ -13,6 +14,10 @@ UNDEFINED = "Por definir."
 NOT_APPLICABLE = "No aplica."
 EMPTY_VALUES = {"", "por definir", "por_definir", "pendiente", "-"}
 DECIDE_VALUES = {"decide", "decide tu", "decide tú"}
+# Lo que el usuario ya tiene con nombre propio: una lista de entidades, no un pilar
+ENTITY_FORMAT = "entidades"
+NAMED_INTRO = ("Lo que el autor ya nombró al crear el mundo. Cada nombre es un enlace pendiente con su tipo "
+               "hasta que tenga su nota, y el motor empieza por ellos (canon de base).")
 
 created, skipped, warnings = [], [], []
 
@@ -164,6 +169,51 @@ def validate_questionnaire(questionnaire):
             warnings.append(f"cuestionario: la ronda {round_id} tiene más de 4 preguntas de opciones")
 
 
+def note_name(title):
+    """Nombre de archivo de una entidad, con las reglas de nombres: `_` en lugar de espacios y solo ASCII
+    (sin tildes, y la ñ como n), sin apóstrofes, comillas ni signos."""
+    text = unicodedata.normalize("NFKD", title)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    text = re.sub(r"[^A-Za-z0-9\s_-]", "", text)
+    return re.sub(r"[\s_-]+", "_", text.strip()).strip("_")
+
+
+def entity_types():
+    """Los tipos de entidad que existen (los módulos de crear-entidad y los tipos que prevén), o None si esa
+    skill no está."""
+    scripts = Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"
+    if not (scripts / "vault_lib.py").is_file():
+        return None
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from vault_lib import OUTSIDE_TYPE, known_types, load_modules
+    return known_types(load_modules()) - {OUTSIDE_TYPE}
+
+
+def parse_named(value, valid):
+    """Lo que ya tiene nombre: [{nombre, tipo, que_es, enlace}], sin repetidos. Cada elemento de la
+    respuesta es un objeto con `nombre`, `tipo` y `que_es`; un tipo que no existe se queda vacío."""
+    named, seen = [], set()
+    for item in value if isinstance(value, list) else []:
+        name = str(item.get("nombre") or "").strip() if isinstance(item, dict) else ""
+        kind = str(item.get("tipo") or "").strip().lower() if isinstance(item, dict) else ""
+        link = note_name(name)
+        if not link or not kind:
+            warnings.append(f"'nombrados': cada entrada necesita nombre y tipo; se ignora {item!r}")
+            continue
+        if link.lower() in seen:
+            warnings.append(f"'nombrados': «{name}» está repetido; se usa la primera vez")
+            continue
+        seen.add(link.lower())
+        if valid is not None and kind not in valid:
+            warnings.append(f"'nombrados': «{name}» tiene el tipo «{kind}», que no existe: queda sin tipo en la Ficha "
+                            f"y en el registro de enlaces pendientes (usa uno de los módulos de crear-entidad)")
+            kind = ""
+        named.append({"nombre": name, "tipo": kind, "que_es": str(item.get("que_es") or "").strip().rstrip("."),
+                      "enlace": link})
+    return named
+
+
 # --- Generadores ------------------------------------------------------------
 
 def build_readme(node, is_section):
@@ -249,7 +299,17 @@ def home_moc(world, sections, results):
     return "\n".join(lines)
 
 
-def world_sheet(world, questionnaire, results, today):
+def named_lines(named):
+    """La sección «Lo que ya tiene nombre» de la Ficha: cada entidad con su enlace, su tipo y qué es."""
+    lines = [NAMED_INTRO, ""]
+    for item in named:
+        target = item["enlace"] if item["enlace"] == item["nombre"] else f"{item['enlace']}|{item['nombre']}"
+        lines.append(f"- [[{target}]]" + (f" ({item['tipo']})" if item["tipo"] else "")
+                     + (f": {item['que_es']}." if item["que_es"] else ""))
+    return lines
+
+
+def world_sheet(world, questionnaire, results, today, named=()):
     lines = ["---", "tipo: ficha_mundo", "estado: canon", f"mundo: {json.dumps(world, ensure_ascii=False)}"]
     for q in questionnaire["preguntas"]:
         if q["id"] not in results or (q["formato"] == "texto" and not q.get("en_frontmatter")):
@@ -263,6 +323,11 @@ def world_sheet(world, questionnaire, results, today):
               "contexto. Para cambiar un pilar, edítalo aquí, actualiza las reglas de contenido de "
               "`CLAUDE.md` y deja constancia en [[Registro_de_Canon]].", ""]
     for section in questionnaire["secciones_ficha"]:
+        if any(q.get("seccion") == section and q["formato"] == ENTITY_FORMAT for q in questionnaire["preguntas"]):
+            # Lo que ya tiene nombre no es un pilar: la sección solo va si hay algo
+            if named:
+                lines += [f"## {section}", *named_lines(named), ""]
+            continue
         lines.append(f"## {section}")
         for q in questionnaire["preguntas"]:
             if q.get("seccion") == section and q["id"] in results:
@@ -300,6 +365,30 @@ def setup_stats(vault, warnings):
     numbers, stats_warnings = write_stats(vault)
     warnings.extend(stats_warnings)
     return [summary(numbers)]
+
+
+def setup_named(vault, named, warnings):
+    """Lo que ya tiene nombre, en el registro de enlaces pendientes (con pending_links de crear-entidad): cada
+    enlace de la Ficha, con su tipo, para que el motor empiece por ellos. Devuelve la línea del resumen."""
+    if not named:
+        return []
+    scripts = Path(__file__).resolve().parents[2] / "crear-entidad" / "scripts"
+    if not (scripts / "pending_links.py").is_file():
+        warnings.append("no encuentro la skill crear-entidad: lo que ya tiene nombre queda en la Ficha sin su tipo en el "
+                        "registro de enlaces pendientes (asígnaselo con su pending_links.py --set <Enlace>=<tipo>)")
+        return []
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    from pending_links import build, link_from_home
+    from vault_lib import PENDING_NOTE, find_gaps, load_index, load_modules, load_pending_types
+    types = load_pending_types(vault)
+    types.update({item["enlace"].lower(): item["tipo"] for item in named if item["tipo"]})
+    gaps, _ = find_gaps(vault, pending_types=types)
+    (vault / PENDING_NOTE).write_text(build(vault, gaps, load_modules(), load_index(vault)), encoding="utf-8",
+                                      newline="\n")
+    link_from_home(vault)
+    return [f"Lo que ya tiene nombre: {len(named)}, enlazado desde la Ficha y en el registro de enlaces pendientes "
+            f"({PENDING_NOTE}), con su tipo."]
 
 
 def add_chronicle_entry(path, title, lines, today):
@@ -352,6 +441,11 @@ def main():
     validate_questionnaire(questionnaire)
     questions = [q for q in questionnaire["preguntas"] if q["id"] != "nombre"]
     ids = {q["id"] for q in questions}
+    # Lo que ya tiene nombre no es un pilar: va aparte, a su sección de la Ficha y al registro de enlaces pendientes
+    valid_types = entity_types()
+    named = [item for q in questions if q["formato"] == ENTITY_FORMAT
+             for item in parse_named(answers.get(q["id"]), valid_types)]
+    questions = [q for q in questions if q["formato"] != ENTITY_FORMAT]
     warnings.extend(f"Respuesta desconocida ignorada: '{key}'" for key in answers if key not in ids)
 
     results = {q["id"]: interpret_answer(q, answers.get(q["id"]))
@@ -383,7 +477,10 @@ def main():
 
     system_dir = vault / "00_Sistema"
     write_file(system_dir / "MOC_Inicio.md", home_moc(world, sections, results))
-    write_file(system_dir / "Ficha_del_Mundo.md", world_sheet(world, questionnaire, results, today))
+    sheet = system_dir / "Ficha_del_Mundo.md"
+    write_file(sheet, world_sheet(world, questionnaire, results, today, named))
+    # Solo si la Ficha es nueva: una que ya existía no tiene esos enlaces
+    named = named if sheet in created else []
     write_file(system_dir / "Preguntas_Abiertas.md", open_questions(undefined))
     for source in sorted((ASSETS / "convenciones").glob("*.md")):
         write_file(system_dir / "04_Convenciones" / source.name,
@@ -406,6 +503,10 @@ def main():
                      else "."),
                   f"- **Bóveda:** {len(files) + 1} archivos y {len(created) - len(files)} carpetas: las secciones, las guías "
                   f"de convenciones, los índices y `CLAUDE.md`, con {len(rules)} reglas de contenido."]
+        if named:
+            shown = ", ".join(item["nombre"] for item in named[:4]) + (f" y {len(named) - 4} más" if len(named) > 4 else "")
+            lines.append(f"- **Lo que ya tiene nombre:** {shown}, en la Ficha como enlaces pendientes con su tipo: "
+                         f"el motor empieza por ellos.")
         add_chronicle_entry(chronicle, f"Se creó el mundo «{world}»", lines, today)
         created.append(chronicle)
         files.append(chronicle)
@@ -413,7 +514,9 @@ def main():
         add_chronicle_entry(chronicle, "Se completó la estructura del mundo",
                             [f"- **Bóveda:** {len(files)} archivos y {len(created) - len(files)} carpetas que faltaban."],
                             today)
-    # Las Estadísticas, al final: cuentan lo que ya existe (la Bitácora incluida)
+    # El registro de enlaces pendientes y las Estadísticas, al final: cuentan lo que ya existe (la Bitácora
+    # incluida, que MOC_Inicio enlaza)
+    named_summary = setup_named(vault, named, warnings)
     stats = setup_stats(vault, warnings)
     print(f"Mundo: {world}")
     print(f"Creados: {len(files)} archivos y {len(created) - len(files)} carpetas | "
@@ -425,7 +528,7 @@ def main():
         print("  = " + str(path.relative_to(root)))
     print(f"Reglas de contenido: {len(rules)}")
     print("Pilares por definir: " + (", ".join(undefined) if undefined else "ninguno"))
-    for line in graph + stats:
+    for line in named_summary + graph + stats:
         print(line)
     for warning in warnings:
         print("AVISO: " + warning)

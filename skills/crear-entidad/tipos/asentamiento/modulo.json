@@ -19,7 +19,9 @@
     "partida",
     "destino",
     "paradas",
-    "yacimientos"
+    "yacimientos",
+    "ciudad",
+    "barrios"
   ],
   "emoji": "🏘️",
   "color": "#388E3C",
@@ -40,7 +42,7 @@
   },
   "mapa": [
     {"clase": "urbano", "categoria": ["metropoli", "ciudad", "villa"], "desde": 3},
-    {"clase": "urbano", "categoria": ["aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "otro"], "desde": 4}
+    {"clase": "urbano", "categoria": ["aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "barrio", "otro"], "desde": 4}
   ],
   "carpeta": {
     "fija": "10_Mundo/Ciudades_y_Asentamientos"
@@ -56,11 +58,16 @@
     "pasado": "abandonada"
   },
   "valores": {
-    "categoria": ["metropoli", "ciudad", "villa", "aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "otro"],
+    "categoria": ["metropoli", "ciudad", "villa", "aldea", "caserio", "campamento", "refugio", "colonia", "estacion", "barrio", "otro"],
     "situacion": ["prospera", "estable", "en_declive", "amenazada", "abandonada"]
+  },
+  "solo_si": {
+    "ciudad": {"categoria": ["barrio"]}
   },
   "reciprocas": {
     "region": "asentamientos",
+    "ciudad": "barrios",
+    "barrios": "ciudad",
     "vecinos": "vecinos",
     "pueblos": "territorios",
     "fenomenos": "zonas_afectadas",
@@ -69,6 +76,8 @@
   },
   "relaciones": {
     "region": "lugar",
+    "ciudad": "asentamiento",
+    "barrios": "asentamiento",
     "vecinos": "lugar",
     "rutas": "ruta",
     "lugares_notables": "lugar",

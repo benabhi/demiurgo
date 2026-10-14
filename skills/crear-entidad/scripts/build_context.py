@@ -25,7 +25,7 @@ from vault_lib import (OPEN_QUESTIONS, ROUTE_TYPE, SECRET_TYPE, SECRET_WARNING, 
                        split_note, strip_links)
 from vault_lib import vault_path  # noqa: E402
 
-REGION_PROPS = ("region", "region_padre", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento",
+REGION_PROPS = ("region", "region_padre", "ciudad", "ubicacion", "residencia", "ubicacion_actual", "lugar_nacimiento",
                 "regiones")
 PLACE_TYPES = place_types()
 MAX_NAMES = 120

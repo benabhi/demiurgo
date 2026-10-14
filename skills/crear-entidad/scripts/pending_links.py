@@ -18,8 +18,9 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (PENDING_NOTE, blocked_links, find_gaps, gap_kind, known_types, load_index,  # noqa: E402
-                       load_modules, load_pending_types, split_note, strip_links, without_secrets)
+from vault_lib import (OUTSIDE_NOTE, OUTSIDE_TYPE, PENDING_NOTE, blocked_links, find_gaps, gap_kind,  # noqa: E402
+                       known_types, load_index, load_modules, load_pending_types, split_note, strip_links,
+                       without_secrets)
 from vault_lib import vault_path  # noqa: E402
 
 # La mención se recorta a esta longitud, empezando un poco antes del enlace
@@ -37,6 +38,7 @@ tipo: meta
 Entidades que alguna nota ya nombra (con un enlace) y que todavía no tienen nota propia. Se crean con `/crear-entidad <tipo> hueco=<Enlace>`, y el motor (`/expandir-mundo`) las va completando.
 - **En Obsidian, no hagas clic en un enlace pendiente** (se ve atenuado): crearía una nota vacía con su nombre y dejaría de contar como pendiente.
 - **Lo regenera `pending_links.py`** cada vez que se crean entidades: no lo edites a mano, salvo la columna Tipo. El tipo es el del módulo que creará la entidad (`asentamiento`, `lugar` o `region`, no solo «lugar»); también se asigna con `pending_links.py --set <Enlace>=<tipo>`. Si su propiedad de relación ya le da un tipo, manda la propiedad, salvo para concretar el módulo dentro de su familia.
+- **Lo de fuera del mundo** (cuando el mundo es una sola ciudad o una sola región) lleva el tipo `fuera`: se nombra como referencia y no se crea.
 """
 
 
@@ -74,7 +76,9 @@ def build(vault, gaps, modules, index):
     for gap in gaps:
         (by_kind.setdefault(gap_kind(gap), []) if gap["expected_type"] else untyped).append(gap)
     ready = [g for g in gaps if g["expected_modules"] and g["link"].lower() not in blocked]
-    waiting = {k: len(items) for k, items in by_kind.items() if not items[0]["expected_modules"]}
+    waiting = {k: len(items) for k, items in by_kind.items()
+               if not items[0]["expected_modules"] and k != OUTSIDE_TYPE}
+    outside = len(by_kind.get(OUTSIDE_TYPE, []))
     confirming = sum(1 for g in gaps if g["link"].lower() in blocked)
     waiting_total = sum(waiting.values())
     entities = without_secrets(index)
@@ -86,6 +90,8 @@ def build(vault, gaps, modules, index):
                 if confirming else "")
              + (f", {waiting_total} {'espera' if waiting_total == 1 else 'esperan'} su módulo ("
                 + ", ".join(f"{k}: {n}" for k, n in sorted(waiting.items())) + ")" if waiting else "")
+             + (f", {outside} {'es' if outside == 1 else 'son'} de fuera del mundo (referencias que no se crean)"
+                if outside else "")
              + (f", **{len(untyped)} sin tipo**" if untyped else "") + ".",
              f"- **{len(entities)} {'entidad' if len(entities) == 1 else 'entidades'} en el mundo**"
              + (f" (y {secrets} {'secreto' if secrets == 1 else 'secretos'}, aparte)" if secrets else "")
@@ -101,7 +107,7 @@ def build(vault, gaps, modules, index):
                 kind += f" ({', '.join(gap['expected_modules'])})"
             if gap["link"].lower() in blocked:
                 kind += " (espera confirmación)"
-            elif gap["expected_type"] and not gap["expected_modules"]:
+            elif gap["expected_type"] not in (None, OUTSIDE_TYPE) and not gap["expected_modules"]:
                 kind += " (sin módulo todavía)"
             mention = first_mention(vault, notes, gap).replace("|", "/")
             rows.append(f"| `{gap['link']}` | {kind} | {named} | {mention} |")
@@ -112,7 +118,8 @@ def build(vault, gaps, modules, index):
                   "Asígnales el tipo del módulo que las creará (`--set` o la columna Tipo).", ""]
         lines += table(untyped) + [""]
     for kind in sorted(by_kind, key=lambda k: (not by_kind[k][0]["expected_modules"], k)):
-        lines += [f"## {kind} ({len(by_kind[kind])})", ""] + table(by_kind[kind]) + [""]
+        lines += [f"## {kind} ({len(by_kind[kind])})", ""] + ([OUTSIDE_NOTE, ""] if kind == OUTSIDE_TYPE else [])
+        lines += table(by_kind[kind]) + [""]
     if not gaps:
         lines.append("No hay enlaces pendientes.")
     return "\n".join(lines).rstrip() + "\n"

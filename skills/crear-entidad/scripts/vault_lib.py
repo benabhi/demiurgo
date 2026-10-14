@@ -45,6 +45,14 @@ HOME_MOC = "00_Sistema/MOC_Inicio.md"
 SECRET_TYPE = "secreto"
 SECRETS_FOLDER = "80_Secretos"
 SECRET_WARNING = "verdad oculta: la nota de lore no la cuenta; como mucho, señales o rumores que no la delaten"
+# Lo de fuera del mundo: en un mundo que es una sola ciudad o una sola región (la Escala de la Ficha), lo que
+# queda fuera (otra ciudad, el reino de al lado) se enlaza como referencia con este tipo en el registro de
+# enlaces pendientes, y no se crea. Manda sobre el tipo que le dé una propiedad
+OUTSIDE_TYPE = "fuera"
+OUTSIDE_NOTE = "Lo de fuera del mundo (que es una sola ciudad o una sola región): se nombra como referencia o rumor y no se crea."
+# Escalas de la Ficha en las que el mundo es su foco: todo se crea dentro de él (`local` es la de las Fichas
+# anteriores, que no distinguían la ciudad de la región)
+LOCAL_SCALES = ("ciudad", "region", "local")
 # Estadísticas del mundo: las rehace world_stats.py al terminar cada tarea (con report.py --log y log_entry.py)
 STATS_NOTE = "00_Sistema/Estadisticas.md"
 STATS_HOME_LINE = ("- [[Estadisticas|Estadísticas]] — cuánto hay en el mundo y qué falta: entidades, enlaces "
@@ -341,7 +349,7 @@ MAP_ROUTE_RE = re.compile(r"^-\s+\*\*(?P<nombre>.+?)\*\*\s+\((?P<estilo>[^)]+)\)
 GROUND_ROUTE_CATEGORIES = ("camino", "sendero", "paso", "fluvial", "maritima", "subterranea", "otro")
 # Las que no se sabe por dónde van no se dibujan
 UNMAPPED_ROUTE_SITUATIONS = ("perdida",)
-CONTAINMENT_PROPS = ("ubicacion", "region", "region_padre")
+CONTAINMENT_PROPS = ("ubicacion", "ciudad", "region", "region_padre")
 
 
 def parse_map_routes(body):
@@ -682,7 +690,7 @@ def known_types(modules):
     for module in modules.values():
         types.add(module.get("familia", ""))
         types.update(v for v in module.get("relaciones", {}).values() if v != "cualquiera")
-    return {t for t in types if t}
+    return {t for t in types if t} | {OUTSIDE_TYPE}
 
 
 def find_gaps(vault, excluded=DEFAULT_EXCLUDED, pending_types=None):
@@ -716,6 +724,11 @@ def find_gaps(vault, excluded=DEFAULT_EXCLUDED, pending_types=None):
             if occurrence not in gap["occurrences"]:
                 gap["occurrences"].append(occurrence)
     for gap in gaps.values():
+        if registry.get(gap["link"].lower()) == OUTSIDE_TYPE:
+            # Lo de fuera del mundo se nombra, pero no se crea: ningún módulo lo completa
+            gap["typed_by"], gap["expected_type"], gap["expected_modules"] = "registro", OUTSIDE_TYPE, []
+            gap["notes"] = entity_notes(gap)
+            continue
         # Solo las propiedades que dan un tipo: una que admite cualquiera (el `afecta_a` de un secreto)
         # no dice qué módulo lo creará, y si contara dejaría el hueco sin ninguno
         properties = {o["property"] for o in gap["occurrences"] if o["property"]
@@ -751,6 +764,8 @@ def describe_expected(gap):
     expected = gap["expected_type"]
     if not expected:
         return "desconocido"
+    if expected == OUTSIDE_TYPE:
+        return "fuera del mundo (una referencia: no se crea)"
     if not gap["expected_modules"]:
         return f"{expected} (sin módulo todavía)"
     if gap["expected_modules"] == [expected]:
@@ -935,7 +950,7 @@ def read_world(vault):
     """Datos de la Ficha del Mundo: propiedades, año actual (entero o None), foco y calendario."""
     path = vault / WORLD_SHEET
     if not path.is_file():
-        return {"props": {}, "ano_actual": None, "foco": "", "calendario": ""}
+        return {"props": {}, "ano_actual": None, "foco": "", "calendario": "", "escala": ""}
     frontmatter, body = split_note(path.read_text(encoding="utf-8"))
     props = {k: first(v) for k, v in parse_frontmatter(frontmatter or [], []).items()}
 
@@ -948,7 +963,8 @@ def read_world(vault):
         return ""
 
     return {"props": props, "ano_actual": int_value(props.get("ano_actual")),
-            "foco": body_field("Foco inicial"), "calendario": body_field("Calendario", "Presente y calendario")}
+            "foco": body_field("Foco inicial"), "calendario": body_field("Calendario", "Presente y calendario"),
+            "escala": str(props.get("escala") or "").strip().strip('"').lower()}
 
 
 def is_system_note(relative, note_type):
@@ -1265,8 +1281,8 @@ UNKNOWN_DAYS = ("?", "¿?")
 CONNECTABLE_TYPES = ("asentamiento", "lugar")
 CROSSED_CATEGORIES = ("montana", "agua", "bosque", "isla", "desierto", "paraje")
 UNREACHABLE_SITUATIONS = ("perdido",)
-# Un lugar sin rutas propias se alcanza por el sitio que lo contiene (la taberna, por su ciudad)
-CONTAINER_PROPS = ("ubicacion",)
+# Un lugar sin rutas propias se alcanza por el sitio que lo contiene (la taberna o el barrio, por su ciudad)
+CONTAINER_PROPS = ("ubicacion", "ciudad")
 
 
 def days_value(text):

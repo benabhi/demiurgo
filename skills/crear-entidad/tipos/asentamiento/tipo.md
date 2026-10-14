@@ -1,6 +1,6 @@
 # Tipo: asentamiento
 
-Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caseríos, campamentos, refugios, colonias y estaciones. La ficha dice cómo se ve al llegar, cómo está repartido, quién manda, de qué vive, cómo se defiende, quién vive allí, qué sitios y qué personas importan, y qué problemas tiene.
+Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caseríos, campamentos, refugios, colonias y estaciones, y los barrios con vida propia de una ciudad. La ficha dice cómo se ve al llegar, cómo está repartido, quién manda, de qué vive, cómo se defiende, quién vive allí, qué sitios y qué personas importan, y qué problemas tiene.
 
 **No es un asentamiento:**
 - un edificio o un sitio concreto (`lugar`): una taberna, un templo, una fortaleza, un puerto o un mercado van en `lugar` y el asentamiento los enlaza en `lugares_notables`;
@@ -31,6 +31,7 @@ Los lugares donde vive la gente: metrópolis, ciudades, villas, aldeas, caserío
 - `refugio`: un lugar donde se esconde o resiste gente.
 - `colonia`: fundada desde fuera, a menudo lejos de su origen.
 - `estacion`: un puesto con una función (de paso, de vigilancia, de investigación; también en el espacio).
+- `barrio`: un barrio o un distrito con vida propia dentro de una ciudad (o un arrabal pegado a ella): su gente, quién manda en él, de qué vive y qué problemas tiene. Lleva su ciudad en `ciudad` y deja `region` vacía (su región es la de su ciudad). En un mundo que es una sola ciudad (la Escala de la Ficha), sus barrios son lo principal.
 - `otro`.
 
 **Hechos importantes:** una aldea, un caserío o un campamento son detalles que Claude puede inventar según la autonomía de la Ficha. Una ciudad grande, una metrópoli o una capital que no están en el canon son un hecho importante: van como `Confirmar: …` en Preguntas Abiertas, enlazando su nota.
@@ -50,13 +51,13 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 - **Resumen:** qué lugar es, dónde está y qué lo hace reconocible.
 - **Datos clave:** la tabla completa. La población, aproximada y coherente con la categoría y con el mundo (en un mundo arrasado, una ciudad de tres mil almas puede ser enorme).
 - **Aspecto y ambiente:** lo que se ve al llegar por el camino (es lo que muestra la imagen), lo que se ve, se oye y se huele dentro, la arquitectura y los materiales, y cómo es de noche.
-- **Barrios y zonas:** de 2 filas (una aldea) a 5 (una ciudad), con quién vive en cada una. Se nombran por lo que son («el barrio del puerto», «la ladera de los curtidores»); un barrio con nombre propio es un lugar y va enlazado (como enlace pendiente de tipo `lugar`).
+- **Barrios y zonas:** de 2 filas (una aldea) a 5 (una ciudad), con quién vive en cada una. Se nombran por lo que son («el barrio del puerto», «la ladera de los curtidores»); un barrio con nombre propio va enlazado y en `barrios` (será un asentamiento de categoría `barrio`).
 - **Gobierno y ley:** quién manda, cómo se decide y las leyes o los castigos que llaman la atención.
 - **Economía:** de qué vive, sus mercados y oficios, y lo que le falta y tiene que traer de fuera. Los materiales de los que vive, enlazados y en `recursos`.
 - **Defensas:** murallas, guardia o escondites, y de qué tiene que defenderse.
 - **Gente:** los pueblos que viven allí y cómo conviven, las clases y sus tensiones, y cómo se trata a los forasteros.
 - **Lugares notables:** de 3 a 6, cada uno con su enlace (los que no existen quedan como enlaces pendientes para el módulo `lugar`) y una línea que lo defina.
-- **Mapa** (metrópolis, ciudades y villas desde relevancia 3; los demás, desde 4): la leyenda numerada del plano: sus barrios y zonas, sus lugares notables y lo que da forma al plano (las puertas, el puerto, la plaza), hasta 12, con su orientación, lo que se ve y sus conexiones. Ver `referencias/mapas.md`.
+- **Mapa** (metrópolis, ciudades y villas desde relevancia 3; los demás, también un barrio, desde 4): la leyenda numerada del plano: sus barrios y zonas, sus lugares notables y lo que da forma al plano (las puertas, el puerto, la plaza), hasta 12, con su orientación, lo que se ve y sus conexiones. Ver `referencias/mapas.md`.
 - **Personajes notables:** de 2 a 4, con su enlace y su papel: quien manda, quien se le opone, alguien a quien todos conocen.
 - **Vida cotidiana:** un día cualquiera, sus fiestas y costumbres (con fechas del calendario, si existe) y sus creencias.
 - **Historia:** su fundación (por qué está ahí: un vado, un pozo, una mina, un cruce, un refugio), de 2 a 5 momentos decisivos y el presente.
@@ -69,7 +70,9 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
 ## Frontmatter
 - `categoria`, `situacion`, `fundacion`, `abandono` y `fecha_exacta`: ver arriba. `poblacion`: texto breve («unas ochocientas almas»).
 - Relaciones, solo con enlaces:
-  - `region`: la región que lo contiene; recíproca con sus `asentamientos` (la capital de una región también va en ellos);
+  - `region`: la región que lo contiene; recíproca con sus `asentamientos` (la capital de una región también va en ellos). Un barrio la deja vacía;
+  - `ciudad`: solo en un barrio, la ciudad a la que pertenece; recíproca con sus `barrios`;
+  - `barrios`: los barrios con nombre propio (asentamientos de categoría `barrio`); recíproca con su `ciudad`;
   - `vecinos`: los asentamientos cercanos; recíprocos;
   - `recursos`: los materiales que se sacan en él o a su alrededor y de los que vive; cada uno lo tiene en sus `yacimientos`;
   - `rutas` que pasan por él, salen o llegan a él (cada una lo tiene en su `partida`, su `destino` o sus `paradas`) y `lugares_notables` que contiene (edificios y sitios del módulo `lugar`, que lo tienen en su `ubicacion`);
@@ -78,11 +81,12 @@ La ficha se rellena **según su relevancia**: el frontmatter, completo; las secc
   - `pueblos` que viven en él, recíproca con sus `territorios`, y `creencias` que se practican;
   - `fenomenos` que lo afectan, recíproca con sus `zonas_afectadas`;
   - `era` en que se fundó.
-- `relevancia`: 5 la capital o la metrópoli del foco; 4 una ciudad importante; 3 una villa o un puerto con peso; 2 una aldea; 1 un caserío o un campamento de paso.
+- `relevancia`: 5 la capital o la metrópoli del foco; 4 una ciudad importante; 3 una villa o un puerto con peso; 2 una aldea; 1 un caserío o un campamento de paso. Un barrio, de 2 a 4 según su peso en su ciudad (más en un mundo que es una sola ciudad).
 - `ultima_revision` sin comillas.
 
 ## Coherencia
 - **La región:** encaja con su geografía, su clima y sus distancias; la región lo lista en `asentamientos` (y en `capital`, si lo es).
+- **La ciudad de un barrio:** encaja con su plano (su zona en la leyenda del mapa de la ciudad: `map_key.py <Ciudad> --add`, si falta) y con su gente; la ciudad lo lista en `barrios`.
 - **La Ficha:** la tecnología, los poderes y el conflicto central se notan en cómo vive (qué teme, qué le falta, cómo se defiende).
 - **Lo que ya existe:** los personajes que viven o nacieron allí, los pueblos que lo habitan y los eventos que ocurrieron en él deben encajar con su historia y su gente. Léelos (`build_context.py`).
 - **Reciprocidad:** la región, los vecinos, los pueblos y los fenómenos que ya existen lo listan en su propiedad inversa.
@@ -94,14 +98,15 @@ Sigue `referencias/huecos.md`: toda entidad que nombra la ficha va enlazada, y l
 - un lugar notable (`lugares_notables`);
 - una facción presente (`facciones`);
 - una figura (`figuras`);
-- un asentamiento vecino (`vecinos`).
+- un asentamiento vecino (`vecinos`);
+- en una ciudad, un barrio con nombre propio (`barrios`).
 
 ## Secretos
 Desde relevancia 3, tirada real con `roll_dice.py 1d4`: con 4, el asentamiento guarda un secreto (bajo sus calles hay algo, su fundación fue un crimen, quien manda no es quien parece, el pozo no da solo agua). El secreto se crea con el tipo `secreto` y la ficha nunca lo enlaza.
 
 ## Comprobaciones antes de escribir
 - [ ] La categoría, la población y la situación encajan entre sí y con el mundo.
-- [ ] La región lo contiene y lo lista en `asentamientos`; los vecinos, pueblos y fenómenos que ya existen, también.
+- [ ] La región lo contiene y lo lista en `asentamientos`; los vecinos, pueblos y fenómenos que ya existen, también. Un barrio lleva su `ciudad`, que lo lista en `barrios`, y deja `region` vacía.
 - [ ] Una ciudad grande o una capital que no estaba en el canon quedó como `Confirmar: …`.
 - [ ] Ni el calendario ni otro pilar se decidieron sin el usuario.
 - [ ] No queda ningún campo vacío, toda entidad nombrada lleva enlace y los enlaces pendientes nuevos están en el rango de su relevancia (`check_note.py --depth`), todos con tipo.

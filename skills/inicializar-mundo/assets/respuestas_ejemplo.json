@@ -28,6 +28,11 @@
     "calendario": "el Último Encendido de la estrella; los años se escriben '412 UE'",
     "ano_actual": "412",
     "vetos": "por definir",
-    "referencias": "Inspira: The Expanse, Dune. Evitar: imperios galácticos genéricos"
+    "referencias": "Inspira: The Expanse, Dune. Evitar: imperios galácticos genéricos",
+    "nombrados": [
+      {"nombre": "Ilmar", "tipo": "asentamiento", "que_es": "el hábitat orbital donde empieza todo"},
+      {"nombre": "Casa Veyra", "tipo": "linaje", "que_es": "la casa mercante que controla los muelles de Ilmar"},
+      {"nombre": "El Último Encendido", "tipo": "evento", "que_es": "el día en que la estrella empezó a apagarse"}
+    ]
   }
 }

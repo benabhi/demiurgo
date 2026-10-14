@@ -5,8 +5,9 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 > **Pensado para Obsidian.** Las skills escriben notas Markdown con propiedades (frontmatter), enlaces `[[…]]`, índices automáticos con el plugin **Bases** y una estructura de carpetas pensada para un mundo. Sin Obsidian las notas se pueden leer, pero se pierden la navegación por enlaces, las propiedades y los índices.
 
 ## Qué hace
-- **Una entrevista inicial** sobre los pilares del mundo (premisa, género, tono, poderes, tecnología, dioses, especies, calendario…), que crea la bóveda: carpetas con su README, guías de convenciones, índices, la **Ficha del Mundo** y un `CLAUDE.md` con las reglas que salen de tus respuestas.
+- **Una entrevista inicial** sobre los pilares del mundo (premisa, género, tono, poderes, tecnología, dioses, especies, calendario…) y lo que ya tiene nombre propio, que crea la bóveda: carpetas con su README, guías de convenciones, índices, la **Ficha del Mundo** y un `CLAUDE.md` con las reglas que salen de tus respuestas.
 - **28 tipos de entidad**, cada uno con su ficha, sus reglas y su validación: personajes, regiones, asentamientos, lugares, rutas (caminos, pasos, rutas por mar o por aire, portales), facciones, linajes, objetos, creencias, deidades, especies, culturas, idiomas, calendarios, eras, eventos, fenómenos, afecciones, criaturas, sistemas (poderes, tecnología, leyes del universo), mitos, costumbres (leyes, fiestas, ritos y tabúes), materiales y recursos, flora, ecosistemas, astros, obras (textos, canciones, pinturas, mapas antiguos) y secretos.
+- **Del tamaño que quieras:** una sola ciudad (con sus barrios), una región, un continente o un mundo entero, o varios mundos o planos. En una ciudad o una región, todo se crea dentro, y lo de fuera se nombra como referencia sin crearse. Lo que ya tenías con nombre propio entra en la Ficha, y el motor empieza por ello.
 - **Un mundo entrelazado:** toda entidad que una nota nombra va enlazada. Las que todavía no existen quedan como **enlaces pendientes** con su tipo, y el mundo crece completándolos. Las relaciones no son espejos: si alguien teme a un dragón, el dragón no tiene por qué temerle.
 - **Rutas y distancias:** las rutas unen los lugares con sus tiempos de viaje, tramo a tramo, y con ellas un grafo de distancias dice cuánto se tarda de un sitio a otro y por dónde, para que el mundo no se contradiga. También hay senderos que no llevan a ninguna parte, rutas circulares, redes, portales y rutas perdidas que solo cuenta un texto antiguo.
 - **Profundidad según la relevancia:** un antagonista central tiene una ficha extensa y un campesino, lo esencial; nada se inventa para llenar una plantilla. Cuando una entidad gana peso en el mundo, el motor la profundiza.
@@ -84,7 +85,8 @@ Las skills, las carpetas y las convenciones están en español. El idioma del co
 ## Estado
 En desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
-- faltan una entrevista inicial más a fondo, las imágenes por API y la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
+- la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
+- faltan las imágenes por API y la skill `finalizar-mundo`, que cerrará los enlaces pendientes de un mundo.
 
 El plan está en [PLAN.md](PLAN.md).
 

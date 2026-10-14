@@ -75,6 +75,10 @@ MAX_SKIPPED = 10
 MAX_NAMERS = 5
 # Canon de base: los enlaces pendientes que nombran al menos tantas notas de entidades
 CANON_NOTES = 3
+# Qué puede ser el foco según la escala de la Ficha: en un mundo que es una sola ciudad, la ciudad (o un sitio
+# como una estación, un barco o una mazmorra); en uno que es una sola región, la región; en los demás, cualquier
+# lugar que contenga a otros
+FOCUS_TYPES = {"ciudad": ["asentamiento", "lugar"], "region": ["region"]}
 # Densidad (enlaces pendientes que se pueden crear por entidad): por debajo de la baja, presupuesto
 # amplio y la probabilidad entera de crear algo nuevo; desde la alta, presupuesto justo y solo una
 # parte de esa probabilidad. Simulado, el mundo se estabiliza en torno a la alta
@@ -272,6 +276,11 @@ def main():
     # contienen nada (`contenedor: false`)
     place_types = sorted(containing_types(modules))
     focus = find_focus(world, index, place_types)
+    # La escala de la Ficha: en un mundo que es una sola ciudad, el foco es esa ciudad (o un sitio, como una
+    # estación o una mazmorra) y ninguna región cabe en él; en uno que es una sola región, el foco es la región
+    scale = world["escala"]
+    out_of_scale = {"region"} if scale == "ciudad" else set()
+    focus_types = [t for t in FOCUS_TYPES.get(scale, place_types) if t in place_types] or place_types
 
     def finish(result, code=0, types=()):
         if "presupuesto" in result:
@@ -326,13 +335,17 @@ def main():
             skipped.append(f"[[{link}]]: sin tipo (asígnaselo con pending_links.py --set {link}=<tipo>)")
         elif not gap["expected_modules"]:
             skipped.append(f"[[{link}]]: {describe_expected(gap)}")
+        elif not set(gap["expected_modules"]) - out_of_scale:
+            skipped.append(f"[[{link}]]: una región no cabe en un mundo que es una sola ciudad (si es de fuera, "
+                           f"márcalo con pending_links.py --set {link}=fuera)")
         elif key in blocked:
             skipped.append(f"[[{link}]]: espera una confirmación en Preguntas Abiertas")
         else:
             linkers = sorted((by_path[n] for n in gap["notes"] if n in by_path),
                              key=lambda e: -(e.get("relevancia") or 2))
             notes = len(gap["notes"])
-            option = {"tipo_esperado": gap["expected_type"], "modulos": gap["expected_modules"],
+            option = {"tipo_esperado": gap["expected_type"],
+                      "modulos": [m for m in gap["expected_modules"] if m not in out_of_scale],
                       "nombrado_por": [e["name"] for e in linkers[:MAX_NAMERS]]}
             in_sheet = bool(sheet_words) and words(link) in sheet_words
             if in_sheet or notes >= CANON_NOTES:
@@ -366,17 +379,24 @@ def main():
     common = {"densidad": round(density, 2), "presupuesto": budget, "borradores_pendientes": pending,
               "descartados": skipped[:MAX_SKIPPED], "descartados_total": len(skipped)}
 
-    # Arranque: la Ficha nombra un foco que aún no existe; se crea antes que nada
+    # Arranque: la Ficha nombra un foco que aún no existe; se crea antes que nada. Si la Ficha ya lo enlaza
+    # (en «Lo que ya tiene nombre»), se crea completando ese enlace, con su tipo
     if world["foco"] and not focus and place_types and not args.skip_focus:
-        finish({"accion": "crear_foco", "foco_texto": world["foco"], "modulos": place_types, **common,
+        sheet_gap = next((g for g in gaps if set(g["expected_modules"]) & set(focus_types)
+                          and words(g["link"]) in words(world["foco"])
+                          and any(o["note"] == WORLD_SHEET for o in g["occurrences"])), None)
+        types = [t for t in sheet_gap["expected_modules"] if t in focus_types] if sheet_gap else focus_types
+        finish({"accion": "crear_foco", "foco_texto": world["foco"], "modulos": types,
+                **({"hueco": sheet_gap["link"]} if sheet_gap else {}), **common,
                 "resumen": f"ELEGIDO: crear el foco de la Ficha, «{world['foco']}» "
-                           f"(módulos: {', '.join(place_types)}); lo demás se generará dentro de él",
-                "detalle": balance}, types=place_types)
+                           + (f"completando su enlace [[{sheet_gap['link']}]] " if sheet_gap else "")
+                           + f"(módulos: {', '.join(types)}); lo demás se generará dentro de él",
+                "detalle": balance}, types=types)
 
     # Un paquete crea sus entidades de la nada: no vale si incluye un tipo sin módulo o con crear_desde_cero: false
     available = [p for p in parse_packages(vault)
                  if all(modules.get(i["tipo"], {}).get("crear_desde_cero", i["tipo"] in modules)
-                        for i in p["composicion"])]
+                        and i["tipo"] not in out_of_scale for i in p["composicion"])]
     create_new = not candidates or rng.random() < new_chance
     deepen = deepen_candidates(vault, index, modules)
     shuffle_ties(deepen, rng)
@@ -467,7 +487,8 @@ def main():
                               for c in candidates[:args.top]] + balance},
                types=chosen["modulos"])
     # Los secretos y los tipos con crear_desde_cero: false (las especies, por ejemplo) no se inventan
-    types = sorted(t for t, module in modules.items() if t != "secreto" and module.get("crear_desde_cero", True))
+    types = sorted(t for t, module in modules.items()
+                   if t != "secreto" and module.get("crear_desde_cero", True) and t not in out_of_scale)
     new_type = rng.choice(types)
     why = "no hay enlaces pendientes que se puedan crear" if not candidates else "toca crear algo nuevo"
     # Una ruta nueva nunca sale de la nada: une lo que más lo necesita, o parte de un lugar que ya existe

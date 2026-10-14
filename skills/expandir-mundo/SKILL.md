@@ -55,7 +55,7 @@ Opciones:
 - `--no-maps`: no propone mapas (en una tanda "sin imagen");
 - `--connect-chance`: la probabilidad de unir con una ruta lo que debería estar unido y no lo está (0.2 por defecto; con muchos enlaces pendientes baja, como la de crear algo nuevo; con 1, siempre que haya algo que unir).
 
-Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
+Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas, los que coinciden con otro nombre de una entidad existente, los de fuera del mundo (tipo `fuera`) y, en un mundo que es una sola ciudad, las regiones (`descartados` dice por qué).
 
 Toda elección, salvo `detener`, trae además:
 - **`densidad`:** enlaces pendientes que se pueden crear por entidad (los secretos no cuentan como entidades).
@@ -67,7 +67,9 @@ El resultado dice qué hacer:
 - **`crear_foco`:** la Ficha nombra un foco (`foco_texto`) que aún no existe como lugar. Se crea antes que nada, porque lo demás se generará dentro de él:
   - usa el módulo de `modulos` que encaje con el texto del foco (un continente, una cordillera o un territorio es una `region`), con relevancia alta;
   - si su nombre no aparece en el texto del foco, añade ese texto a sus `aliases`: así el selector lo reconoce como foco;
-  - si ningún módulo encaja (el foco es una ciudad y aún no hay módulo de asentamientos, por ejemplo), anótalo en el registro y vuelve a ejecutar el selector con `--skip-focus`.
+  - si trae `hueco`, la Ficha ya lo enlaza (en «Lo que ya tiene nombre»): créalo completando ese enlace pendiente (`hueco=<Enlace>`), así el archivo se llama como el enlace;
+  - los `modulos` siguen la escala de la Ficha: en un mundo que es una sola ciudad, un asentamiento (o un lugar, si es una estación, un barco o una mazmorra); en uno que es una sola región, una región;
+  - si ningún módulo encaja (un foco que no es un lugar, por ejemplo), anótalo en el registro y vuelve a ejecutar el selector con `--skip-focus`.
 - **`crear_canon`:** un enlace pendiente (`referencia`) que nombra la Ficha o que nombran al menos tres notas: el conflicto central, la especie, el gran hecho. Es canon de base, así que va antes que lo demás:
   - crea la nota con **el mismo nombre de archivo que el enlace**, para que todas las notas que ya la nombran la encuentren sin reemplazar nada (si es un nombre de rol, ponle nombre y reemplázalo);
   - lee lo que dicen de ella esas notas (`find_gaps.py --link <referencia>`) y construye sobre la Ficha: lo que la Ficha deja abierto queda abierto, y los hechos grandes nuevos van como `Confirmar: …`;
@@ -85,7 +87,7 @@ El resultado dice qué hacer:
 
   Así el mundo se teje: cada ruta une lo que ya existe y, con sus paradas, sus peligros y quien la controla, nombra lo que vendrá.
 - **`paquete`:** un grupo de entidades que se crean juntas (ver `Paquetes.md`), en la región foco.
-- **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies). Una ruta nueva viene con `conexion`, lo que más necesita unirse: úsala. Si no la trae, la ruta parte de un lugar que ya existe en el foco (hacia un lugar nuevo, sin salida o circular).
+- **`nueva_entidad`:** crea una entidad del tipo indicado en la región foco. En un mundo que es una sola ciudad, un asentamiento nuevo es un barrio de la ciudad foco (categoría `barrio`, con la ciudad en `ciudad`; no se tira la categoría), y nunca se propone una región. Nunca propone tipos que no se crean desde cero (`crear_desde_cero: false` en su módulo, como las especies). Una ruta nueva viene con `conexion`, lo que más necesita unirse: úsala. Si no la trae, la ruta parte de un lugar que ya existe en el foco (hacia un lugar nuevo, sin salida o circular).
 
 `paquete` y `nueva_entidad` salen cuando toca crear algo nuevo o cuando no hay enlaces pendientes que se puedan crear.
 

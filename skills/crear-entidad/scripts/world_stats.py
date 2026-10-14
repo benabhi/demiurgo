@@ -21,7 +21,7 @@ from pathlib import Path
 
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, OPEN_QUESTIONS, PENDING_NOTE, SECRET_TYPE,  # noqa: E402
+from vault_lib import (ARCHIVED_FOLDER, HOME_MOC, OPEN_QUESTIONS, OUTSIDE_TYPE, PENDING_NOTE, SECRET_TYPE,  # noqa: E402
                        SECRETS_FOLDER, STATS_HOME_LINE, STATS_NOTE, blocked_links, find_gaps, gap_kind,
                        glossary_table, is_confirmation, load_index, load_modules, map_applies, map_status,
                        parse_map_key, parse_map_routes, split_note)
@@ -60,6 +60,7 @@ def collect(vault):
                    key=lambda g: (-len(g["notes"]), g["link"].lower()))
     waiting = [g for g in gaps if g["link"].lower() in blocked]
     untyped = [g for g in gaps if not g["expected_type"]]
+    outside = [g for g in gaps if g["expected_type"] == OUTSIDE_TYPE]
     # Quién enlaza a quién, sin contar los secretos (solo enlazan hacia fuera)
     linkers = defaultdict(set)
     for entry in entities:
@@ -79,7 +80,8 @@ def collect(vault):
     questions = [line.strip() for line in questions_path.read_text(encoding="utf-8").splitlines()
                  if line.strip().startswith("- [ ]")] if questions_path.is_file() else []
     return {"modules": modules, "entities": entities, "secrets": secrets, "archived": archived, "gaps": gaps,
-            "ready": ready, "waiting": waiting, "untyped": untyped, "linkers": linkers, "maps": maps,
+            "ready": ready, "waiting": waiting, "untyped": untyped, "outside": outside, "linkers": linkers,
+            "maps": maps,
             "glossary": glossary_table(vault), "questions": questions, "registry": (vault / PENDING_NOTE).is_file(),
             "confirmations": [q for q in questions if is_confirmation(q)]}
 
@@ -117,7 +119,9 @@ def build_note(data, today):
     lines.append(f"- **Enlaces pendientes:** {len(data['gaps'])} · {len(data['ready'])} se pueden crear ya "
                  f"({decimal(density)} por entidad), {len(data['waiting'])} "
                  f"{'espera' if len(data['waiting']) == 1 else 'esperan'} una confirmación tuya y "
-                 f"{len(data['untyped'])} no tienen tipo"
+                 f"{len(data['untyped'])} {'no tiene' if len(data['untyped']) == 1 else 'no tienen'} tipo"
+                 + (f" · {len(data['outside'])} de fuera del mundo (referencias que no se crean)"
+                    if data["outside"] else "")
                  + (f" · todos en [[{Path(PENDING_NOTE).stem}|Enlaces pendientes]]" if data["registry"] else ""))
     lines.append(f"- **Imágenes:** {len(with_image)} de {plural(len(entities), 'entidad', 'entidades')}")
     lines.append(f"- **Mapas:** {plural(len(maps), 'lugar', 'lugares')} con mapa · "

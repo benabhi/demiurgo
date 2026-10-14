@@ -15,9 +15,11 @@ fundacion: ""
 abandono: ""
 fecha_exacta: ""
 region: ""
+ciudad: ""
 vecinos: []
 rutas: []
 lugares_notables: []
+barrios: []
 gobierno: ""
 gobernante: ""
 facciones: []

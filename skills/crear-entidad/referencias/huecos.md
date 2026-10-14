@@ -71,6 +71,9 @@ python <skill>/scripts/pending_links.py --list                    # solo el resu
 - La primera vez, el registro se enlaza desde `MOC_Inicio`.
 - En Obsidian, un clic en un enlace pendiente crea una nota vacía con su nombre y lo anula. `audit_world.py` avisa de las notas vacías.
 
+## Lo de fuera del mundo
+Si la Escala de la Ficha es `ciudad` o `region`, el mundo es su foco y todo se crea dentro de él. Lo que una nota nombra fuera (la ciudad vecina, el reino al que pertenece, el continente) se enlaza igual, porque es una entidad, pero con el tipo `fuera`: `pending_links.py --set <Enlace>=fuera`. Ese tipo manda sobre el que le dé una propiedad. Así se ve en el grafo y en el registro, en su propio grupo, y nadie lo crea: el motor lo descarta. Si un día el usuario lo quiere dentro del mundo, se le cambia el tipo.
+
 ## Completar un enlace pendiente
 1. Lee lo que dicen de él todas las notas que lo nombran (`find_gaps.py --link <Enlace>` o `build_context.py --target <Enlace>`). La entidad debe encajar con todo.
 2. Créala con `crear-entidad` en modo `hueco=<Enlace>`:

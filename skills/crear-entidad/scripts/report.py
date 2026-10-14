@@ -50,7 +50,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py y audit_world.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_world import run_audit  # noqa: E402
-from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
+from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, OUTSIDE_TYPE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
                        normalize, parse_note, readable_links, without_secrets)
 from vault_lib import vault_path  # noqa: E402
@@ -245,6 +245,8 @@ def gap_label(gap):
     expected = gap["expected_type"]
     if not expected:
         return "sin tipo"
+    if expected == OUTSIDE_TYPE:
+        return "fuera del mundo: no se crea"
     if not gap["expected_modules"]:
         return f"{expected}, sin módulo todavía"
     if gap["expected_modules"] == [expected]:
