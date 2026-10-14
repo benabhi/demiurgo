@@ -61,7 +61,7 @@ Los errores de las notas y lo de «Atención» se resuelven con su skill:
 - **mapas por dibujar y entidades sin imagen:** `/generar-imagen`;
 - **preguntas abiertas y pilares por definir:** las decide el usuario cuando quiera, o todas al cerrar el mundo con `/finalizar-mundo`;
 - **la Bandeja de Entrada:** son ideas sueltas del usuario; ofrece convertirlas en entidades con `/crear-entidad`;
-- **las skills que faltan:** el README de las skills explica cómo instalarlas.
+- **las skills que faltan:** el README de Demiurgo (https://github.com/benabhi/demiurgo) explica cómo instalarlas.
 
 ## Paso 5: informe
 Vuelve a ejecutar `diagnose.py`, sin opciones, y da un informe breve:

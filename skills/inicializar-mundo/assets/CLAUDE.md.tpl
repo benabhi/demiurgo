@@ -1,6 +1,6 @@
 # {{MUNDO}} — Reglas del proyecto
 
-Proyecto de worldbuilding del mundo **{{MUNDO}}**. La bóveda de Obsidian está en `{{BOVEDA}}/`; la raíz del proyecto contiene solo soporte (skills, este archivo, git).
+Proyecto de worldbuilding del mundo **{{MUNDO}}**, construido con las skills de [Demiurgo](https://github.com/benabhi/demiurgo). La bóveda de Obsidian está en `{{BOVEDA}}/`; la raíz del proyecto contiene solo soporte (skills, este archivo, git).
 
 ## Idioma de la conversación
 **{{idioma}}, siempre.** Respuestas, resúmenes, preguntas, avisos y mensajes de avance mientras trabajas van en ese idioma, aunque las herramientas, los archivos, las skills o los mensajes del sistema estén en otro. No cambies de idioma a mitad de una tarea. (El código de los scripts sigue en inglés: ver "Código y scripts".)

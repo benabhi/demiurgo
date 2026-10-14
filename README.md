@@ -1,8 +1,25 @@
-# Skills de creación de mundos para Claude Code y Obsidian
+# Demiurgo
 
-Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crear mundos de ficción de cualquier género (fantasía, ciencia ficción, histórico, terror…) **dentro de una bóveda de Obsidian**. Una entrevista arma la base del mundo, cada entidad se crea como una nota enlazada con las demás y con el desarrollo que pide su importancia, un motor hace crecer el mundo por ciclos, cada nota lleva su imagen y los lugares que lo merecen, su mapa.
+**Un kit de skills de [Claude Code](https://claude.com/claude-code) para construir mundos de ficción en Obsidian: entidad a entidad, a tu ritmo, o dejando que el mundo crezca solo, ciclo a ciclo, sin perder la coherencia.**
+
+En la literatura y en el habla común, un *demiurgo* es quien ordena un universo: el escritor, el director de cine o el poeta capaz de dar forma a una obra magna. Ese es tu papel. Tú decides cómo es el mundo y qué es canon; las skills de Demiurgo lo ordenan, lo conectan, lo completan y lo mantienen coherente mientras crece.
+
+Sirve para mundos de cualquier género (fantasía, ciencia ficción, histórico, terror…) y de cualquier tamaño, de una sola ciudad a varios mundos o planos. Todo vive **en una bóveda de Obsidian**: cada entidad es una nota enlazada con las demás, con el desarrollo que pide su importancia, su imagen y, si es un lugar que lo merece, su mapa.
 
 > **Pensado para Obsidian.** Las skills escriben notas Markdown con propiedades (frontmatter), enlaces `[[…]]`, índices automáticos con el plugin **Bases** y una estructura de carpetas pensada para un mundo. Sin Obsidian las notas se pueden leer, pero se pierden la navegación por enlaces, las propiedades y los índices.
+
+## Cómo crece un mundo
+De dos maneras, que se combinan:
+- **Incremental:** pides lo que quieres (`/crear-entidad personaje un herrero del puerto`) y la nota enlaza todo lo que nombra. Lo que aún no existe queda como **enlace pendiente**, un hilo del que tirar después: el mundo se expande desde lo que ya dice.
+- **Procedural:** el motor (`/expandir-mundo 5`) hace crecer el mundo por ciclos. En cada uno elige qué desarrollar según el estado del mundo (completar lo que ya se nombra, crear algo nuevo, profundizar lo que ganó peso, redibujar un mapa o unir dos lugares con una ruta), tira los ingredientes en tablas con azar real, crea, valida y hace un commit.
+
+Y a lo largo de su vida:
+1. **Nace** con `/inicializar-mundo`: una entrevista sobre sus pilares crea la bóveda, sus guías, su Ficha y sus reglas.
+2. **Crece** con `/crear-entidad` y `/expandir-mundo`, con sus imágenes y sus mapas (`/generar-imagen`).
+3. **Se asienta** con `/revisar-mundo`: todo nace como borrador y tú decides qué pasa a canon.
+4. **Se usa** con `/consultar-mundo`, que responde con lo que dice la bóveda, y con `/narrar`, que escribe relatos, escenas y crónicas ambientados en él.
+5. **Se cuida** con `/diagnosticar-mundo`: su salud, y al día con cada versión de las skills.
+6. **Se termina** con `/finalizar-mundo`: sin cabos sueltos, y cerrado.
 
 ## Qué hace
 - **Una entrevista inicial** sobre los pilares del mundo (premisa, género, tono, poderes, tecnología, dioses, especies, calendario…) y lo que ya tiene nombre propio, que crea la bóveda: carpetas con su README, guías de convenciones, índices, la **Ficha del Mundo** y un `CLAUDE.md` con las reglas que salen de tus respuestas.
@@ -36,10 +53,10 @@ Un conjunto de skills de [Claude Code](https://claude.com/claude-code) para crea
 | `revisar-mundo` | Repasa los borradores por tandas (`/revisar-mundo`): cada uno pasa a canon, sigue en borrador o se archiva, para rehacerlo o para quitarlo del mundo. |
 | `consultar-mundo` | Responde preguntas sobre el mundo con lo que dice la bóveda (`/consultar-mundo ¿quién gobierna el puerto?`), citando sus notas, sin leerla entera. |
 | `narrar` | Relatos, escenas, crónicas y documentos ambientados en el mundo, coherentes con su canon (`/narrar escena la noche en que volvió el cometa`), en `90_Narrativa`. |
-| `finalizar-mundo` | Cierra el mundo sin cabos sueltos (`/finalizar-mundo`): lo deja impecable por fases, con el usuario, y lo cierra; o lo reabre. |
 | `diagnosticar-mundo` | La salud de la bóveda y si está al día con las skills (`/diagnosticar-mundo`): arregla lo seguro, propone lo demás y dice qué pide atención. |
+| `finalizar-mundo` | Cierra el mundo sin cabos sueltos (`/finalizar-mundo`): lo deja impecable por fases, con el usuario, y lo cierra; o lo reabre. |
 
-Las nueve van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narrar`, `finalizar-mundo` y `diagnosticar-mundo` usan los scripts de `crear-entidad`.
+Las nueve forman Demiurgo y van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `narrar`, `diagnosticar-mundo` y `finalizar-mundo` usan los scripts de `crear-entidad`.
 
 ## Requisitos
 - **Claude Code.**
@@ -55,7 +72,7 @@ Las nueve van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `nar
 ## Instalación
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/benabhi/skills-world-building.git
+   git clone https://github.com/benabhi/demiurgo.git
    ```
 2. Pon las nueve carpetas de `skills/` donde Claude Code busca las skills:
    - en `~/.claude/skills/`, para tenerlas en todos tus proyectos;
@@ -64,11 +81,13 @@ Las nueve van juntas: `expandir-mundo`, `revisar-mundo`, `consultar-mundo`, `nar
    Mejor enlazarlas que copiarlas: así se actualizan con `git pull`. Después de actualizarlas, `/diagnosticar-mundo` dice qué cambió para tu bóveda y la pone al día.
    - **Windows**, con PowerShell y sin permisos de administrador (un *junction* por skill):
      ```powershell
-     New-Item -ItemType Junction -Path "$HOME\.claude\skills\crear-entidad" -Target "C:\ruta\skills-world-building\skills\crear-entidad"
+     New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+     Get-ChildItem "C:\ruta\demiurgo\skills" -Directory | ForEach-Object { New-Item -ItemType Junction -Path "$HOME\.claude\skills\$($_.Name)" -Target $_.FullName }
      ```
    - **macOS y Linux:**
      ```bash
-     ln -s /ruta/skills-world-building/skills/crear-entidad ~/.claude/skills/crear-entidad
+     mkdir -p ~/.claude/skills
+     for skill in /ruta/demiurgo/skills/*/; do ln -s "${skill%/}" ~/.claude/skills/; done
      ```
 
 ## Cómo empezar un mundo
@@ -94,7 +113,7 @@ Cada nota nace como `borrador` y solo tú la promueves a `canon`.
 Las skills, las carpetas y las convenciones están en español. El idioma del contenido del mundo y de la conversación se elige en la entrevista.
 
 ## Estado
-En desarrollo:
+Demiurgo está en desarrollo:
 - ya están todos los tipos de entidad; los últimos (de las rutas a los astros) esperan su prueba en un mundo real;
 - la entrevista inicial ya distingue el alcance del mundo (una ciudad, una región, un mundo o varios) y recoge lo que ya tiene nombre propio, y espera su prueba;
 - `revisar-mundo` (repasar los borradores y pasarlos a canon o archivarlos), `consultar-mundo` (preguntas sobre el mundo), `narrar` (relatos y escenas), `finalizar-mundo` (cerrar el mundo) y `diagnosticar-mundo` (la salud de la bóveda) están hechas y esperan su prueba;

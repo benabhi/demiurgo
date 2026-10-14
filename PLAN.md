@@ -1,9 +1,9 @@
-# Plan de las skills
+# Plan de Demiurgo
 
 > **Seguimiento del desarrollo.** Cada punto se tilda al terminarlo: probado en un mundo de prueba y con commit.
 
 ## Visión
-Un **sistema de creación de mundos con IA** que cualquiera pueda clonar para empezar su propio mundo en una bóveda de Obsidian.
+**Demiurgo** es un kit de skills de creación de mundos con IA que cualquiera pueda clonar para empezar su propio mundo en una bóveda de Obsidian y hacerlo crecer de forma incremental (entidad a entidad, desde lo que el mundo ya nombra) o procedural (un motor por ciclos, con azar real), siempre coherente y con el usuario decidiendo qué es canon. El nombre viene del demiurgo, el que ordena un universo: el escritor, el director o el poeta que da forma a una obra magna.
 - **Para cualquier género:** fantasía, ciencia ficción, histórico, terror… Nada de un mundo concreto en las skills.
 - **Pensado para Obsidian:** notas con propiedades, enlaces, índices con Bases y una estructura de carpetas para un mundo.
 - **Mundos ricos y entrelazados:** entidades completas, con historias, fechas y relaciones que se cruzan, coherentes con la Ficha y entre ellas.
@@ -372,7 +372,7 @@ Las últimas entidades (desde la 21) se tildan al terminarlas, con su commit; su
   - cronologías y genealogías generadas a partir de eventos, linajes y personajes.
 
 ## Al cerrar el proyecto
-- [x] Repositorio propio (`skills-world-building`) y primer README.
+- [x] Repositorio propio y primer README. Nació como `skills-world-building`; desde el 2026-10-14 el proyecto se llama **Demiurgo** y vive en [benabhi/demiurgo](https://github.com/benabhi/demiurgo).
 - [ ] Elegir una licencia, para que quede claro cómo se puede usar.
 - [ ] README final: cada skill, con ejemplos.
 - [ ] Una última revisión de que no quede nada de un mundo concreto en las skills.

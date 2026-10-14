@@ -439,7 +439,7 @@ def diagnose(vault):
     skills = unlinked_skills(vault)
     out.append(line(not skills, "Skills instaladas", "todas" if not skills else
                     f"{agree(len(skills), 'falta', 'faltan')} {listed(skills)} (ver la instalación en el README de "
-                    f"las skills)"))
+                    f"Demiurgo: github.com/benabhi/demiurgo)"))
 
     out.append("Atención:")
     unrevised = drafts(health)
