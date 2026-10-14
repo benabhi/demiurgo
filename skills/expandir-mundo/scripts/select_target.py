@@ -36,7 +36,8 @@ que ninguna ruta une, un lugar importante al que no llega nada; routes.py --unco
 algo nuevo, se hace menos cuando hay muchos enlaces pendientes por entidad. Con 1, siempre que haya algo
 que unir.
 
-Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad.
+Equilibrio: la densidad es la cantidad de enlaces pendientes que se pueden crear por entidad (los
+secretos no cuentan como entidades).
 Con poca densidad se crea algo nuevo con la probabilidad de --new-chance y cada nota puede abrir
 bastantes enlaces pendientes nuevos (presupuesto amplio); con mucha, casi siempre se completa lo
 pendiente y cada nota abre los mínimos (presupuesto justo). Así el mundo no se llena de enlaces
@@ -63,7 +64,7 @@ from vault_lib import (ROUTE_TYPE, SKILL_DIR, WORLD_SHEET, blocked_links, connec
                        describe_expected, find_gaps,
                        load_index, load_modules, map_applies, map_key_problems, map_status, normalize,
                        omitted_sections, parse_map_key, parse_map_routes, read_world, split_note,
-                       template_sections)
+                       template_sections, without_secrets)
 from vault_lib import vault_path  # noqa: E402
 
 ASSETS = Path(__file__).resolve().parent.parent / "assets"
@@ -351,12 +352,13 @@ def main():
     shuffle_ties(candidates, rng)
 
     # Equilibrio entre crear de la nada y completar lo pendiente, según la densidad
-    density = (len(references) + len(candidates)) / max(len(index), 1)
+    entities = len(without_secrets(index))
+    density = (len(references) + len(candidates)) / max(entities, 1)
     budget = budget_for(density)
     factor = min(max((DENSITY_HIGH - density) / (DENSITY_HIGH - DENSITY_LOW), 0.0), 1.0)
     new_chance = args.new_chance * (NEW_FLOOR + (1 - NEW_FLOOR) * factor)
     balance = [f"densidad: {density:.1f} enlaces pendientes que se pueden crear por entidad "
-               f"({len(references) + len(candidates)} para {len(index)} entidades) · presupuesto {budget} · "
+               f"({len(references) + len(candidates)} para {entities} entidades) · presupuesto {budget} · "
                f"probabilidad de crear algo nuevo {new_chance:.0%}"]
     if skipped:
         balance.append(f"descartados: {len(skipped)} (sin tipo, sin módulo, pendientes de confirmar, "

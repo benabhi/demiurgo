@@ -52,7 +52,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_world import run_audit  # noqa: E402
 from vault_lib import (CHRONICLE, LINK_WITH_ALIAS_RE, PENDING_NOTE, add_chronicle_entry,  # noqa: E402
                        blocked_links, find_gaps, first, int_value, is_confirmation, load_index, load_modules,
-                       normalize, parse_note, readable_links)
+                       normalize, parse_note, readable_links, without_secrets)
 from vault_lib import vault_path  # noqa: E402
 from world_stats import summary, write_stats  # noqa: E402
 
@@ -321,6 +321,11 @@ def build_report(vault, prefix, changes):
     def path_link(relative):
         return entity_link(by_path[relative]) if relative in by_path else link(relative.rsplit("/", 1)[-1], relative)
 
+    def system_link(relative):
+        """Un archivo de sistema; un README lleva delante su carpeta, para saber cuál es."""
+        parts = relative.split("/")
+        return link("/".join(parts[-2:]) if parts[-1] == "README.md" and len(parts) > 1 else parts[-1], relative)
+
     def target_link(target):
         """Enlace a una entidad o archivo que existe; si no existe (un enlace pendiente), su nombre en código."""
         entry = by_name.get(target.lower())
@@ -483,9 +488,9 @@ def build_report(vault, prefix, changes):
     if system_new or system_changed:
         out += ["", "## Archivos de sistema"]
         if system_new:
-            out.append("- **Nuevos:** " + listed([path_link(p) for p in system_new], 20))
+            out.append("- **Nuevos:** " + listed([system_link(p) for p in system_new], 20))
         if system_changed:
-            out.append("- **Modificados:** " + listed([path_link(p) for p in system_changed], 20))
+            out.append("- **Modificados:** " + listed([system_link(p) for p in system_changed], 20))
     if status["D"]:
         out += ["", "## Eliminados o movidos", *[f"- `{p}`" for p in status["D"]]]
     if decisions:
@@ -518,11 +523,12 @@ def build_report(vault, prefix, changes):
     if len(audit["errores"]) > MAX_ERRORS:
         out.append(f"  - … y {len(audit['errores']) - MAX_ERRORS} errores más (audit_world.py los lista todos)")
     out += [f"  - AVISO: {linkify(w)}" for w in own_warnings]
-    out += [f"- **Entidades en el mundo:** {audit['entidades']}",
+    out += [f"- **Entidades en el mundo:** {audit['entidades']}"
+            + (f" (y {plural(audit['secretos'], 'secreto')}, aparte)" if audit["secretos"] else ""),
             f"- **Borradores pendientes de revisión:** {audit['borradores']} "
             f"(procedurales: {audit['borradores_procedurales']})",
             f"- **Enlaces pendientes que ya se pueden crear:** {len(ready)}, "
-            f"{len(ready) / max(len(index), 1):.1f} por entidad"
+            f"{len(ready) / max(len(without_secrets(index)), 1):.1f} por entidad"
             + (f" (p. ej. {', '.join('`' + g['link'] + '`' for g in ready[:3])})" if ready else "")]
     if untyped:
         out.append(f"- **Enlaces pendientes sin tipo:** {len(untyped)} "

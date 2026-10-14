@@ -97,7 +97,7 @@ Si algo falla, pide la corrección **en el mismo chat de Gemini**, nombrando el 
 
 Corrige lo que contradice lo pedido, no lo que podría estar mejor: un detalle pequeño menos logrado no es un fallo.
 
-**El resultado queda en la nota:** en la línea del prompt de la imagen, ` · comprobada: <lo que se comprobó, en pocas palabras>` y, si algo quedó mal tras las correcciones, detrás, ` · con fallos: <solo lo que quedó mal>` (` · comprobada: la mujer de la capa roja, el puente de cuerdas, el río en el fondo · con fallos: el escudo del fondo lleva unos trazos que parecen letras`); en un mapa, en la línea de su edición (`comprobado: 12/12 marcadores, sin repetidos`).
+**El resultado queda en la nota:** en la línea del prompt de la imagen, ` · comprobada: <lo que se comprobó, en pocas palabras>` y, si algo quedó mal tras las correcciones, detrás, ` · con fallos: <solo lo que quedó mal>` (` · comprobada: la mujer de la capa roja, el puente de cuerdas, el río en el fondo · con fallos: el escudo del fondo lleva unos trazos que parecen letras`); en un mapa, en la línea de su edición (`comprobado: 12/12 marcadores, sin repetidos`). Una corrección que salió bien no va en la nota, sino en las incidencias del informe.
 
 ## Paso 4: enlazar en la nota
 - **Primero, deja la aceptada con su nombre** y archiva lo demás, sin borrar nada:

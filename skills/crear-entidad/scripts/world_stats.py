@@ -113,9 +113,10 @@ def build_note(data, today):
                     if entities else ""))
     lines.append(f"- **Secretos:** {len(data['secrets'])} (en `{SECRETS_FOLDER}`) · "
                  f"**archivadas:** {len(data['archived'])} (en `{ARCHIVED_FOLDER}`)")
-    density = len(data["ready"]) / max(len(entities) + len(data["secrets"]), 1)
+    density = len(data["ready"]) / max(len(entities), 1)
     lines.append(f"- **Enlaces pendientes:** {len(data['gaps'])} · {len(data['ready'])} se pueden crear ya "
-                 f"({decimal(density)} por entidad), {len(data['waiting'])} esperan una confirmación tuya y "
+                 f"({decimal(density)} por entidad), {len(data['waiting'])} "
+                 f"{'espera' if len(data['waiting']) == 1 else 'esperan'} una confirmación tuya y "
                  f"{len(data['untyped'])} no tienen tipo"
                  + (f" · todos en [[{Path(PENDING_NOTE).stem}|Enlaces pendientes]]" if data["registry"] else ""))
     lines.append(f"- **Imágenes:** {len(with_image)} de {plural(len(entities), 'entidad', 'entidades')}")

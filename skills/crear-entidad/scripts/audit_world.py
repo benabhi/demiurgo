@@ -47,7 +47,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (DEFAULT_EXCLUDED, bare_name, date_keys, find_gaps, first, glossary_rows,  # noqa: E402
                        glossary_terms, int_value, is_entity_kind, is_hidden, known_types, load_calendars,
-                       load_index, load_modules, normalize, note_link_labels, read_registry, read_world)
+                       load_index, load_modules, normalize, note_link_labels, read_registry, read_world,
+                       without_secrets)
 from vault_lib import vault_path  # noqa: E402
 
 MIN_PARENT_AGE = 12
@@ -485,7 +486,8 @@ def run_audit(vault):
     check_glossary(vault, index, modules, report)
     check_orphans(index, report)
     drafts = [e for e in index if e["estado"] == "borrador"]
-    report["entidades"] = len(index)
+    report["entidades"] = len(without_secrets(index))
+    report["secretos"] = len(index) - report["entidades"]
     report["borradores"] = len(drafts)
     report["borradores_procedurales"] = sum(1 for e in drafts if e["origen"] == "procedural")
     return report
@@ -521,7 +523,8 @@ def main():
     if args.json:
         print(json.dumps({**report, "ocultos": hidden} if args.focus else report, ensure_ascii=False, indent=2))
     else:
-        print(f"Entidades: {report['entidades']} | Borradores: {report['borradores']} "
+        print(f"Entidades: {report['entidades']} · secretos: {report['secretos']} | "
+              f"Borradores: {report['borradores']} "
               f"(procedurales: {report['borradores_procedurales']})")
         print(f"Errores: {len(report['errores'])} | Avisos: {len(report['avisos'])}"
               + (" (de estas notas y del mundo en general)" if args.focus else ""))

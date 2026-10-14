@@ -19,7 +19,7 @@ from pathlib import Path
 # La lógica común vive en vault_lib.py (mismo directorio)
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (PENDING_NOTE, blocked_links, find_gaps, gap_kind, known_types, load_index,  # noqa: E402
-                       load_modules, load_pending_types, split_note, strip_links)
+                       load_modules, load_pending_types, split_note, strip_links, without_secrets)
 from vault_lib import vault_path  # noqa: E402
 
 # La mención se recorta a esta longitud, empezando un poco antes del enlace
@@ -77,6 +77,8 @@ def build(vault, gaps, modules, index):
     waiting = {k: len(items) for k, items in by_kind.items() if not items[0]["expected_modules"]}
     confirming = sum(1 for g in gaps if g["link"].lower() in blocked)
     waiting_total = sum(waiting.values())
+    entities = without_secrets(index)
+    secrets = len(index) - len(entities)
     lines = [HEADER, "## Resumen",
              f"- **{len(gaps)} {'enlace pendiente' if len(gaps) == 1 else 'enlaces pendientes'}:** {len(ready)} "
              f"{'se puede' if len(ready) == 1 else 'se pueden'} crear ya"
@@ -85,8 +87,9 @@ def build(vault, gaps, modules, index):
              + (f", {waiting_total} {'espera' if waiting_total == 1 else 'esperan'} su módulo ("
                 + ", ".join(f"{k}: {n}" for k, n in sorted(waiting.items())) + ")" if waiting else "")
              + (f", **{len(untyped)} sin tipo**" if untyped else "") + ".",
-             f"- **{len(index)} {'entidad' if len(index) == 1 else 'entidades'} en el mundo:** "
-             f"{density_text(len(ready), len(index))}.", ""]
+             f"- **{len(entities)} {'entidad' if len(entities) == 1 else 'entidades'} en el mundo**"
+             + (f" (y {secrets} {'secreto' if secrets == 1 else 'secretos'}, aparte)" if secrets else "")
+             + f": {density_text(len(ready), len(entities))}.", ""]
 
     def table(items):
         rows = ["| Enlace | Tipo | Lo nombran | Primera mención |", "|---|---|---|---|"]

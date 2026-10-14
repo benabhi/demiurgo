@@ -58,7 +58,7 @@ Opciones:
 Solo se eligen enlaces pendientes que tienen tipo y un módulo que los cree. Quedan fuera los que esperan una confirmación en Preguntas Abiertas y los que coinciden con otro nombre de una entidad existente (`descartados` dice por qué).
 
 Toda elección, salvo `detener`, trae además:
-- **`densidad`:** enlaces pendientes que se pueden crear por entidad.
+- **`densidad`:** enlaces pendientes que se pueden crear por entidad (los secretos no cuentan como entidades).
 - **`presupuesto`:** `amplio`, `medio` o `justo`.
 - **`enlaces_nuevos`:** cuántos enlaces pendientes nuevos debe abrir cada nota, por tipo (por ejemplo `personaje: 3–5`). Respétalo al componer (Paso 4).
 

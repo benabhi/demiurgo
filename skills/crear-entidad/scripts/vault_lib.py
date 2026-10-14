@@ -716,7 +716,10 @@ def find_gaps(vault, excluded=DEFAULT_EXCLUDED, pending_types=None):
             if occurrence not in gap["occurrences"]:
                 gap["occurrences"].append(occurrence)
     for gap in gaps.values():
-        properties = {o["property"] for o in gap["occurrences"] if o["property"]}
+        # Solo las propiedades que dan un tipo: una que admite cualquiera (el `afecta_a` de un secreto)
+        # no dice qué módulo lo creará, y si contara dejaría el hueco sin ninguno
+        properties = {o["property"] for o in gap["occurrences"] if o["property"]
+                      and relations.get(o["note_type"], {}).get(o["property"]) not in (None, "cualquiera")}
         if gap["expected_type"]:
             gap["typed_by"] = "propiedad"
             gap["expected_modules"] = candidate_modules(gap["expected_type"], modules, properties)
@@ -993,6 +996,12 @@ def load_index(vault, excluded=DEFAULT_EXCLUDED):
             "enlaces": sorted({t.strip() for t, _, _ in links if t.strip()}),
         })
     return entries
+
+
+def without_secrets(index):
+    """Las entidades del mundo, sin los secretos: los secretos se cuentan aparte y no entran ni en
+    el total de entidades ni en la densidad de enlaces pendientes por entidad."""
+    return [e for e in index if e["tipo"] != SECRET_TYPE]
 
 
 # --- Calendarios -------------------------------------------------------------
