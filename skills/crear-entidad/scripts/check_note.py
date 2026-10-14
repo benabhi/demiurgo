@@ -17,7 +17,9 @@ Comprueba:
     las que el Glosario registra como entidades (por su Tipo), aunque vayan en minúscula; las que la
     nota ya enlaza en otra parte, también con el nombre corto; y los nombres propios que no son meses
     ni términos del Glosario;
-  - enlaces del cuerpo con texto legible (un aviso si Obsidian va a mostrar guiones bajos);
+  - enlaces del cuerpo con texto legible (un aviso si Obsidian va a mostrar guiones bajos), cerrados y con
+    la barra del alias bien escrita: con una sola barra invertida en las tablas (`[[Nota\\|texto]]`; sin
+    ella, o con dos, Obsidian parte la celda) y sin ninguna fuera (aviso);
   - que la nota no enlace a un secreto y que su imagen exista;
   - en los lugares con mapa (regla `mapa` del módulo): la sección Mapa cuando le toca por su categoría
     y su relevancia, y su leyenda (números del 1 al N sin repetir ni saltar, orientaciones válidas,
@@ -41,7 +43,10 @@ lo dice y no las valida. Sale con código 1 si encuentra errores.
 Con --depth <tipo>:<relevancia>[:<categoría>], antes de escribir una nota, dice qué secciones lleva,
 cuántos enlaces pendientes nuevos puede abrir y si le toca mapa, sin validar nada.
 
-Ejemplo:  check_note.py Aldric_Voss   check_note.py 20_Personajes/X.md 80_Secretos/Y.md
+Con --fix, antes de validar arregla lo mecánico: la barra del alias de los enlaces (una barra invertida en
+las tablas, ninguna fuera). Un enlace partido entre dos celdas se arregla a mano.
+
+Ejemplo:  check_note.py --fix Aldric_Voss   check_note.py 20_Personajes/X.md 80_Secretos/Y.md
           check_note.py --depth personaje:2   check_note.py --depth lugar:3:mazmorra"""
 import argparse
 import re
@@ -52,7 +57,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from vault_lib import (DAY_MONTH_RE, HIDDEN_DIRS, LINK_WITH_ALIAS_RE, OPTIONAL_PROPS, QUOTED_LINK_RE, ROUTE_TYPE,  # noqa: E402
                        SKILL_DIR, VARIATION_SELECTOR, bare_name, calendar_terms, date_keys, days_value,
-                       display_title, format_days, link_value, route_segments,
+                       display_title, fix_link_escapes, format_days, link_escape_problems, link_value,
+                       route_segments,
                        entity_labels, find_gaps, first, format_year, glossary_terms, index_vault, int_value,
                        is_empty_value, is_system_note, known_types, link_exists, load_calendars, load_index,
                        load_modules, malformed_lines, MAP_ITEM_EMPTY_RE, map_applies, map_key_problems, map_rule,
@@ -72,6 +78,18 @@ EMPTY_ROW_RE = re.compile(r"^\|(\s*\|)+\s*$")
 # Enlace del cuerpo: (! si es un embed, destino, texto)
 BODY_LINK_RE = re.compile(r"(!?)\[\[([^\]|#^]+?)\\?(?:[#^][^\]|]*)?(?:\\?\|([^\]]*))?\]\]")
 INLINE_CODE_RE = re.compile(r"`[^`]*`")
+# Enlaces mal escritos (link_escape_problems): qué les pasa y cómo se arreglan
+LINK_PROBLEMS = {
+    "unclosed": "enlace sin cerrar (le falta su `]]`): {}",
+    "split": "tabla partida: el enlace ocupa dos celdas ({}); únelo en una sola, `[[Nota\\|texto]]`, y quita las "
+             "columnas que sobren",
+    "bare": "enlace con alias en una tabla sin barra invertida, que parte la celda ({}); en una tabla se escribe "
+            "`[[Nota\\|texto]]` (--fix lo arregla)",
+    "extra": "enlace con barras invertidas de más en una tabla, que parte la celda ({}); el alias va con una sola: "
+             "`[[Nota\\|texto]]` (--fix lo arregla)",
+    "escaped": "enlace fuera de una tabla con la barra del alias escapada ({}); fuera de las tablas se escribe "
+               "`[[Nota|texto]]` (--fix lo arregla)",
+}
 STATES = {"borrador", "canon", "archivado"}
 ORIGINS = {"manual", "procedural"}
 SECRETS_DIR = "80_secretos/"
@@ -568,6 +586,12 @@ def check(path, vault, modules, names, paths, md_by_stem, world_year=None, calen
         warnings.append(f"enlaces sin texto legible en el cuerpo (Obsidian mostrará los guiones bajos): {shown}; "
                         f"escribe [[{unreadable[0]}|texto]]")
 
+    # Cómo van escritos los enlaces: en una tabla, el alias con una sola barra invertida; fuera, sin ella
+    for kind, bad in link_escape_problems(body).items():
+        shown = ", ".join(f"`{' '.join(link.split())[:70]}`" for link in bad[:3]) + \
+            (f" y {len(bad) - 3} más" if len(bad) > 3 else "")
+        (warnings if kind == "escaped" else errors).append(LINK_PROBLEMS[kind].format(shown))
+
     # Secretos: la nota de lore nunca enlaza a 80_Secretos
     if note_type != "secreto":
         for target in {t.strip().lower() for t, _, _ in links}:
@@ -667,6 +691,9 @@ def main():
     parser.add_argument("--depth", metavar="TIPO:RELEVANCIA",
                         help="Dice qué secciones lleva una nota de ese tipo y relevancia, y cuántos enlaces "
                              "pendientes nuevos puede abrir (personaje:2)")
+    parser.add_argument("--fix", action="store_true",
+                        help="Antes de validar, arregla la barra del alias de los enlaces: una barra invertida en "
+                             "las tablas, ninguna fuera")
     args = parser.parse_args()
     if args.depth:
         sys.exit(print_depth(args.depth, vault_path(args.vault)))
@@ -695,13 +722,21 @@ def main():
         if is_system_note(shown, note_type) or (shown.startswith("00_Sistema/") and not note_type):
             print(f"\n{shown} ({note_type or 'sin tipo'})\n  Nota interna (no es una entidad): no se valida.")
             continue
+        fixed = 0
+        if args.fix:
+            text, fixed = fix_link_escapes(path.read_text(encoding="utf-8"))
+            if fixed:
+                path.write_text(text, encoding="utf-8", newline="\n")
         errors, warnings, note_type = run(path)
         print(f"\n{shown} ({note_type or 'sin tipo'})")
+        if fixed:
+            print(f"  ARREGLADO: la barra del alias en {fixed} enlace{'' if fixed == 1 else 's'} "
+                  f"(una barra invertida en las tablas, ninguna fuera).")
         for error in errors:
             print(f"  ERROR: {error}")
         for warning in warnings:
             print(f"  AVISO: {warning}")
-        print("  Correcta." if not errors else f"  {len(errors)} errores.")
+        print("  Correcta." if not errors else f"  {len(errors)} {'error' if len(errors) == 1 else 'errores'}.")
         total_errors += len(errors)
     sys.exit(1 if total_errors else 0)
 

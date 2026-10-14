@@ -686,6 +686,89 @@ def strip_links(text):
     return LINK_WITH_ALIAS_RE.sub(readable, text)
 
 
+# --- Cómo va escrito un enlace -----------------------------------------------
+# En una tabla, la barra del alias (o del tamaño de una imagen) va con una sola barra invertida delante,
+# `[[Nota\|texto]]`: sin ella, o con dos, Obsidian la toma como el borde de la celda y parte el enlace. Fuera
+# de las tablas va sin ninguna. Los scripts leen bien cualquiera de las formas; Obsidian, no.
+
+# Un enlace entero (sin cruzar otro enlace ni la línea), con lo que lleva dentro
+WIKILINK_RE = re.compile(r"\[\[([^\[\]\n]*?)\]\]")
+# La barra del alias con las barras invertidas que lleve delante
+ALIAS_BAR_RE = re.compile(r"(\\*)\|")
+# Un enlace partido entre dos celdas: lo que deja un editor de tablas al encontrar `\\|`
+SPLIT_CELL_RE = re.compile(r"\\\s+\|")
+
+
+def is_table_row(line):
+    """Si una línea es una fila de una tabla Markdown."""
+    return line.lstrip().startswith("|")
+
+
+def link_escape_problems(lines):
+    """Los enlaces mal escritos de las líneas del cuerpo de una nota, por problema: {problema: [enlaces]}.
+    - `unclosed`: un `[[` sin su `]]` en la misma línea;
+    - `split`: un enlace partido entre dos celdas de una tabla;
+    - `bare`: en una tabla, la barra del alias sin su barra invertida (parte la celda);
+    - `extra`: en una tabla, con más de una barra invertida (también la parte);
+    - `escaped`: fuera de una tabla, con barra invertida.
+    No mira los bloques de código ni el código en línea."""
+    found, in_code = {}, False
+    for line in lines:
+        if line.lstrip().startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
+        text = INLINE_CODE_RE.sub("", line)
+        if text.count("[[") > text.count("]]"):
+            found.setdefault("unclosed", []).append(text.strip())
+        table = is_table_row(text)
+        for match in WIKILINK_RE.finditer(text):
+            if table and SPLIT_CELL_RE.search(match.group(1)):
+                found.setdefault("split", []).append(match.group(0))
+                continue
+            for bar in ALIAS_BAR_RE.finditer(match.group(1)):
+                count = len(bar.group(1))
+                kind = ("bare" if not count else "extra" if count > 1 else None) if table else \
+                    ("escaped" if count else None)
+                if kind:
+                    found.setdefault(kind, []).append(match.group(0))
+                    break
+    return found
+
+
+def fix_link_escapes(text):
+    """El texto de una nota con la barra del alias de cada enlace bien escrita: con una sola barra invertida en las
+    tablas y sin ninguna fuera. No toca el frontmatter, el código ni los enlaces partidos entre dos celdas (esos se
+    arreglan a mano). Devuelve (texto, cuántos enlaces arregló)."""
+    lines = text.split("\n")
+    start = 0
+    if lines and lines[0].strip() == "---":
+        end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+        start = end + 1 if end is not None else 0
+    fixed, in_code = 0, False
+    for i in range(start, len(lines)):
+        line = lines[i]
+        if line.lstrip().startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code:
+            continue
+        table = is_table_row(line)
+        spans = [m.span() for m in INLINE_CODE_RE.finditer(line)]
+
+        def repair(match):
+            nonlocal fixed
+            content = match.group(1)
+            if any(a <= match.start() < b for a, b in spans) or (table and SPLIT_CELL_RE.search(content)):
+                return match.group(0)
+            new = ALIAS_BAR_RE.sub(lambda bar: "\\|" if table else "|", content)
+            fixed += new != content
+            return f"[[{new}]]"
+        lines[i] = WIKILINK_RE.sub(repair, line)
+    return "\n".join(lines), fixed
+
+
 # --- Enlaces pendientes (huecos) ---------------------------------------------
 
 def read_registry(vault):

@@ -35,6 +35,7 @@ Si el mundo está en cierre, recuérdalo: entonces manda la lista de `/finalizar
 
 ## Paso 2: los arreglos seguros
 Si hay líneas con ✗ y `(--fix)`, aplícalos sin preguntar con `diagnose.py --fix`. Solo completan o rehacen lo que las skills mantienen solas, sin tocar lo escrito:
+- arreglan la barra del alias de los enlaces mal escritos (una barra invertida en las tablas, ninguna fuera); un enlace que un editor de tablas ya partió en dos celdas queda en el diagnóstico, para unirlo a mano;
 - ponen el estado en la Ficha (`estado_mundo: abierto`) si falta;
 - crean la Bitácora si falta;
 - rehacen el registro de enlaces pendientes y las Estadísticas;

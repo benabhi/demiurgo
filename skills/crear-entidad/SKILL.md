@@ -23,7 +23,7 @@ La bóveda puede llegar a tener miles de notas. **Nunca la recorras ni leas carp
 - **La leyenda del mapa** de un lugar, sin leer la nota: `map_key.py <Nota>` la muestra con su estado, `--add` le añade una zona, `--retire` retira la de un lugar que salió del mundo y `--sync-routes` rehace las rutas que la cruzan (ver `referencias/mapas.md`).
 - **Distancias y caminos**, con el grafo de las rutas: `routes.py <Lugar>` (sus rutas y lo más cercano, con los días), `routes.py <A> <B>` (el camino más rápido conocido) y `routes.py --unconnected` (lo que debería estar unido y no lo está).
 - **Cuánto hay en el mundo** (entidades por tipo y relevancia, enlaces pendientes, imágenes, mapas por dibujar, lo más nombrado que falta): `world_stats.py --print`. La nota `00_Sistema/Estadisticas.md` la rehacen solas `report.py --log` y `log_entry.py`: no la edites ni la leas entera.
-- **Validar y auditar** solo lo tuyo: `check_note.py <notas>` y `audit_world.py --focus <notas>`.
+- **Validar y auditar** solo lo tuyo: `check_note.py --fix <notas>` y `audit_world.py --focus <notas>`.
 
 Lee entera solo la nota que vas a escribir; de las demás, solo lo que el contexto no resuma bien. De una nota larga, lee solo la sección que necesites: búscala con `grep -n "^## <Sección>" <nota>` y lee ese tramo de líneas.
 
@@ -152,7 +152,7 @@ Si piden un tipo sin módulo, dilo y no lo improvises. Si la relación de un mó
 - `relevancia` de 1 a 5 según la Guía de Organización. Las fechas del mundo, como números del calendario (vacías si está por definir). En el texto, si existe el calendario de referencia, las fechas van con sus nombres («15 de Siega de 412 UE»): `build_context.py` lo resume y `world_calendar.py` lo muestra entero.
 - Las propiedades de relación solo llevan enlaces; si un dato se desconoce, la propiedad queda vacía y el cuerpo lo explica.
 - **`era`** (en los tipos que la tienen): la era a la que pertenece la entidad, la que vivió una persona o en la que surgió un pueblo, una lengua o un lugar. Si ya existe, enlázala (`build_context.py` lista las eras en orden); si no, puede quedar vacía.
-- **Enlaces legibles:** en el cuerpo, todo enlace a una nota cuyo archivo lleva guiones bajos lleva su texto real, porque Obsidian mostraría el nombre del archivo: `[[Reino_de_Ejemplo|Reino de Ejemplo]]`, `la [[Capital_de_Reino_de_Ejemplo|capital]]`. En las tablas, `[[Nota\|texto]]`. En las propiedades, el enlace va sin texto.
+- **Enlaces legibles:** en el cuerpo, todo enlace a una nota cuyo archivo lleva guiones bajos lleva su texto real, porque Obsidian mostraría el nombre del archivo: `[[Reino_de_Ejemplo|Reino de Ejemplo]]`, `la [[Capital_de_Reino_de_Ejemplo|capital]]`. En las tablas, `[[Nota\|texto]]`, con una sola barra invertida: sin ella, o con dos (`\\|`), Obsidian toma la barra como el borde de la celda y parte el enlace. En las propiedades, el enlace va sin texto.
 - Escribe la nota en la carpeta que corresponda según `modulo.json` (fija, o según el rol o la categoría). Nunca sobrescribas una nota existente.
 
 ### Profundizar una nota
@@ -186,14 +186,17 @@ Una entidad que gana peso en el mundo gana desarrollo: el campesino de ayer pued
 ## Paso 5: validar (obligatorio)
 Ejecuta el validador sobre **cada nota creada o modificada** (la entidad, sus secretos y las notas donde añadiste vínculos inversos). Las notas internas (Glosario, Preguntas Abiertas, MOC, registros) no son entidades: el validador las salta.
 ```bash
-python <directorio de esta skill>/scripts/check_note.py <Nota_1> <Nota_2> …
+python <directorio de esta skill>/scripts/check_note.py --fix <Nota_1> <Nota_2> …
 ```
+`--fix` arregla antes lo mecánico, la barra del alias de los enlaces (una barra invertida en las tablas, ninguna fuera), y dice en qué notas lo hizo; lo demás lo corriges tú.
+
 El validador comprueba:
 - el frontmatter (YAML válido, propiedades, estado, fecha sin comillas, propiedades de relación con solo enlaces);
 - que la nota esté en la carpeta que le corresponde;
 - el título con el emoji del tipo, las secciones que pide su relevancia y que no haya campos vacíos ni texto de plantilla;
 - los enlaces pendientes nuevos dentro del rango del módulo para su relevancia, y todos con tipo;
 - las menciones sin enlace del cuerpo (aviso): nombres propios desconocidos, entidades del Glosario y entidades que la nota ya enlaza en otra parte;
+- los enlaces del cuerpo cerrados y con la barra del alias bien escrita (en una tabla, `[[Nota\|texto]]`);
 - que la nota no enlace a secretos y que su imagen exista;
 - en un lugar con mapa, su leyenda (números del 1 al N sin repetir ni saltar, orientaciones, conexiones en los dos sentidos, hasta 12 zonas por nivel) y las imágenes de sus ediciones;
 - en un calendario, sus tablas de meses, estaciones y festividades, y en cualquier nota, que `fecha_exacta` exista en el calendario de referencia y sea del año que precisa;
@@ -221,7 +224,7 @@ Genera la imagen con la skill `generar-imagen`, pasándole la nota recién cread
 - Si `generar-imagen` no está disponible o falla, deja la sección Imagen con la descripción visual y "Prompt: pendiente".
 - **Mapa:** después de la imagen principal, si `map_key.py <Nota>` dice que toca dibujar, pide a `generar-imagen` el mapa (modo mapa). La imagen principal va siempre primero. Si falla, la leyenda queda y el mapa se dibuja más tarde.
 - No dibujes ahora la edición nueva del lugar que la contiene, aunque le toque: la hace el motor (`cartografiar`) o el usuario (`/generar-imagen <Contenedor> mapa`). Dilo en el informe.
-- Al terminar, vuelve a ejecutar `check_note.py` sobre la nota: `generar-imagen` la modificó.
+- Al terminar, vuelve a ejecutar `check_note.py --fix` sobre la nota: `generar-imagen` la modificó.
 
 ## Paso 7: informe final
 El usuario tiene que ver con claridad qué se generó, ahora y más adelante. Ejecuta:

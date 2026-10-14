@@ -144,7 +144,7 @@ Sigue el protocolo completo de `crear-entidad` en **modo semilla**, con los ingr
   - el registro de enlaces pendientes, regenerado con `pending_links.py` (con `--set` para los que solo nombra el cuerpo).
 
 ## Paso 5: validar
-- `check_note.py` sobre cada nota creada o modificada.
+- `check_note.py --fix` sobre cada nota creada o modificada: arregla la barra del alias de los enlaces en las tablas y valida.
 - `audit_world.py --focus` con esas mismas notas: muestra lo suyo y lo del mundo en general, y del resto solo el recuento.
 
 Corrige los errores antes de seguir.

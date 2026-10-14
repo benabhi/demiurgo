@@ -4,7 +4,8 @@ desde que se creó la bóveda) y lo que pide atención sin ser un error. Usa las
 del mundo (health.py), en el nivel de un mundo abierto: los enlaces pendientes y los borradores no son un error.
 
 Sin opciones, solo diagnostica. Los arreglos:
-  --fix         los seguros: rehace el registro de enlaces pendientes y las Estadísticas, crea la Bitácora si
+  --fix         los seguros: arregla la barra del alias de los enlaces mal escritos (una barra invertida en las
+                tablas, ninguna fuera), rehace el registro de enlaces pendientes y las Estadísticas, crea la Bitácora si
                 falta, pone `estado_mundo` en la Ficha si falta, copia las tablas del motor que falten y añade al grafo
                 los colores de los tipos nuevos (sin un grafo abierto en Obsidian).
   --templates   añade a las plantillas instaladas (01_Plantillas) las propiedades y las secciones nuevas de su
@@ -36,6 +37,7 @@ from pending_links import build as build_registry  # noqa: E402
 from pending_links import link_from_home as link_registry  # noqa: E402
 from vault_lib import (CHRONICLE, ITEM_LINE_RE, KEY_LINE_RE, PENDING_NOTE, STATS_NOTE, WORLD_CLOSED,  # noqa: E402
                        WORLD_CLOSING, WORLD_OPEN, WORLD_SHEET, add_chronicle_entry, ensure_chronicle, find_gaps,
+                       fix_link_escapes,
                        load_index, load_modules, parse_frontmatter, read_world, split_note, strip_links, world_state)
 from vault_lib import vault_path  # noqa: E402
 from world_stats import build_note, collect, plural, write_stats  # noqa: E402
@@ -281,6 +283,16 @@ def fix_safe(vault, health):
     """Los arreglos seguros. Devuelve (líneas del resumen, líneas para la Bitácora)."""
     out, log = [], []
     behind = dict(system_notes(vault, health))
+    repaired = []
+    for entry in health.index:
+        path = vault / entry["path"]
+        text, count = fix_link_escapes(path.read_text(encoding="utf-8"))
+        if count:
+            path.write_text(text, encoding="utf-8", newline="\n")
+            repaired.append(f"{entry['name']} ({count})")
+    if repaired:
+        out.append(f"Barra del alias de los enlaces, arreglada: {listed(repaired, 4)}.")
+        log.append(f"**Enlaces:** la barra del alias, arreglada en {plural(len(repaired), 'nota')}.")
     sheet = vault / WORLD_SHEET
     lines = sheet.read_text(encoding="utf-8").splitlines()
     if "estado_mundo" not in health.world["props"]:
