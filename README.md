@@ -1,4 +1,8 @@
-# Demiurgo
+<div align="center">
+  <img style="width: 400px;" src="https://i.ibb.co/zVbZRpN2/logo.jpg" alt="Logo">
+</div>
+
+<br />
 
 **Un kit de skills de [Claude Code](https://claude.com/claude-code) para construir mundos de ficción en Obsidian: entidad a entidad, a tu ritmo, o dejando que el mundo crezca solo, ciclo a ciclo, sin perder la coherencia.**
 
